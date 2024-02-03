@@ -1,0 +1,169 @@
+<%- include('../layout/adminlayout.ejs') -%>
+  <div class="container-scroller">
+
+    <%- include('../layout/adminnav.ejs') -%>
+
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="col-12 grid-margin stretch-card">
+            <div class="circle position-absolute " style="background-color: rebeccapurple;
+            filter: blur(136px);
+            width: 13rem;
+            height: 10rem;
+            border-radius: 50%;
+            transform: translate(57rem, 0rem);"></div>
+            <div class="circle position-absolute " style="background-color: rgba(0, 0, 255, 0.589);
+            filter: blur(136px);
+            width: 13rem;
+            height: 10rem;
+            border-radius: 50%;
+         "></div>
+            <div class="card" style="border-radius: 15px; box-shadow: 0 0 0 0; border: 0;">
+              <div class="card-body">
+                <h4 class="card-title">Catagory</h4>
+
+                <form class="forms-sample" action="/admin/catgoryAdd" method="post" id="myForm">
+                  <div class="form-group">
+                    <label for="exampleInputName1">Catagory Name</label>
+                    <input type="text" class="form-control text-white text" oninput='category(this)' name="name"
+                      style="color:white;" id="exampleInputName1" placeholder="Name" required>
+                  </div>
+                  <p class="text-danger err"></p>
+
+                  <div class="form-group">
+                    <label for="exampleSelectGender">Gender</label>
+                    <select class="form-control text-white " style="color:white;" id="exampleSelectGender" name="gender"
+                      required>
+                      <option>Male</option>
+                      <option>Female</option>
+                      <option>kids</option>
+                      <option>unisex</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group row">
+
+                    <div class="col-sm-2">
+                      <div class="form-check">
+                        <label class="form-check-label">
+                          <input type="radio" class="form-check-input" name="active" id="membershipRadios1" value="true"
+                            checked> Active </label>
+                      </div>
+                    </div>
+                    <div class="col-sm-5">
+                      <div class="form-check">
+                        <label class="form-check-label">
+                          <input type="radio" class="form-check-input" name="active" id="membershipRadios2"
+                            value="false"> Non-Active </label>
+                      </div>
+                    </div>
+                  </div>
+                  <button type="submit" class="btn submit btn-primary mr-2">Submit</button>
+                  <button class="btn btn-dark">Cancel</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+  </div>
+
+  <script>
+
+    const textInput = document.getElementsByClassName('text')[0];
+    const err = document.querySelector('.err');
+    const regex = /^[a-zA-Z-]+$/;
+
+
+    document.getElementById('myForm').addEventListener('submit', function (e) {
+      const textInputValue = textInput.value.trim();
+
+
+      const regex = /^[a-zA-Z-]+$/;
+
+      if (!regex.test(textInputValue)) {
+        err.textContent = 'only contains alphebets no space or no numbers and signs ';
+        textInput.style.borderColor = 'red'
+        e.preventDefault();
+      }
+    });
+    function category(e) {
+      //
+      fetch('/admin/categoryFetch', {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: e.value })
+      }).then(res => res.json()).then(data => {
+        
+        if (data.exist === true) {
+          console.log('ehhllooo');
+          err.textContent = 'their alredy a catgory on this name';
+          textInput.style.borderColor = 'red'
+        } else if (data.exist === false) {
+          textInput.addEventListener('input', function (event) {
+            const inputValue = event.target.value;
+            const sanitizedValue = inputValue.replace(/\d/g, '');
+            const sanitized2Value = inputValue.replace(/\s/g, '-');
+            event.target.value = sanitizedValue;
+            event.target.value = sanitized2Value;
+          console.log('hekloo');
+            if (regex.test(event.target.value)) {
+              err.textContent = ' ';
+              textInput.style.borderColor = 'green'
+
+            } else {
+              err.textContent = 'only contains alphebets no space or no numbers and signs ';
+              textInput.style.borderColor = 'red'
+
+
+            }
+          });
+        }
+
+      })
+    }
+
+  </script>
+  <script src="/vendors/js/vendor.bundle.base.js"></script>
+
+  <script src="/vendors/chart.js/Chart.min.js"></script>
+  <script src="/vendors/progressbar.js/progressbar.min.js"></script>
+  <script src="/vendors/jvectormap/jquery-jvectormap.min.js"></script>
+  <script src="/vendors/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
+  <script src="/vendors/owl-carousel-2/owl.carousel.min.js"></script>
+
+  <script src="/js/off-canvas.js"></script>
+  <script src="/js/hoverable-collapse.js"></script>
+  <script src="/js/misc.js"></script>
+  <script src="/js/settings.js"></script>
+  <script src="/js/todolist.js"></script>
+  <script src="/js/dashboard.js"></script>
+  <style>
+    body::-webkit-scrollbar {
+      width: 0;
+    }
+
+    body {
+      overflow: hidden !important;
+    }
+
+    .container-scroller {
+      overflow: hidden;
+    }
+
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none !important;
+    }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@3.5.4/dist/locomotive-scroll.js"></script>
+
+  <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
+
+  <script src="/js/base.js"></script>
+
+  </body>
+
+  </html>

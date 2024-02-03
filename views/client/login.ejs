@@ -1,0 +1,268 @@
+<%- include('../layout/header.ejs') -%>
+	</head>
+
+	<body>
+		<div class="page-wrapper">
+			<header class="header">
+
+
+				<div class="header-middle sticky-header">
+					<div class="container">
+						<div class="header-left">
+							<button class="mobile-menu-toggler">
+								<span class="sr-only">Toggle mobile menu</span>
+								<i class="icon-bars"></i>
+							</button>
+
+							<a href="/" class="logo">
+								<img src="images/logo.png" alt="Molla Logo" width="105" height="25">
+							</a>
+
+							<nav class="main-nav">
+								<ul class="menu ">
+									<li class="megamenu-container active">
+										<a href="/" class="">Home</a>
+
+										<!-- End .megamenu -->
+									</li>
+									<li>
+										<a href="/shop" class="">Shop</a>
+
+										<!-- End .megamenu megamenu-md -->
+									</li>
+									<li>
+										<a class="sf-with-ul">Category</a>
+										<ul>
+											<li><a href="login.html">Men</a></li>
+											<li><a href="faq.html">Woman</a></li>
+										</ul>
+
+									</li>
+
+									<li>
+										<a href="/about">About</a>
+
+
+									</li>
+
+								</ul><!-- End .menu -->
+							</nav>
+						</div>
+
+						<!-- End .header-right -->
+					</div><!-- End .container -->
+				</div><!-- End .header-middle -->
+			</header><!-- End .header -->
+
+			<main class="main">
+				<nav aria-label="breadcrumb" class="breadcrumb-nav border-0 mb-0">
+					<div class="container">
+						<ol class="breadcrumb">
+							<li class="breadcrumb-item"><a href="/">Home</a></li>
+							<li class="breadcrumb-item active" aria-current="page">Login</li>
+						</ol>
+					</div><!-- End .container -->
+				</nav><!-- End .breadcrumb-nav -->
+
+				<div class="login-page bg-image pt-8 pb-8 pt-md-12 pb-md-12 pt-lg-17 pb-lg-17"
+					style="background-image: url('images/backgrounds/login-bg.jpg')">
+					<div class="container">
+						<div class="form-box">
+							<div class="form-tab">
+								<ul class="nav nav-pills nav-fill" role="tablist">
+									<li class="nav-item">
+										<a class="nav-link" id="signin-tab-2" data-toggle="tab" href="#register-2"
+											role="tab" aria-controls="signin-2" aria-selected="false">Register</a>
+									</li>
+									<li class="nav-item">
+										<a class="nav-link active" id="register-tab-2" data-toggle="tab"
+											href="#signin-2" role="tab" aria-controls="register-2"
+											aria-selected="true">Login</a>
+									</li>
+								</ul>
+								<div class="tab-content">
+									<div class="tab-pane  show active" id="signin-2" role="tabpanel"
+										aria-labelledby="signin-tab-2">
+										<form action="/sign-in" method="post">
+											<div class="form-group">
+												<label for="singin-email-2">Username or email address *</label>
+												<input type="text" class="form-control" id="singin-email-2" name="email"
+													required>
+													<% if(locals.err1) { %>
+														<p class="err text-danger ">
+															<%= err1 %>
+														</p>
+														<% } %>
+											</div>
+											
+													<!-- End .form-group -->
+
+													<div class="form-group">
+														<label for="singin-password-2">Password *</label>
+														<input type="password" class="form-control"
+															id="singin-password-2" name="password" required>
+															<% if(locals.err2) {%>
+																<p class="err text-danger">
+																	<%= err2 %>
+																</p>
+																<% } %>
+													</div>
+												
+
+													<div class="form-footer">
+														<button type="submit" class="btn btn-outline-primary-2">
+															<span>LOG IN</span>
+															<i class="icon-long-arrow-right"></i>
+														</button>
+														<!-- End .custom-checkbox -->
+
+														<a href="/forgetPassword" class="forgot-link">Forgot Your Password?</a>
+													</div><!-- End .form-footer -->
+										</form>
+										<div class="form-choice">
+											<p class="text-center">or sign in with</p>
+											<div class="row">
+												<div class="col-sm-6">
+													<a href="#" class="btn btn-login btn-g">
+														<i class="icon-google"></i>
+														Login With Google
+													</a>
+												</div><!-- End .col-6 -->
+												<div class="col-sm-6">
+													<a href="#" class="btn btn-login btn-f">
+														<i class="icon-facebook-f"></i>
+														Login With Facebook
+													</a>
+												</div><!-- End .col-6 -->
+											</div><!-- End .row -->
+										</div><!-- End .form-choice -->
+									</div><!-- .End .tab-pane -->
+									<!-- sign-up part -->
+									<div class="tab-pane fade" id="register-2" role="tabpanel"
+										aria-labelledby="register-tab-2">
+										<form id="myForm" action="/sign-up" method="post">
+											<div class="form-group">
+												<label for="register-email-2">Your Name *</label>
+												<input type="text" class="form-control" id="register-name"
+													name="registerName" required>
+											</div><!-- End .form-group -->
+
+											<div class="form-group">
+												<label for="register-password-2">Your Email Address *</label>
+												<input type="text" class="form-control" oninput="emailChecking(this)"
+													id="register-email" name="registerEmail" required>
+												<p class="err text-danger "></p>
+											</div>
+
+
+											<div class="form-group">
+												<label for="register-password-2">Password *</label>
+												<input type="password" class="form-control" id="register-password-2"
+													name="registerPassword" required>
+											</div><!-- End .form-group -->
+
+											<div class="form-footer">
+												<button type="submit" class="btn submit btn-outline-primary-2">
+													<span>SIGN UP</span>
+													<i class="icon-long-arrow-right"></i>
+												</button>
+
+
+											</div><!-- End .form-footer -->
+										</form>
+										<div class="form-choice">
+											<p class="text-center">or sign in with</p>
+											<div class="row">
+												<div class="col-sm-6">
+													<a href="#" class="btn btn-login btn-g">
+														<i class="icon-google"></i>
+														Login With Google
+													</a>
+												</div><!-- End .col-6 -->
+												<div class="col-sm-6">
+													<a href="#" class="btn btn-login  btn-f">
+														<i class="icon-facebook-f"></i>
+														Login With Facebook
+													</a>
+												</div><!-- End .col-6 -->
+											</div><!-- End .row -->
+										</div><!-- End .form-choice -->
+									</div>
+								</div>
+							</div><!-- End .form-tab -->
+						</div><!-- End .form-box -->
+					</div><!-- End .container -->
+				</div><!-- End .login-page section-bg -->
+			</main><!-- End .main -->
+			<%- include('../layout/lyfooter.ejs') -%>
+
+		</div><!-- End .page-wrapper -->
+		<button id="scroll-top" title="Back to Top"><i class="icon-arrow-up"></i></button>
+
+		<%- include('../layout/mobMenu.ejs') -%>
+
+			<script>
+			// email checking
+			document.getElementById('myForm').addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+      }
+    });
+			const err = document.querySelector('.err');
+			const input = document.querySelector('#register-email');
+			const submit = document.querySelector('.submit');
+				function emailChecking(e) {
+					fetch('login', {
+						method: 'POST',
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({ payload: e.value })
+					}).then(res => res.json()).then(data => {
+						if (data.emailExist) {
+							console.log('it exits' + data.emailExist);
+							err.innerHTML = `email already exist`;
+							input.style.borderColor = "red";
+							submit.style.pointerEvents = 'none',
+								submit.style.opacity = 0.5;
+								input.addEventListener("focus", () => {
+								input.style.borderColor = "red"; // Change the border color to blue when focused
+							});
+							input.addEventListener("blur", () => {
+								input.style.borderColor = "red"; // Change the border color back to gray when focus is lost
+							});
+						}
+						else if (data.note) {
+							console.log(data);
+							err.innerHTML = ' ';
+							input.style.borderColor = "#ebebeb";
+							submit.style.pointerEvents = 'all',
+								submit.style.opacity = 1
+							input.addEventListener("focus", () => {
+								input.style.borderColor = "#c96"; // Change the border color to blue when focused
+							});
+
+							input.addEventListener("blur", () => {
+								input.style.borderColor = "#ebebeb"; // Change the border color back to gray when focus is lost
+							});
+						}
+					}
+					)
+				}
+
+			</script>
+
+			<style>
+				*::-webkit-scrollbar {
+					width: 0;
+				}
+
+				input[type="number"]::-webkit-inner-spin-button,
+				input[type="number"]::-webkit-outer-spin-button {
+					-webkit-appearance: none !important;
+					
+				}
+			</style>
+			<script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@3.5.4/dist/locomotive-scroll.js"></script>
+			<script src="js/demos/demo-6.js"></script>
+			<script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
+			<%- include('../layout/footer.ejs') -%>
+				<script src="js/base.js"></script>

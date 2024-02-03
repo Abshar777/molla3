@@ -1,0 +1,136 @@
+<%- include('../layout/header.ejs') -%>
+  <link rel="stylesheet" href="/css/mycss/profile.css">
+  </head>
+
+  <body>
+
+    <%- include('../layout/nave.ejs') -%>
+      <nav aria-label="breadcrumb" class="breadcrumb-nav mb-3">
+        <div class="container">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+            <li class="breadcrumb-item"><a href="#">Shop</a></li>
+            <li class="breadcrumb-item active" aria-current="page">My Account</li>
+          </ol>
+        </div><!-- End .container -->
+      </nav>
+      <br>
+
+
+
+      <section class="">
+        <div class="container-fluid  py-5 h-100 position-relative ">
+          <div class="row d-flex    align-items-start  h-100" style="gap: 10rem;">
+          <aside class="col-md-4 col-lg-2 col-sm-2  " >
+              <ul class="nav nav-dashboard flex-column mb-3 mb-md-0" role="tablist">
+          <li class="nav-item">
+              <a class="nav-link " id="tab-dashboard-link"  href="/profile" >Profile</a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link active" id="tab-orders-link"  href="/order" >Orders</a>
+          </li>
+        
+          <li class="nav-item">
+              <a class="nav-link" id="tab-address-link" href="/adress" aria-selected="true">Adresses</a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link" id="tab-account-link" data-toggle="tab" href="#tab-account" role="tab" aria-controls="tab-account" aria-selected="false">Coupens</a>
+          </li>
+          <li class="nav-item">
+            <form action="/logout" method="post">
+              <a class="nav-link" href="#">
+              <button type="submit" class=" border-0 bg-transparent ">Sign Out</button></a>
+            </form>
+          </li>
+      </ul>
+            </aside>
+            <aside class="col col-xl-9 col-lg-8 col-md-6 col-sm-6 mb-4 mb-lg-0">
+              <div class="row w-100" style="gap: 2rem;">
+                <div class="container">
+					<table class="table table-wishlist table-mobile">
+						<thead>
+							<tr>
+								<th>No</th>
+								<th>Name</th>
+								<th>order Status</th>
+								<th>Items  </th>
+								<th>Total price</th>
+								<th>Detailes</th>
+							
+								
+							</tr>
+						</thead>
+
+						<tbody>
+                            <% if(locals.order) {%>
+                                <% order.forEach((e, index)=>{ %>
+							<tr>
+							<td>
+                                <%= index+1  %>
+                            </td>
+                                    <td class="">
+									
+											<%= e.orderDate.toString().split(' ').slice(0,4).join('  ')   %> order
+										
+									<!-- End .product -->
+								</td>
+								<td class="price-col <%=e.orderStatus=='pending'? 'text-primary' : 'text-success' %>"><%=e.orderStatus %></td>
+								<td class=""><%=e.OrderedItems.length %></td>
+								
+								
+								<td class="price-col">
+                                $<%=e.orderAmount %>
+								</td>
+                                <td>
+                                    <a href="/orderView/<%=e._id  %>" style="border-radius: 5px; border: 0px solid transparent; outline: 0px ;  transition: all ease 0.5s; background-color: #c96;" class="p-3 rounded-2    text-white ">Details</a>
+                                </td>
+								
+							</tr>
+                            <% })} %>
+						
+						</tbody>
+					</table>
+                    <% if(locals.order) {%>
+	            	<div class="wishlist-share">
+	            		<div class="social-icons social-icons-sm mb-2">
+	            			<label class="social-label">Total Order:</label>
+	    					<%=order.length  %>
+	    				</div><!-- End .soial-icons -->
+	            	</div>
+                    <% }else{ %>
+                        <div class="wishlist-share">
+                            <div class="social-icons social-icons-sm mb-2">
+                                <label class="social-label">Total Order:</label>
+                                0
+                            </div><!-- End .soial-icons -->
+                        </div>
+                        <% } %>
+            	</div>
+        
+              </div>
+            </aside>
+          </div>
+
+        </div>
+      </section>
+
+      
+
+      <%- include('../layout/mobMenu.ejs') -%>
+        <%- include('../layout/lyfooter') -%>
+
+          <style>
+            *::-webkit-scrollbar {
+              width: 0;
+            }
+
+            input[type="number"]::-webkit-inner-spin-button,
+            input[type="number"]::-webkit-outer-spin-button {
+              -webkit-appearance: none !important;
+            }
+          </style>
+          <script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@3.5.4/dist/locomotive-scroll.js"></script>
+          <script src="js/demos/demo-6.js"></script>
+          <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
+          <%- include('../layout/footer.ejs') -%>
+            <!-- <script src="js/base.js"></script> -->

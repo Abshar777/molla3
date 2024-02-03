@@ -1,0 +1,155 @@
+<%- include('../layout/header.ejs') -%>
+<link rel="stylesheet" href="css/mycss/otp.css">
+	</head>
+
+	<body>
+		<div class="page-wrapper">
+			<header class="header">
+
+
+				<div class="header-middle sticky-header">
+					<div class="container">
+						<div class="header-left">
+							<button class="mobile-menu-toggler">
+								<span class="sr-only">Toggle mobile menu</span>
+								<i class="icon-bars"></i>
+							</button>
+
+							<a href="/" class="logo">
+								<img src="images/logo.png" alt="Molla Logo" width="105" height="25">
+							</a>
+
+							<nav class="main-nav">
+								<ul class="menu ">
+									<li class="megamenu-container active">
+										<a href="/" class="">Home</a>
+
+										<!-- End .megamenu -->
+									</li>
+									<li>
+										<a href="/shop" class="">Shop</a>
+
+										<!-- End .megamenu megamenu-md -->
+									</li>
+									<li>
+										<a class="sf-with-ul">Category</a>
+										<ul>
+											<li><a href="login.html">Men</a></li>
+											<li><a href="faq.html">Woman</a></li>
+										</ul>
+
+									</li>
+
+									<li>
+										<a href="/about">About</a>
+
+
+									</li>
+
+								</ul><!-- End .menu -->
+							</nav>
+						</div>
+
+						<!-- End .header-right -->
+					</div><!-- End .container -->
+				</div><!-- End .header-middle -->
+			</header><!-- End .header -->
+
+			<main class="main">
+				<nav aria-label="breadcrumb" class="breadcrumb-nav border-0 mb-0">
+					<div class="container">
+						<ol class="breadcrumb">
+							<li class="breadcrumb-item"><a href="/">Home</a></li>
+							<li class="breadcrumb-item"><a href="">login</a></li>
+							<li class="breadcrumb-item active" aria-current="page">otp</li>
+						</ol>
+					</div><!-- End .container -->
+				</nav><!-- End .breadcrumb-nav -->
+
+				<div class="login-page bg-image pt-8 pb-8 pt-md-12 pb-md-12 pt-lg-17 pb-lg-17"
+					style="background-image: url('images/backgrounds/login-bg.jpg')">
+					<div class="container">
+						<div class="form-box">
+							<div class="form-tab">
+
+								<ul class="nav nav-pills nav-fill" role="tablist">
+								
+									<li class="nav-item">
+										<a class="nav-link active" id="register-tab-2" data-toggle="tab"
+											href="#register-2" role="tab" aria-controls="register-2"
+											aria-selected="true">OTP</a>
+									</li>
+								</ul>
+								<div class="tab-content">
+								
+									<!-- sign-up part -->
+									<div class="tab-pane fade show active d-flex align-items-center justify-content-center flex-column  " id="register-2" role="tabpanel"
+										aria-labelledby="register-tab-2">
+										<form action="/otp" method="post">
+											<label for="otp">Check Your Email OTP is There </label>
+											
+											<div class="otp d-flex gap-5   align-items-center  justify-content-center ">
+												<input class=" inp form-control " type="text" name="otp" maxlength="1" required>
+												<input class=" inp form-control " type="text" name="otp" maxlength="1" required>
+												<input class=" inp form-control " type="text" name="otp" maxlength="1" required>
+												<input class=" inp form-control " type="text" name="otp" maxlength="1" required>
+											</div>
+										
+                                          <% if(locals.message || locals.resend) {%>
+											<% if(locals.message){ %>
+											<p class="text-danger text-center text-capitalize mb-3 fw-bold   ">otp is wrong</p>
+											<% } %>
+											<% if(locals.resend){ %>
+											<p class="text-success  text-center text-capitalize mb-3 fw-bold   ">their ressend the otp, check your email</p>
+											<% } %>
+											<%}  %>
+											<div class="form-footer d-flex justify-content-center ">
+												<button type="submit" class="btn btn-outline-primary-2">
+													<span>Submit</span>
+													<i class="icon-long-arrow-right"></i>
+												</button>
+												<form action="/resubmi" method="post"></form>
+                                               <a href="/resend" class="btn text-decoration-none resend btn-outline-primary-2">Resend</a>
+
+											</div><!-- End .form-footer -->
+										</form>
+									
+										<div class="form-choice">
+											<p class="text-black text-center text-black ">
+												<form action="/resubmit" method="post">
+												<button type="submit" class="btn resubmit">resubmit your Email</button>
+											</form>
+										</p>
+									<!-- End .row -->
+										</div><!-- End .form-choice -->
+									</div><!-- .End .tab-pane -->
+								</div><!-- End .tab-content -->
+							</div><!-- End .form-tab -->
+						</div><!-- End .form-box -->
+					</div><!-- End .container -->
+				</div><!-- End .login-page section-bg -->
+			</main><!-- End .main -->
+			<%- include('../layout/lyfooter.ejs') -%>
+
+		</div><!-- End .page-wrapper -->
+		<button id="scroll-top" title="Back to Top"><i class="icon-arrow-up"></i></button>
+
+		<%- include('../layout/mobMenu.ejs') -%>
+
+
+
+			<style>
+				*::-webkit-scrollbar {
+					width: 0;
+				}
+
+				input[type="number"]::-webkit-inner-spin-button,
+				input[type="number"]::-webkit-outer-spin-button {
+					-webkit-appearance: none !important;
+				}
+			</style>
+			<script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@3.5.4/dist/locomotive-scroll.js"></script>
+			<script src="js/demos/demo-6.js"></script>
+			<script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
+			<%- include('../layout/footer.ejs') -%>
+				<script src="js/base.js"></script>

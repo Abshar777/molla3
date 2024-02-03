@@ -1,0 +1,253 @@
+<%- include('../layout/adminlayout.ejs') -%>
+  <div class="container-scroller">
+
+    <%- include('../layout/adminnav.ejs') -%>
+
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="row">
+            <div class="circle position-absolute " style="background-color: rebeccapurple;
+            filter: blur(136px);
+            width: 13rem;
+            height: 10rem;
+            border-radius: 50%;
+            transform: translate(57rem, 23rem);"></div>
+            <div class="circle position-absolute " style="background-color: rgba(0, 0, 255, 0.589);
+            filter: blur(136px);
+            width: 13rem;
+            height: 10rem;
+            border-radius: 50%;
+         "></div>
+            <div class="col-12 grid-margin stretch-card">
+              <div class="card" style="border-radius: 15px; box-shadow: 0 0 0 0; border: 0;">
+                <div class="card-body">
+                  <h4 class="card-title">Basic form elements</h4>
+                  <p class="card-description"> Basic form elements </p>
+                  <form class="forms-sample" id="myForm" action="/admin/productAdd" method="post"  enctype="multipart/form-data">
+                    <div class="form-group">
+                      <label for="exampleInputName1">Name</label>
+                      <input type="text" class="text form-control text-white " name="name" style="color:white;"
+                        id="exampleInputName1" placeholder="Name" required>
+                      <p id="err1" class="text-danger "></p>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="exampleInputPassword4">stock</label>
+                      <input type="number" class=" form-control text-white " name="stock" style="color:white;"
+                        id="exampleInputPassword4" placeholder="Stock" required>
+
+                    </div>
+                    <div class="form-group">
+                      <label for="exampleInputPassword4">Price</label>
+                      <div class="input-group mb-2 mr-sm-2">
+                       
+                        <div class="input-group-prepend">
+                        
+                          <div class="input-group-text">$</div>
+                        </div>
+                        <input type="number" class="form-control" name="price" id="inlineFormInputGroupUsername2" placeholder="Price">
+                      </div>
+                      </div>
+                    <div class="form-group">
+                      <label for="exampleSelectGender">Category</label>
+                      <select class="form-control text-white " name="category" style="color:white;" id="exampleSelectGender" required>
+                        <% locals.categoryList.forEach(e=>{ %>
+                          <option>
+                            <%=e.name %>
+                          </option>
+
+                          <% }) %>
+
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label>File upload</label>
+                      <!-- <input type="file" name="img[]" class="file-upload-default" required>  -->
+                      <div class="input-group col-xs-12">
+                        <div class="input-group">
+                          <input type="file" class="file-upload-default" name="images" multiple style="display: none;" required>
+                          <input type="text" class="form-control file-upload-info" onkeydown="images(this)" id="ko"
+                            disabled placeholder="Upload Image" multiple required>
+                          <span class="input-group-append">
+                            <button class="file-upload-browse btn btn-primary" type="button">Upload</button>
+                          </span>
+                        </div>
+
+                      </div>
+                    </div>
+                    <div class="form-group row">
+
+                      <div class="col-sm-2">
+                        <div class="form-check">
+                          <label class="form-check-label">
+                            <input type="radio" class="form-check-input" name="active" id="membershipRadios1"
+                              value=true checked> Active </label>
+                        </div>
+                      </div>
+                      <div class="col-sm-5">
+                        <div class="form-check">
+                          <label class="form-check-label">
+                            <input type="radio" class="form-check-input" name="active" id="membershipRadios2 "
+                              value=false> Non-Active </label>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="exampleTextarea1">Description</label>
+                      <textarea class=" text form-control text-white " name="des" style="color:white;" id="exampleTextarea1"
+                        rows="4" required></textarea>
+                      <p id="err2" class="text-danger "></p>
+                    </div>
+                    <button type="submit" class="btn submit btn-primary mr-2">Submit</button>
+                    <button class="btn btn-dark">Cancel</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+  </div>
+
+  <script>
+    const textInput = document.querySelectorAll('.text');
+    const err1 = document.getElementById('err1');
+    const submit11 = document.querySelector('.submit');
+
+    document.getElementById('myForm').addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+      }
+    });
+
+    const regex = /^[a-zA-Z-]/;
+
+    textInput.forEach((inputElement, i) => {
+      const errorElement = document.getElementById(`err${i + 1}`);
+
+      inputElement.addEventListener('input', function (event) {
+        const inputValue = event.target.value;
+
+        if (inputValue.trim() !== '' && !/\d/.test(inputValue)) {
+          submit11.style.pointerEvents = 'all';
+          submit11.style.opacity = 1;
+          
+        
+         
+          errorElement.textContent = '';
+          inputElement.style.borderColor = 'green';
+        } else {
+          const submit11 = document.querySelector('.submit');
+          errorElement.textContent = 'Only contains alphabets, no space or numbers allowed.';
+          inputElement.style.borderColor = 'red';
+          submit11.style.pointerEvents = 'none';
+          submit11.style.opacity = 0.5;
+        }
+      });
+    });
+
+    document.getElementById('myForm').addEventListener('submit', function (event) {
+      textInput.forEach((inputElement, i) => {
+        const inputValue = inputElement.value.trim();
+        const regex = /^[a-zA-Z]/;
+
+        if (!regex.test(inputValue)) {
+          document.getElementById(`err${i + 1}`).textContent = 'Only contains alphabets, no space or numbers allowed.';
+          inputElement.style.borderColor = 'red';
+          event.preventDefault();
+        }
+      });
+    });
+
+
+
+
+  </script>
+
+  <script src="/vendors/js/vendor.bundle.base.js"></script>
+
+  <script src="/vendors/chart.js/Chart.min.js"></script>
+  <script src="/vendors/progressbar.js/progressbar.min.js"></script>
+  <script src="/vendors/jvectormap/jquery-jvectormap.min.js"></script>
+  <script src="/vendors/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
+  <script src="/vendors/owl-carousel-2/owl.carousel.min.js"></script>
+
+  <script src="/js/off-canvas.js"></script>
+  <script src="/js/hoverable-collapse.js"></script>
+  <script src="/js/misc.js"></script>
+  <script src="/js/settings.js"></script>
+  <script src="/js/todolist.js"></script>
+  <script src="/js/dashboard.js"></script>
+
+  <script>
+    (function ($) {
+      'use strict';
+
+      $(function () {
+        $('.file-upload-browse').on('click', function () {
+          var filesInput = $(this).parent().parent().find('.file-upload-default');
+          filesInput.trigger('click');
+        });
+
+        $('.file-upload-default').on('change', function () {
+          var filesInput = $(this);
+          var files = filesInput[0].files;
+
+          // Limit the number of allowed files to 3
+          var maxAllowedFiles = 3;
+          if (files.length > maxAllowedFiles) {
+            alert('You can only upload up to 3 files.');
+            // Optionally, clear the file input
+            filesInput.val('');
+            return;
+          }
+
+          // Check file types
+          var allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+          var invalidFiles = Array.from(files).filter(file => !allowedTypes.includes(file.type));
+
+          if (invalidFiles.length > 0) {
+            alert('Invalid file type. Please upload PNG or JPG files only.');
+            // Optionally, clear the file input
+            filesInput.val('');
+            return;
+          }
+
+          var fileNames = Array.from(files).map(file => file.name).join(', ');
+
+          filesInput.parent().find('.form-control').val(fileNames);
+        });
+      });
+    })(jQuery);
+
+    fileNames
+  </script>
+  <style>
+    body::-webkit-scrollbar {
+      width: 0;
+    }
+
+    body {
+      overflow: hidden !important;
+    }
+
+    .container-scroller {
+      overflow: hidden;
+    }
+
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none !important;
+    }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@3.5.4/dist/locomotive-scroll.js"></script>
+
+  <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
+
+  <script src="/js/base.js"></script>
+
+  </body>
+
+  </html>

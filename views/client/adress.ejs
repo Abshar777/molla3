@@ -1,0 +1,259 @@
+<%- include('../layout/header.ejs') -%>
+  <link rel="stylesheet" href="css/mycss/profile.css">
+  </head>
+
+  <body>
+
+    <%- include('../layout/nave.ejs') -%>
+      <nav aria-label="breadcrumb" class="breadcrumb-nav mb-3">
+        <div class="container">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+            <li class="breadcrumb-item"><a href="#">Shop</a></li>
+            <li class="breadcrumb-item active" aria-current="page">My Account</li>
+          </ol>
+        </div><!-- End .container -->
+      </nav>
+      <br>
+
+
+
+      <section class="">
+        <div class="container-fluid  py-5 h-100 position-relative ">
+          <div class="row d-flex    align-items-start  h-100" style="gap: 10rem;">
+            <aside class="col-md-4 col-lg-3  ">
+              <ul class="nav nav-dashboard flex-column mb-3 mb-md-0" role="tablist">
+                <li class="nav-item">
+                  <a class="nav-link " id="tab-dashboard-link" href="/profile" aria-selected="false">Profile</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="tab-orders-link" href="#tab-orders" aria-selected="false">Orders</a>
+                </li>
+
+                <li class="nav-item">
+                  <a class="nav-link active" id="tab-address-link" href="/adress" aria-selected="true">Adresses</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="tab-account-link" href="#tab-account" aria-selected="false">Coupens</a>
+                </li>
+                <li class="nav-item">
+                  <form action="/logout" method="post">
+                    <a class="nav-link" href="#">
+                      <button type="submit" class=" border-0 bg-transparent ">Sign Out</button></a>
+                  </form>
+                </li>
+              </ul>
+            </aside>
+            <aside class="col col-lg-8 mb-4 mb-lg-0">
+              <div class="row w-100" style="gap: 2rem;">
+                <div class="row hh w-100" style="gap: 2rem;">
+                  <% if(locals.adress) {%>
+                  <%adress.address.forEach((e,i)=>{ %>
+                    <div class="col-sm-5 mb-3 mb-sm-0" id="card<%= e._id %>">
+                      <div class="card" style="border: .1rem solid #ebebeb !important; border-radius: 10px;">
+                        <div class="card-body">
+                          <div class="hedaer  d-flex align-items-center  justify-content-between w-100 ms-4   ">
+                            <label class="">
+                              
+                              <input style="margin-top: -.5rem; cursor: pointer;" type="checkbox" name="group1"
+                                class="checkbox-group " <%= user.addressId+'hh' == e._id+'hh' ? 'checked' : '' %> onchange="change('<%= e._id %>','<%= locals.login%>')">
+                            </label>
+                            <h5 class="card-title text-center mb-2">
+                              <%= e.name %>
+                            </h5>
+                            <h5 style="margin-top: -.5rem; cursor: pointer;"
+                              onclick="dele('<%= e._id %>','<%=adress.userId%>')"><i
+                                class="ri-close-line text-primary  "></i></h5>
+                          </div>
+                          <div class="mb-3">
+                            <label class="form-label"> name:-&nbsp;<%= e.name %></label>
+
+                          </div>
+
+                          <div class="mb-3">
+                            <label class="form-label"> city:-&nbsp;<%= e.city %></label>
+
+                          </div>
+                          <div class="mb-3">
+                            <label class="form-label"> state:-&nbsp;<%= e.state %></label>
+
+                          </div>
+                          <div class="mb-3">
+                            <label class="form-label"> pincode:-&nbsp;<%= e.pincode %></label>
+
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
+                    <% }) %>
+                    <% } %>
+                </div>
+                <div class="mb-3 d-none ">
+                  <label for="exampleFormControlInput1" class="form-label"> name</label>
+                  <input type="text" class="form-control" name="name" placeholder=" name" oninput="exists(this)"
+                    required>
+                </div>
+                <div class="col-sm-5  mb-3 mb-sm-0">
+                  <div class="card" style="border: 0rem solid #ebebeb !important; border-radius: 10px;">
+                    <div class="card-body  d-flex align-items-center justify-content-center "
+                      style="    padding: 1rem 0;">
+
+                      <a onclick="add('<%=locals.login%>')" style="cursor: pointer;"
+                        class="btn btn-primary mb-0 text-white ">ADD+</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+
+        </div>
+      </section>
+
+      <script>
+        let i = 0;
+        function add(id) {
+          i++;
+
+          const hh = document.querySelector('.hh')
+          const div = document.createElement('div')
+          div.classList.add('col-sm-5')
+          div.id = `${i}`
+          div.innerHTML = `<div class="card" style="border: .1rem solid #ebebeb !important; border-radius: 10px;">
+                    <div class="card-body">
+                        <div class="hedaer  d-flex align-items-center  justify-content-between w-100 ms-4   " style="padding-left: 8rem;">
+                      <h5 class="card-title text-center mb-2">New adress</h5>
+                      <h5 style="margin-top: -.5rem; cursor: pointer;" onclick="remove('${i}')"><i class="ri-close-line text-primary  " ></i></h5>
+                    </div>
+
+                    <form id='myForm${id}' action="/adress?id=${id}" method="post">
+                        <div class="mb-3">
+                            <label for="exampleFormControlInput1" class="form-label"> name</label>
+                            <input type="text" id='inp${id}' class="form-control" name="name"  placeholder=" name"  oninput="exists(this,'${id}')" required>
+                            <p class='text-danger' id='p${id}'></p>
+                          </div>
+                        <div class="mb-3">
+                            <label for="exampleFormControlInput1" class="form-label">city name</label>
+                            <input type="text" class="form-control" name="city"  placeholder="city name" required>
+                          </div>
+                        <div class="mb-3">
+                            <label for="exampleFormControlInput1" class="form-label">state name</label>
+                            <input type="text" class="form-control" name="state" id="exampleFormControlInput1" placeholder="state name" required>
+                          </div>
+                        <div class="mb-3">
+                            <label for="exampleFormControlInput1" class="form-label">pincode </label>
+                            <input type="number" id='numberInput'  class="form-control" min='100000'  pattern="\d{6}"  title="Please enter a 6-digit number." name="pincode" id="exampleFormControlInput1" placeholder="pincode" required>
+                          </div>
+                        <div class="mb-3  d-flex align-items-center justify-content-center">
+                           <button id='but${id}' type="submit" style="cursor: pointer;" class="btn btn-primary mb-0 text-white ">submit</button>
+                          </div>
+                    </form>
+                    </div>
+                  </div>`
+          hh.appendChild(div)
+          const numberInput = document.getElementById('numberInput');
+          document.getElementById(`myForm${id}`).addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+            }
+          });
+
+
+
+
+        }
+        function remove(id) {
+          const g = document.getElementById(`${id}`)
+          g.remove()
+        }
+        function exists(e, id) {
+          const input = document.getElementById(`inp${id}`)
+          const alert = document.getElementById(`p${id}`)
+          const submit = document.getElementById(`but${id}`)
+
+          fetch('/address', {
+            method: 'PUT',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ val: e.value, id })
+          }).then(res => res.json()).then(data => {
+            if (data.exists) {
+              input.style.borderColor = "red";
+              alert.textContent = ' alredy this named  addres is exsits';
+              submit.style.pointerEvents = 'none',
+                submit.style.opacity = 0.5;
+            }
+            if (data.note) {
+              input.style.borderColor = "#ebebeb";
+              alert.textContent = '  '
+              submit.style.pointerEvents = 'all',
+                submit.style.opacity = 1;
+              input.addEventListener("focus", () => {
+                input.style.borderColor = "#c96";
+              });
+
+              input.addEventListener("blur", () => {
+                input.style.borderColor = "#ebebeb";
+              });
+
+            }
+          })
+        }
+        function dele(id, uid) {
+          const card = document.getElementById(`card${id}`)
+          fetch('/address', {
+            method: 'delete',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id, uid })
+          }).then(res => res.json()).then(data => {
+            if (data.remove) {
+              card.remove();
+            }
+          })
+        }
+        function change(id,uid){
+          fetch('/Defaddress', {
+            method: 'PUT',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({  id,uid })
+          }).then(res=>res.json()).then(data=>{
+            console.log(data.done)
+          })
+        }
+
+        const checkboxes = document.querySelectorAll('.checkbox-group');
+
+
+        checkboxes.forEach(checkbox => {
+          checkbox.addEventListener('change', function () {
+
+            if (this.checked) {
+              checkboxes.forEach(otherCheckbox => {
+                if (otherCheckbox !== this) {
+                  otherCheckbox.checked = false;
+                }
+              });
+            }
+          });
+        });
+
+      </script>
+
+      <%- include('../layout/mobMenu.ejs') -%>
+        <%- include('../layout/lyfooter') -%>
+
+          <style>
+            *::-webkit-scrollbar {
+              width: 0;
+            }
+
+            input[type="number"]::-webkit-inner-spin-button,
+            input[type="number"]::-webkit-outer-spin-button {
+              -webkit-appearance: none !important;
+            }
+          </style>
+          <script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@3.5.4/dist/locomotive-scroll.js"></script>
+          <script src="js/demos/demo-6.js"></script>
+          <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
+          <%- include('../layout/footer.ejs') -%>
+            <!-- <script src="js/base.js"></script> -->

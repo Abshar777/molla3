@@ -1,0 +1,45 @@
+.inp{
+    height: 60px;
+    padding: 0.85rem 2rem;
+    font-size: 1.4rem;
+    line-height: 1.5;
+    font-weight: 300;
+    color: #777;
+    background-color: #fafafa;
+    border: 1px solid #b9aeae !important;
+    border-radius: 0;
+    margin-bottom: 2rem;
+    transition: all ease 0.3s;
+    box-shadow: none;
+    border-radius: 10px;
+    /* width: 8rem; */
+ 
+}
+.form-control{
+    transition: all ease 0.3s !important;
+}
+.form-control:focus {
+    color: #777;
+    background-color: #fff;
+    border-color: #c96 !important;
+    box-shadow: none;
+    outline: none !important;
+}
+.otp{
+    /* width: 100%; */
+    gap: 2rem;
+    height: 100px;
+}
+.resend{
+    color: #c96 !important;
+}
+.resend:hover{
+    color: #fff !important;
+}
+.resend:active{
+    color: #fff !important;
+}
+.resubmit{
+    color: #777!important;
+    text-decoration: underline !important;
+}

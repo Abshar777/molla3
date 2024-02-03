@@ -1,0 +1,170 @@
+<%- include('../layout/adminlayout.ejs') -%>
+  <div class="container-scroller">
+
+    <%- include('../layout/adminnav.ejs') -%>
+
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="row ">
+            <div class="circle position-absolute " style="background-color: rebeccapurple;
+            filter: blur(136px);
+            width: 13rem;
+            height: 10rem;
+            border-radius: 50%;
+            transform: translate(57rem, 23rem);"></div>
+            <div class="circle position-absolute " style="background-color: rgba(0, 0, 255, 0.589);
+            filter: blur(136px);
+            width: 13rem;
+            height: 10rem;
+            border-radius: 50%;
+         "></div>
+            <div class="col-12 grid-margin">
+              <div class="card " style="height: 80vh; border-radius: 15px; box-shadow: 0 0 0 0; border: 0;">
+                <div class="card" style="border-radius: 15px; box-shadow: 0 0 0 0; border: 0;">
+                  <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between ">
+                      <h4 class="card-title">Order Status</h4>
+                    </div>
+                    <div class="table-responsive">
+                      <table class="table">
+                        <thead>
+                          <tr>
+                            <th>
+                              No
+                            </th>
+                            <th> Client Name </th>
+                            <th> E-mail </th>
+
+                            <th> Status </th>
+                            <th> Payment Mode </th>
+                            <th> created Date </th>
+                            <th> Block </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <% locals.users.forEach((e,i)=>{%>
+
+                            <tr>
+                              <td>
+                                <%= i+1 %>
+                              </td>
+                              <td>
+
+                                <span class="pl-2 " id="name<%= e._id  %>">
+                                  <%=e.name %>
+                                </span>
+                              </td>
+                              <td id="email<%= e._id  %>">
+                                <%=e.email %>
+                              </td>
+
+                              <td id="status<%=e._id  %>" class=" <%= e.is_block?'text-danger':' text-success'  %>">
+                                <%= e.is_block===false?'true':'false' %>
+                              </td>
+                              <td> Credit card </td>
+                              <td>
+                                <%= e.date?e.date:'04 Dec 2019' %>
+                              </td>
+                              <td>
+                                <div onclick="is_block('<%= e._id %>','<%= e.is_block%>')" id="b<%=e.id  %>" style="cursor: pointer;"
+                                  class="badge  <%= e.is_block === false ? 'badge-outline-success' : 'badge-outline-danger' %>">
+                                  <%= e.is_block ? 'non-block' : 'block' %>
+                                </div>
+                              </td>
+                            </tr>
+                            <%}) %>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+
+  <script>
+function is_block(id, block) {
+  const name = document.getElementById(`name${id}`)
+  const email = document.getElementById(`email${id}`)
+  const status = document.getElementById(`status${id}`)
+  const btn = document.getElementById(`b${id}`)
+
+  fetch('/admin/user', {
+    method: 'POST',
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ payload: id, block })
+
+  }).then(res => res.json()).then(data => {
+    console.log(data)
+   
+      status.textContent=data.updatedData.is_block?false:true
+    
+      if(data.updatedData.is_block){
+
+        status.classList.remove("text-success");
+        status.classList.add("text-danger");
+        btn.style.borderColor='#d72624'
+        btn.style.color='#d72624'
+        btn.textContent="non-block"
+    
+      }else{
+        status.classList.remove("text-danger");
+        status.classList.add("text-success");
+       
+        btn.style.borderColor='#00b032'
+        btn.style.color='#00b032'
+        
+        
+        btn.textContent="block"
+      }
+      
+  
+  
+  })
+}
+  </script>
+  <script src="/vendors/js/vendor.bundle.base.js"></script>
+
+  <script src="/vendors/chart.js/Chart.min.js"></script>
+  <script src="/vendors/progressbar.js/progressbar.min.js"></script>
+  <script src="/vendors/jvectormap/jquery-jvectormap.min.js"></script>
+  <script src="/vendors/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
+  <script src="/vendors/owl-carousel-2/owl.carousel.min.js"></script>
+
+  <script src="/js/off-canvas.js"></script>
+  <script src="/js/hoverable-collapse.js"></script>
+  <script src="/js/misc.js"></script>
+  <script src="/js/settings.js"></script>
+  <script src="/js/todolist.js"></script>
+  <script src="/js/dashboard.js"></script>
+  <style>
+    body::-webkit-scrollbar {
+      width: 0;
+    }
+
+    body {
+      overflow: hidden !important;
+    }
+
+    .container-scroller {
+      overflow: hidden;
+    }
+
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none !important;
+    }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@3.5.4/dist/locomotive-scroll.js"></script>
+
+  <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
+
+  <script src="/js/base.js"></script>
+
+  </body>
+
+  </html>

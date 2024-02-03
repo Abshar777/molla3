@@ -1,0 +1,282 @@
+<%- include('../layout/header.ejs') -%>
+    <link rel="stylesheet" href="css/mycss/profile.css">
+    </head>
+
+    <body>
+
+        <%- include('../layout/nave.ejs') -%>
+            <nav aria-label="breadcrumb" class="breadcrumb-nav mb-3">
+                <div class="container">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                        <li class="breadcrumb-item"><a href="#">Shop</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">My Account</li>
+                    </ol>
+                </div><!-- End .container -->
+            </nav>
+            <br>
+
+
+
+            <div class="page-content">
+                <div class="checkout">
+                    <div class="container">
+                        <div class="checkout-discount">
+                            <form action="#">
+                                <input type="text" class="form-control" required id="checkout-discount-input">
+                                <label for="checkout-discount-input" class="text-truncate">Have a coupon? <span>Click
+                                        here to enter your code</span></label>
+                            </form>
+                        </div><!-- End .checkout-discount -->
+                        <%let b=cart.products.map(e=> e.productId._id).join(','); %>
+                            <form action="/success?p=<%=cart._id  %> %>" id="myForm" method="post">
+                                <div class="row">
+                                    <div class="col-lg-9">
+                                        <h2 class="checkout-title">address</h2><!-- End .checkout-title -->
+                                        <div class="row">
+                                            <div class="col-sm-5 mb-3 mb-sm-0" id="card">
+                                                <% if(locals.add){ %>
+                                                    <div class="card"
+                                                        style="border: .1rem solid #ebebeb !important; border-radius: 10px;">
+                                                        <div class="card-body">
+                                                            <div
+                                                                class="hedaer  d-flex align-items-center  justify-content-between w-100 ms-4   ">
+
+                                                                <h5 class="card-title text-center mb-2">
+
+                                                                    <%=add.name %>
+                                                                </h5>
+                                                                <a href="/adress">
+                                                                    <h5 style="margin-top: -.5rem; cursor: pointer;"><i
+                                                                            class="ri-edit-circle-line text-primary  "></i>
+                                                                    </h5>
+                                                                </a>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label class="form-label"> name:-&nbsp;<%=add.name %>
+                                                                </label>
+                                                                <input type="text" name="name" id=""
+                                                                    value="<%=add.name %>" hidden>
+
+                                                            </div>
+
+                                                            <div class="mb-3">
+                                                                <label class="form-label"> city:-&nbsp;<%=add.city %>
+                                                                </label>
+                                                                <input type="text" name="city" id=""
+                                                                    value="<%=add.city %>" hidden>
+
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label class="form-label"> state:-&nbsp;<%=add.state %>
+                                                                </label>
+                                                                <input type="text" name="state" id=""
+                                                                    value="<%=add.state %>" hidden>
+
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label class="form-label"> pincode:-&nbsp;<%=add.pincode
+                                                                        %>
+                                                                        <input type="text" name="pincode" id=""
+                                                                            value="<%=add.pincode %>" hidden>
+                                                                </label>
+
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                    <% }else{ %>
+                                                        <div class="card"
+                                                            style="border: 0rem solid #ebebeb !important; border-radius: 10px;">
+                                                            <div class="card-body  d-flex align-items-center justify-content-center "
+                                                                style="    padding: 1rem 0;">
+
+                                                                <a href="/adress" style="cursor: pointer;"
+                                                                    class="btn btn-primary mb-0 text-white ">ADD+</a>
+                                                            </div>
+                                                        </div>
+                                                        <% } %>
+                                            </div>
+
+                                        </div><!-- End .row -->
+
+
+
+
+
+
+
+                                    </div><!-- End .col-lg-9 -->
+                                    <aside class="col-lg-3">
+                                        <div class="summary">
+                                            <h3 class="summary-title" style="cursor: pointer;">Your Order</h3>
+                                            <!-- End .summary-title -->
+
+                                            <table class="table table-summary">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Product</th>
+                                                        <th>Total</th>
+                                                    </tr>
+                                                </thead>
+
+                                                <tbody>
+                                                    <% cart.products.forEach((product, index)=> { %>
+                                                        <tr>
+                                                            <td><a href="#">
+                                                                    <%=product.productId.name %>
+                                                                </a></td>
+                                                            <td>$<%=product.price%>
+                                                            </td>
+                                                        </tr>
+                                                        <% }) %>
+
+                                                            <tr class="summary-subtotal">
+                                                                <td>Subtotal:</td>
+                                                                <td>$<%= cart.TotalPrice %>
+                                                                </td>
+                                                            </tr><!-- End .summary-subtotal -->
+                                                            <tr>
+                                                                <td>Shipping:</td>
+                                                                <td>Free shipping</td>
+                                                            </tr>
+                                                            <tr class="summary-total">
+                                                                <td>Total:</td>
+                                                                <td>$<%= cart.TotalPrice %>
+                                                                </td>
+                                                            </tr><!-- End .summary-total -->
+                                                </tbody>
+                                            </table><!-- End .table table-summary -->
+
+                                            <div class="accordion-summary" id="accordion-payment">
+                                                <div class="card">
+                                                    <div class="card-header" id="heading-1">
+                                                        <h2 class="card-title">
+
+                                                            <input type="radio" name="peyment" value="cod" checked
+                                                                class="bg-primary ">
+                                                            <label for="">Cash on deliver</label>
+                                                        </h2>
+                                                    </div>
+                                                    <br>
+                                                    <!-- End .card-header -->
+                                                    <div class="card-header" id="heading-1">
+                                                        <h2 class="card-title">
+
+                                                            <input type="radio" name="peyment" id="online"
+                                                                value="online peyment" class="bg-primary ">
+                                                            <label for="">online pey ment</label>
+                                                        </h2>
+                                                    </div><!-- End .card-header -->
+
+                                                </div><!-- End .card -->
+
+
+
+
+
+
+
+                                            </div><!-- End .accordion -->
+                                            <% if(cart.products.length>0 ){ %>
+                                                <% if(locals.add){ %>
+                            </form>
+                            <p onclick="submit(this,'<%= cart.TotalPrice %>','<%=cart.userId  %>')" type="submit"
+                                class="btn btn-outline-primary-2 ">
+                                <span class="btn-text">Place Order</span>
+                                <span class="btn-hover-text">Proceed to Checkout</span>
+                            </p>
+
+                            <% }else{ %>
+                                <div class="card" style="border: 0rem solid #ebebeb !important; border-radius: 10px;">
+                                    <div class="card-body  d-flex align-items-center justify-content-center "
+                                        style="    padding: 1rem 0;">
+
+                                        <a href="/adress" style="cursor: pointer;"
+                                            class="btn btn-primary mb-0 text-white ">You don't
+                                            have a defualt address</a>
+                                    </div>
+                                </div>
+                                <% } %>
+                                    <% }else{ %>
+                                        <h5>please cart anything !!</h5>
+                                        <% } %>
+                    </div><!-- End .summary -->
+                    </aside><!-- End .col-lg-3 -->
+                </div><!-- End .row -->
+
+            </div><!-- End .container -->
+            </div><!-- End .checkout -->
+            </div>
+
+            <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+            <script>
+
+
+                function submit(e, amount, userId) {
+
+                    const form = document.getElementById('myForm');
+
+                    var formData = new FormData(document.getElementById('myForm'));
+
+                    const Radio = document.querySelector('input[name="peyment"]:checked');
+
+                    if (Radio.value == 'online peyment') {
+
+                        fetch('/razor', {
+                            method: 'POST',
+                            headers: { 'Content-type': 'application/json' },
+                            body: JSON.stringify({ userId, amount })
+                        }).then(res => res.json()).then(data => {
+                            if (data.succes) {
+
+                                let options = {
+                                    "key": `${data.key_id}`,
+                                    "amount": `${data.amount}`,
+                                    "currency": "INR",
+                                    "name": "molla",
+                                    "order_id": `${data.order_id}`,
+                                    "handler": function (response) {
+                                        form.submit();
+                                        
+                                    },
+                                    "profile": {
+                                        "name": `${data.name}`,
+                                        "email": `${data.email}`
+                                    }
+                                }
+                                console.log(data)
+                                let razorpayObject = new Razorpay(options);
+                                razorpayObject.on('payment.failed', (response) => {
+                                    alert('payment failed');
+                                });
+                                razorpayObject.open();
+                            }
+                        })
+                    }
+                    else {
+                        form.submit();
+                    }
+
+                }
+            </script>
+
+            <%- include('../layout/mobMenu.ejs') -%>
+                <%- include('../layout/lyfooter') -%>
+
+                    <style>
+                        *::-webkit-scrollbar {
+                            width: 0;
+                        }
+
+                        input[type="number"]::-webkit-inner-spin-button,
+                        input[type="number"]::-webkit-outer-spin-button {
+                            -webkit-appearance: none !important;
+                        }
+                    </style>
+                    <script
+                        src="https://cdn.jsdelivr.net/npm/locomotive-scroll@3.5.4/dist/locomotive-scroll.js"></script>
+                    <script src="js/demos/demo-6.js"></script>
+                    <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
+                    <%- include('../layout/footer.ejs') -%>
+                        <script src="js/base.js"></script>
