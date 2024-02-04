@@ -56,6 +56,7 @@ const verifyemail = async (name, email, otp) => {
     }
 }
 
+
 const securePassword = async (pass) => {
     try {
         const passwordHash = await bycrypt.hash(pass, 10);
