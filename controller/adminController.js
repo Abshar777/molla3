@@ -1,9 +1,9 @@
 const userSchema = require("../models/userSchema");
 const categoryModal = require('../models/catagory')
 const productModal = require('../models/products');
-const path=require('path');
-const fs=require('fs')
-const orderModal=require('../models/orders')
+const path = require('path');
+const fs = require('fs')
+const orderModal = require('../models/orders')
 const addressModal = require('../models/adress')
 const bycrypt = require('bcrypt');
 const dotEnv = require('dotenv');
@@ -12,30 +12,34 @@ const options = { day: '2-digit', month: 'short', year: 'numeric' };
 //admin page rendering
 const adminPage = async (req, res) => {
     try {
-        const orderList = await orderModal.aggregate([{$group:{
-            _id: '$peyment',
-            totalAmount: { $sum: '$orderAmount' },
-            totalCount: { $sum: 1 }
-        }}])
-      
-      let count=0;
-      orderList.forEach(e=>{
-        count+=e.totalCount;
-      })
-      
-       const most= await orderModal.aggregate([
+        const orderList = await orderModal.aggregate([{
+            $group: {
+                _id: '$peyment',
+                totalAmount: { $sum: '$orderAmount' },
+                totalCount: { $sum: 1 }
+            }
+        }])
+        const op = await orderModal.find({ peyment: 'online peyment' }).sort({ _id: -1 }).limit(1)
+        const cod = await orderModal.find({ peyment: 'cod' }).sort({ _id: -1 }).limit(1)
+        let count = 0;
+        orderList.forEach(e => {
+            count += e.totalCount;
+        })
+
+        const most = await orderModal.aggregate([
             {
-                $unwind: '$OrderedItems' 
+                $unwind: '$OrderedItems'
             },
             {
                 $group: {
                     _id: '$OrderedItems.productId',
-                    totalCount: { $sum: '$OrderedItems.quantity' } 
+                    totalCount: { $sum: '$OrderedItems.quantity' },
+                    orderDates: { $push: '$orderDate' } 
                 }
             },
             {
                 $lookup: {
-                    from: 'products', 
+                    from: 'products',
                     localField: '_id',
                     foreignField: '_id',
                     as: 'productData'
@@ -43,13 +47,37 @@ const adminPage = async (req, res) => {
             },
             {
                 $sort: { totalCount: -1 }
-            },
-            
+            },{
+                $limit:5
+            }
+
         ])
-        
-        res.render('admin/dashboard', { admin: req.session.admin, home: 'home' ,orderList,most,count})
+
+        res.render('admin/dashboard', { admin: req.session.admin, home: 'home', most, orderList, count, op, cod })
     } catch (err) {
         console.log(err.message + '     admin first route');
+    }
+}
+
+//peyment chart fetching 
+const peyment = async (req, res) => {
+    try {
+        const orderList = await orderModal.aggregate([{
+            $group: {
+                _id: '$peyment',
+                totalAmount: { $sum: '$orderAmount' },
+                totalCount: { $sum: 1 }
+            }
+        }])
+
+
+        let count = 0;
+        orderList.forEach(e => {
+            count += e.totalCount;
+        })
+        res.send({ orderList, count })
+    } catch (err) {
+        console.log(err.message + '    peyment fetching ')
     }
 }
 
@@ -71,12 +99,12 @@ const blockFetch = async (req, res) => {
     try {
 
         const blockornot = await userSchema.findOne({ _id: req.body.payload })
-        
+
         if (blockornot.is_block) {
             const blockTrue = await userSchema.findOneAndUpdate({ _id: req.body.payload }, { $set: { is_block: false } })
 
             if (blockTrue._id) {
-             
+
                 const updatedData = await userSchema.findOne({ _id: blockTrue._id });
 
                 res.send({ updatedData, blocked: 'is blocked' });
@@ -86,7 +114,7 @@ const blockFetch = async (req, res) => {
 
 
             if (blockTrue._id) {
-                
+
                 const updatedData = await userSchema.findOne({ _id: blockTrue._id });
 
                 res.send({ updatedData });
@@ -182,7 +210,7 @@ const catgoryActive = async (req, res) => {
             const activetrue = await categoryModal.findOneAndUpdate({ _id: req.body.payload }, { $set: { active: false } })
 
             if (activetrue._id) {
-                
+
                 const updatedData = await categoryModal.findOne({ _id: activetrue._id });
 
                 res.send({ updatedData, blocked: 'is blocked' });
@@ -192,7 +220,7 @@ const catgoryActive = async (req, res) => {
 
 
             if (activetrue._id) {
-                
+
                 const updatedData = await categoryModal.findOne({ _id: activetrue._id });
 
                 res.send({ updatedData });
@@ -217,12 +245,12 @@ const productAdd = async (req, res) => {
 //getting product dets
 const getproduct = async (req, res) => {
     try {
-        let imgeArray=[];
+        let imgeArray = [];
         const images = req.files;
         images.forEach((file) => {
             imgeArray.push(file.filename);
-          });
-      
+        });
+
         const currentDate = new Date();
         const formattedDate = currentDate.toLocaleDateString('en-US', options);
         const category_id = await categoryModal.findOne({ name: req.body.category })
@@ -231,12 +259,12 @@ const getproduct = async (req, res) => {
             description: req.body.des,
             price: req.body.price,
             category: category_id,
-            createdAt:formattedDate ,
+            createdAt: formattedDate,
             status: req.body.active,
             stock: req.body.stock,
-            images:  imgeArray,
+            images: imgeArray,
         })
-          res.redirect('/admin/product')
+        res.redirect('/admin/product')
     } catch (err) {
         console.log(err.message + '         product add')
     }
@@ -245,269 +273,269 @@ const getproduct = async (req, res) => {
 //product dets page rendering
 const productDets = async (req, res) => {
     try {
-        
-        const products=await productModal.find({}).populate('category')
-        
-        const ca =await categoryModal.find({})
-        res.render('admin/products', { admin: req.session.admin, product: products,ca })
+
+        const products = await productModal.find({}).populate('category')
+
+        const ca = await categoryModal.find({})
+        res.render('admin/products', { admin: req.session.admin, product: products, ca })
     } catch (err) {
         console.log(err.message + '        product dets showing page err')
     }
 }
 
 //product edit page 
-const editProduct=async(req,res)=>{
-    try{
+const editProduct = async (req, res) => {
+    try {
         const elementsToRemove = req.body.pe;
-        
-       
-        const  result=await productModal.findOne({_id:req.query.id})
-        let rem=false
-        if(typeof(elementsToRemove)=='object'){
 
-            var oldData= await productModal.findOneAndUpdate(
+
+        const result = await productModal.findOne({ _id: req.query.id })
+        let rem = false
+        if (typeof (elementsToRemove) == 'object') {
+
+            var oldData = await productModal.findOneAndUpdate(
                 { _id: req.query.id },
                 { $pull: { images: { $in: elementsToRemove } } },
-                { new: true } 
+                { new: true }
             );
-            rem=true
-        }else {
-            var oldData= await productModal.findOneAndUpdate(
+            rem = true
+        } else {
+            var oldData = await productModal.findOneAndUpdate(
                 { _id: req.query.id },
-                { $pull: { images: elementsToRemove} },
-                { new: true } 
+                { $pull: { images: elementsToRemove } },
+                { new: true }
             );
-            
+
         }
         console.log(oldData)
         const category_id = await categoryModal.findOne({ name: req.body.category })
-        let flag=0;
-        if(req.files.images0){
-            
+        let flag = 0;
+        if (req.files.images0) {
+
             flag++;
-        } if(req.files.images1){
-            
-            flag++;
-        }
-        if(req.files.images2){
-            
+        } if (req.files.images1) {
+
             flag++;
         }
+        if (req.files.images2) {
+
+            flag++;
+        }
 
 
-   
-        let imgeArray=[];
-        if(flag!==0){
 
-            for(let i=0;i<flag;i++){
-          
-                if(i==0){
-                 if(req.files.images0){
-                    let imge0=req.files.images0
-                    imgeArray[i]=imge0[0].filename;
-                // if(oldData.images[0]){
+        let imgeArray = [];
+        if (flag !== 0) {
 
-                //     const imagePath = path.join(__dirname, '../public/productImage',oldData.images[0]); 
-                //      if (fs.existsSync(imagePath)) {
-                //         fs.unlinkSync(imagePath);
-                      
-                //       }
-                // }
-                     flag++;
-                     continue;
-        
-                 }else{
-                    if(oldData.images[0]){
-                        if(req.body.pe0){
-                            console.log(req.body.pe0+'first')
-                            flag++;
-                            continue;
-                        }else{
+            for (let i = 0; i < flag; i++) {
 
-                            console.log(oldData.images[0]+'first')
-                            imgeArray[i]=oldData.images[0]
-                            
-                            flag++;
-                        }
-                    }else{
-                        
+                if (i == 0) {
+                    if (req.files.images0) {
+                        let imge0 = req.files.images0
+                        imgeArray[i] = imge0[0].filename;
+                        // if(oldData.images[0]){
+
+                        //     const imagePath = path.join(__dirname, '../public/productImage',oldData.images[0]); 
+                        //      if (fs.existsSync(imagePath)) {
+                        //         fs.unlinkSync(imagePath);
+
+                        //       }
+                        // }
                         flag++;
-                    }
-                 }
-              
-                 
-                }else if(i==1){
-                    if(req.files.images1){
-                        console.log('second')
-                        let imge1=req.files.images1
-                         imgeArray[i]=imge1[0].filename;
-                         if(oldData.images[1]){
-                             const imagePath = path.join(__dirname, '../public/productImage',oldData.images[1]); 
-                         if (fs.existsSync(imagePath)) {
-                            fs.unlinkSync(imagePath);
-                            
-                          }
-                         }
-                         flag++;
-                         continue;
-            
-                     }else{
-                        if(oldData.images[1]){
-                            if(req.body.pe1){
-                                
-                               
+                        continue;
+
+                    } else {
+                        if (oldData.images[0]) {
+                            if (req.body.pe0) {
+                                console.log(req.body.pe0 + 'first')
                                 flag++;
                                 continue;
-                            }else{
+                            } else {
 
-                                console.log(oldData.images[1]+'second')
-                                imgeArray[i]=oldData.images[1]
-                                
+                                console.log(oldData.images[0] + 'first')
+                                imgeArray[i] = oldData.images[0]
+
                                 flag++;
                             }
-                        }else{
+                        } else {
+
                             flag++;
                         }
-                     }
-                    
-                }else if(i==2){
-                    if(req.files.images2){
-                        let imge2=req.files.images2
-                         imgeArray[i]=imge2[0].filename;
-                         if(oldData.images[2]){
-                            const imagePath = path.join(__dirname, '../public/productImage',oldData.images[2]); 
+                    }
+
+
+                } else if (i == 1) {
+                    if (req.files.images1) {
+                        console.log('second')
+                        let imge1 = req.files.images1
+                        imgeArray[i] = imge1[0].filename;
+                        if (oldData.images[1]) {
+                            const imagePath = path.join(__dirname, '../public/productImage', oldData.images[1]);
                             if (fs.existsSync(imagePath)) {
-                               fs.unlinkSync(imagePath);
-                               
-                             }
-                         }
-                     
-            
-                     }else{
-                        if(oldData.images[2]){
-                           
-                            imgeArray[i]=oldData.images[2];
+                                fs.unlinkSync(imagePath);
+
+                            }
                         }
-                       if(oldData.images[1]&&req.body.pe1){
-                        imgeArray[1]=oldData.images[1]
-                       }
-                        
-                     }
+                        flag++;
+                        continue;
+
+                    } else {
+                        if (oldData.images[1]) {
+                            if (req.body.pe1) {
+
+
+                                flag++;
+                                continue;
+                            } else {
+
+                                console.log(oldData.images[1] + 'second')
+                                imgeArray[i] = oldData.images[1]
+
+                                flag++;
+                            }
+                        } else {
+                            flag++;
+                        }
+                    }
+
+                } else if (i == 2) {
+                    if (req.files.images2) {
+                        let imge2 = req.files.images2
+                        imgeArray[i] = imge2[0].filename;
+                        if (oldData.images[2]) {
+                            const imagePath = path.join(__dirname, '../public/productImage', oldData.images[2]);
+                            if (fs.existsSync(imagePath)) {
+                                fs.unlinkSync(imagePath);
+
+                            }
+                        }
+
+
+                    } else {
+                        if (oldData.images[2]) {
+
+                            imgeArray[i] = oldData.images[2];
+                        }
+                        if (oldData.images[1] && req.body.pe1) {
+                            imgeArray[1] = oldData.images[1]
+                        }
+
+                    }
                 }
-               
+
             }
-        }else{
-            oldData.images.forEach(e=>{
-                
+        } else {
+            oldData.images.forEach(e => {
+
                 imgeArray.push(e)
-            }) 
+            })
         }
         const newArray = imgeArray.filter(Boolean);
 
-        const done=await productModal.findOneAndUpdate({_id:req.query.id},{$set:{name:req.body.name,price:req.body.price,stock:req.body.stock,category:category_id,images: newArray}})
-        if(done){
+        const done = await productModal.findOneAndUpdate({ _id: req.query.id }, { $set: { name: req.body.name, price: req.body.price, stock: req.body.stock, category: category_id, images: newArray } })
+        if (done) {
             // res.send( imgeArray)
             res.redirect('/admin/product');
-        }else{
-            
+        } else {
+
             res.send("fucked")
         }
-        
-    }catch(err){
-        console.log(err.message+'      edit product routr')
+
+    } catch (err) {
+        console.log(err.message + '      edit product routr')
     }
-  
-    
+
+
 }
 
 // dlt product 
-const dltPro=async(req,res)=>{
-    try{
-        const don=await productModal.findOneAndDelete({_id:req.query.id})
+const dltPro = async (req, res) => {
+    try {
+        const don = await productModal.findOneAndDelete({ _id: req.query.id })
         don.images.forEach(e => {
             const imagePath = path.join(__dirname, '../public/productImage', e);
-      
+
             if (fs.existsSync(imagePath)) {
-              fs.unlinkSync(imagePath);
-              console.log(`${e} deleted`);
+                fs.unlinkSync(imagePath);
+                console.log(`${e} deleted`);
             } else {
-              console.log(`${e} does not exist`);
+                console.log(`${e} does not exist`);
             }
-          });
-        if(don){
+        });
+        if (don) {
             res.redirect('/admin/product');
         }
-    }catch(err){
-        console.log(err.message+'       dlt product')
+    } catch (err) {
+        console.log(err.message + '       dlt product')
     }
 }
 
 //order 
-const order=async(req,res)=>{
-    try{
+const order = async (req, res) => {
+    try {
         const orderList = await orderModal.find({}).populate('userId');
 
-    if(orderList){
-        res.render('admin/orderDets',{admin: req.session.admin,order:true,orderList})
-    }
-    }catch(err){
-        console.log(err.message+'   admin order page rendering route ')
+        if (orderList) {
+            res.render('admin/orderDets', { admin: req.session.admin, order: true, orderList })
+        }
+    } catch (err) {
+        console.log(err.message + '   admin order page rendering route ')
     }
 }
 
 //order view
-const orderView =async(req,res)=>{
-    try{
-        if(req.params.id){
-            const orderList=await orderModal.findOne({_id:req.params.id}).populate('OrderedItems.productId userId')
-            res.render('admin/order',{admin:req.session.admin,order:true,orderList})
-        }else{
+const orderView = async (req, res) => {
+    try {
+        if (req.params.id) {
+            const orderList = await orderModal.findOne({ _id: req.params.id }).populate('OrderedItems.productId userId')
+            res.render('admin/order', { admin: req.session.admin, order: true, orderList })
+        } else {
             res.redirect('admin/orders')
-        }  
-    }catch(err){
-        console.log(err.message+'     order view ')
+        }
+    } catch (err) {
+        console.log(err.message + '     order view ')
     }
 }
 
 //order status fethibg
-const orderstaus=async(req,res)=>{
-    try{
-      await orderModal.findOneAndUpdate({})
-    }catch(err){
-        console.log(err.message+'   oder staus ')
+const orderstaus = async (req, res) => {
+    try {
+        await orderModal.findOneAndUpdate({})
+    } catch (err) {
+        console.log(err.message + '   oder staus ')
     }
 }
 
 //remove order product
-const removeorder=async(req,res)=>{
-    try{
-       const removeorder=await orderModal.findByIdAndUpdate({_id:req.body.id},{$pull:{OrderedItems:{ productId:req.body.pro}}})
-       if(removeorder){
-        res.send({succes:true})
-       }
-    }catch(err){
-        console.log(err.message+'    removeorder')
+const removeorder = async (req, res) => {
+    try {
+        const removeorder = await orderModal.findByIdAndUpdate({ _id: req.body.id }, { $pull: { OrderedItems: { productId: req.body.pro } } })
+        if (removeorder) {
+            res.send({ succes: true })
+        }
+    } catch (err) {
+        console.log(err.message + '    removeorder')
     }
 }
 //remove order 
-const removeordeFull=async(req,res)=>{
-    try{
-       const removeorder=await orderModal.findByIdAndDelete({_id:req.body.id})
-       console.log(removeorder)
-       if(removeorder){
-        res.send({succes:true})
-       }
-    }catch(err){
-        console.log(err.message+'    removeorder')
+const removeordeFull = async (req, res) => {
+    try {
+        const removeorder = await orderModal.findByIdAndDelete({ _id: req.body.id })
+        console.log(removeorder)
+        if (removeorder) {
+            res.send({ succes: true })
+        }
+    } catch (err) {
+        console.log(err.message + '    removeorder')
     }
 }
 
 //orderProstatus
-const orderProstatus=async(req,res)=>{
-    try{
-       await orderModal.findOneAndUpdate({_id:req.body.id,'OrderedItems.productId':req.body.proId},{$set:{'OrderedItems.$.orderProStatus':req.body.val}})
-    }catch(err){
-        console.log(err.message+' orderProstatus')
+const orderProstatus = async (req, res) => {
+    try {
+        await orderModal.findOneAndUpdate({ _id: req.body.id, 'OrderedItems.productId': req.body.proId }, { $set: { 'OrderedItems.$.orderProStatus': req.body.val } })
+    } catch (err) {
+        console.log(err.message + ' orderProstatus')
     }
 }
 
@@ -531,5 +559,6 @@ module.exports = {
     removeorder,
     orderView,
     removeordeFull,
-    orderProstatus
+    orderProstatus,
+    peyment
 }

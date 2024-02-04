@@ -85,4 +85,7 @@ router.get('/orders',adminMidleware.adminRoute,adminController.order)
 //order view
 router.get('/ordersView/:id',adminMidleware.adminRoute,adminController.orderView)
 
+//peyment chart fetching
+router.put('/peyment',adminController.peyment)
+
 module.exports=router;
