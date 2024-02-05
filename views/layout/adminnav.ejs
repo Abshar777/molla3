@@ -18,17 +18,8 @@
           </div>
           <a href="#" id="profile-dropdown" data-toggle="dropdown"><i class="mdi mdi-dots-vertical"></i></a>
           <div class="dropdown-menu dropdown-menu-right sidebar-dropdown preview-list" aria-labelledby="profile-dropdown">
-            <a href="#" class="dropdown-item preview-item">
-              <div class="preview-thumbnail">
-                <div class="preview-icon bg-dark rounded-circle">
-                  <i class="mdi mdi-settings text-primary"></i>
-                </div>
-              </div>
-              <div class="preview-item-content">
-                <p class="preview-subject ellipsis mb-1 text-small">Account settings</p>
-              </div>
-            </a>
-            <div class="dropdown-divider"></div>
+        
+           
             <a href="#" class="dropdown-item preview-item">
               <div class="preview-thumbnail">
                 <div class="preview-icon bg-dark rounded-circle">
@@ -39,17 +30,7 @@
                 <p class="preview-subject ellipsis mb-1 text-small">Change Password</p>
               </div>
             </a>
-            <div class="dropdown-divider"></div>
-            <a href="#" class="dropdown-item preview-item">
-              <div class="preview-thumbnail">
-                <div class="preview-icon bg-dark rounded-circle">
-                  <i class="mdi mdi-calendar-today text-success"></i>
-                </div>
-              </div>
-              <div class="preview-item-content">
-                <p class="preview-subject ellipsis mb-1 text-small">To-do list</p>
-              </div>
-            </a>
+           
           </div>
         </div>
       </li>
@@ -138,44 +119,43 @@
         </ul>
         <ul class="navbar-nav navbar-nav-right">
           <li class="nav-item dropdown d-none d-lg-block">
-            <a class="nav-link btn btn-success create-new-button" id="createbuttonDropdown" data-toggle="dropdown" aria-expanded="false" href="#">+ Create New Project</a>
+            <a class="nav-link btn btn-success create-new-button" id="createbuttonDropdown" data-toggle="dropdown" aria-expanded="false" href="#">Reports <i class="ri-arrow-down-s-fill"></i></a>
             <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="createbuttonDropdown">
-              <h6 class="p-3 mb-0">Projects</h6>
+              <h6 class="p-3 mb-0">Sales Reports</h6>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item preview-item">
+              <a href="/admin/report/weekly" class="dropdown-item preview-item">
                 <div class="preview-thumbnail">
                   <div class="preview-icon bg-dark rounded-circle">
-                    <i class="mdi mdi-file-outline text-primary"></i>
+                    <i class="ri-calendar-event-fill text-primary "></i>
                   </div>
                 </div>
                 <div class="preview-item-content">
-                  <p class="preview-subject ellipsis mb-1">Software Development</p>
+                  <p class="preview-subject ellipsis mb-1 text-capitalize ">weekly Report</p>
                 </div>
               </a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item preview-item">
+              <a href="/admin/report/monthly"  class="dropdown-item preview-item">
                 <div class="preview-thumbnail">
                   <div class="preview-icon bg-dark rounded-circle">
-                    <i class="mdi mdi-web text-info"></i>
+                   <i class="ri-calendar-event-line text-info "></i>
                   </div>
                 </div>
                 <div class="preview-item-content">
-                  <p class="preview-subject ellipsis mb-1">UI Development</p>
+                  <p class="preview-subject ellipsis mb-1" text-capitalize >monthly Report</p>
                 </div>
               </a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item preview-item">
+              <a href="/admin/report/yearly" class="dropdown-item preview-item">
                 <div class="preview-thumbnail">
                   <div class="preview-icon bg-dark rounded-circle">
-                    <i class="mdi mdi-layers text-danger"></i>
+                    <i class="ri-calendar-todo-fill text-danger "></i>
                   </div>
                 </div>
                 <div class="preview-item-content">
-                  <p class="preview-subject ellipsis mb-1">Software Testing</p>
+                  <p class="preview-subject ellipsis mb-1 text-capitalize ">yearly Report</p>
                 </div>
               </a>
-              <div class="dropdown-divider"></div>
-              <p class="p-3 mb-0 text-center">See all projects</p>
+         
             </div>
           </li>
           <li class="nav-item nav-settings d-none d-lg-block">

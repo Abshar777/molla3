@@ -91,4 +91,10 @@ router.put('/peyment',adminController.peyment)
 //yaer fetching
 router.put('/year',adminController.year)
 
+//sales report in yearly and monthly and weekly
+router.get('/report/:id',adminController.report)
+
+//sales report in yearly and monthly and weekly
+router.get('/report/download/:id',adminController.reportdownload)
+
 module.exports=router;

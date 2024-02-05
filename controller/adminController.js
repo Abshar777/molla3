@@ -2,11 +2,15 @@ const userSchema = require("../models/userSchema");
 const categoryModal = require('../models/catagory')
 const productModal = require('../models/products');
 const path = require('path');
-const fs = require('fs')
+const fs = require('fs');
+const pdf = require('html-pdf');
+const { v4: uuid } = require('uuid')
+const ejs = require('ejs');
 const orderModal = require('../models/orders')
 const addressModal = require('../models/adress')
 const bycrypt = require('bcrypt');
 const dotEnv = require('dotenv');
+const puppeteer= require('puppeteer')
 const options = { day: '2-digit', month: 'short', year: 'numeric' };
 
 //admin page rendering
@@ -14,8 +18,8 @@ const adminPage = async (req, res) => {
     try {
         const orderList1 = await orderModal.find({}).populate('userId');
         const productCount = await productModal.find({})
-        const userCount = await userSchema.find({}).sort({date:-1});
-        const recentUser=userCount.slice(0,3 )
+        const userCount = await userSchema.find({}).sort({ date: -1 });
+        const recentUser = userCount.slice(0, 3)
         const currentDate = new Date();
         const currentMonth = currentDate.getMonth();
         const startDate = new Date(currentDate.getFullYear(), currentMonth);
@@ -99,7 +103,7 @@ const adminPage = async (req, res) => {
             }
         ])
 
-        res.render('admin/dashboard', { admin: req.session.admin, home: 'home', most, orderList, count, op, cod, monthSale, daily, yearly, userCount, productCount, orderList1,recentUser })
+        res.render('admin/dashboard', { admin: req.session.admin, home: 'home', most, orderList, count, op, cod, monthSale, daily, yearly, userCount, productCount, orderList1, recentUser })
     } catch (err) {
         console.log(err.message + '     admin first route');
     }
@@ -109,7 +113,7 @@ const adminPage = async (req, res) => {
 const year = async (req, res) => {
     try {
         const currentYear = new Date().getFullYear();
-        
+
 
         const year = await orderModal.aggregate([
             {
@@ -128,7 +132,7 @@ const year = async (req, res) => {
             }
         ])
         // console.log(year);
-        res.send({year})
+        res.send({ year })
     } catch (err) {
         console.log(err.message + '    year fetching ')
     }
@@ -246,7 +250,7 @@ const category = async (req, res) => {
 // catgory fetch 
 const categoryFetch = async (req, res) => {
     try {
-        const pattern=new RegExp(`^${req.body.name}$`,'i');
+        const pattern = new RegExp(`^${req.body.name}$`, 'i');
         const name = await categoryModal.findOne({ name: pattern })
         if (name) {
             res.send({ exist: true })
@@ -614,7 +618,132 @@ const orderProstatus = async (req, res) => {
     }
 }
 
+//report yearly
+const report = async (req, res) => {
+    try {
+        if (req.params.id == 'weekly') {
+            const currentDate = new Date();
+            const currentWeekStart = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() - currentDate.getDay());
+            const currentWeekEnd = new Date(currentWeekStart);
+            currentWeekEnd.setDate(currentWeekEnd.getDate() + 6);
+            const report = await orderModal.find({ orderDate: { $gte: currentWeekStart, $lte: currentWeekEnd } });
+            res.render('admin/report', { report, data: 'weekly' });
+        }
+        else if (req.params.id == 'monthly') {
+            const currentDate = new Date();
+            const currentMonth = currentDate.getMonth();
+            const startDate = new Date(currentDate.getFullYear(), currentMonth);
+            const endDate = new Date(currentDate.getFullYear(), currentMonth + 1, 0);
+            const report = await orderModal.find({ orderDate: { $gte: startDate, $lte: endDate } })
+            res.render('admin/report', { report, data: 'monthly' })
 
+        }
+        else if (req.params.id == 'yearly') {
+            const currentDate = new Date();
+            const currentYearStart = new Date(currentDate.getFullYear(), 0, 1);
+            const currentYearEnd = new Date(currentDate.getFullYear() + 1, 0, 0);
+            const report = await orderModal.find({ orderDate: { $gte: currentYearStart, $lte: currentYearEnd } });
+            res.render('admin/report', { report, data: 'yearly' });
+
+        } else {
+            res.redirect('/admin')
+        }
+    } catch (err) {
+        console.log(err.message + '     report')
+    }
+}
+
+const reportG=async(data)=>{
+    if (data == 'weekly') {
+        const currentDate = new Date();
+        const currentWeekStart = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() - currentDate.getDay());
+        const currentWeekEnd = new Date(currentWeekStart);
+        currentWeekEnd.setDate(currentWeekEnd.getDate() + 6);
+        return await orderModal.find({ orderDate: { $gte: currentWeekStart, $lte: currentWeekEnd } });
+        
+    }
+    else if (data == 'monthly') {
+        const currentDate = new Date();
+        const currentMonth = currentDate.getMonth();
+        const startDate = new Date(currentDate.getFullYear(), currentMonth);
+        const endDate = new Date(currentDate.getFullYear(), currentMonth + 1, 0);
+        return await orderModal.find({ orderDate: { $gte: startDate, $lte: endDate } })
+        
+
+    }
+    else if (data == 'yearly') {
+        const currentDate = new Date();
+        const currentYearStart = new Date(currentDate.getFullYear(), 0, 1);
+        const currentYearEnd = new Date(currentDate.getFullYear() + 1, 0, 0);
+        return await orderModal.find({ orderDate: { $gte: currentYearStart, $lte: currentYearEnd } });
+       
+
+    } 
+}
+
+//report download
+const reportdownload = async (req, res) => {
+    try {
+        const params = req.params.id;
+        const ejspagepath = path.resolve(__dirname, '../views/admin/report.ejs');
+        const report = await reportG(req.params.id);
+     
+        const data = {
+            report: report
+        };
+        const ejsPage = await ejs.renderFile(ejspagepath, data);
+        const browser = await puppeteer.launch({ headless: true }); 
+        const page = await browser.newPage();
+        await page.setContent(ejsPage);
+
+        const uuidb = uuid();
+        const pdfPath = path.join(__dirname, '../public/files', `${uuidb}.pdf`);
+
+        await page.pdf({
+            path: pdfPath,
+            printBackground: true,
+            format: 'A4'
+        });
+
+        await browser.close();
+
+        res.download(pdfPath, `${uuidb}.pdf`, (err) => {
+            if (err) {
+                console.error(err.message + '      reportdownload route');
+            } else {
+                fs.unlinkSync(pdfPath);
+            }
+        });
+    } catch (err) {
+        console.log(err.message + '      reportdownload route');
+    }
+};
+
+
+
+// const pdfCreating = (report, i) => {
+//     const uuidb = uuid();
+//     console.log(uuidb)
+//     const file = path.resolve(__dirname, '../views/admin/report.ejs')
+//     const htmlString = fs.readFileSync(file).toString();
+//     const ejsData = ejs.render(htmlString, { report: report });
+//     let options = {
+//         format: "Letter",
+//     }
+//     pdf.create(ejsData, options).toFile(`${i}Sales${uuidb}.pdf`, (err, response) => {
+//         if (err) console.log(err.message + '   pdf');
+//         const filePath = path.resolve(__dirname, `../${i}Sales${uuidb}.pdf`);
+//         fs.readFile(filePath, (err, file) => {
+//             if (err) {
+//                 console.log(err);
+//                 return res.status(500).send('could note download')
+//             }
+//             res.setHeader('Content-Type', 'application/pdf');
+//             res.setHeader('Content-Disposition', `attachement;filename="${i}Sales${uuidb}.pdf"`);
+//             res.send(file)
+//         })
+//     })
+// }
 module.exports = {
     adminPage,
     productAdd,
@@ -636,5 +765,7 @@ module.exports = {
     removeordeFull,
     orderProstatus,
     peyment,
-    year
+    year,
+    report,
+    reportdownload
 }
