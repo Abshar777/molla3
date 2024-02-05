@@ -12,6 +12,29 @@ const options = { day: '2-digit', month: 'short', year: 'numeric' };
 //admin page rendering
 const adminPage = async (req, res) => {
     try {
+        const orderList1 = await orderModal.find({}).populate('userId');
+        const productCount = await productModal.find({})
+        const userCount = await userSchema.find({}).sort({date:-1});
+        const recentUser=userCount.slice(0,3 )
+        const currentDate = new Date();
+        const currentMonth = currentDate.getMonth();
+        const startDate = new Date(currentDate.getFullYear(), currentMonth);
+        const endDate = new Date(currentDate.getFullYear(), currentMonth + 1, 0);
+        const month = await orderModal.aggregate([{
+            $match: {
+                orderDate: {
+                    $gte: startDate,
+                    $lte: endDate
+                }
+            }
+        }, {
+            $group: {
+                _id: '$peyment',
+                sale: { $sum: '$orderAmount' }
+            }
+        }
+        ])
+        const monthSale = month.reduce((acc, val) => acc + val.sale, 0)
         const orderList = await orderModal.aggregate([{
             $group: {
                 _id: '$peyment',
@@ -19,6 +42,7 @@ const adminPage = async (req, res) => {
                 totalCount: { $sum: 1 }
             }
         }])
+
         const op = await orderModal.find({ peyment: 'online peyment' }).sort({ _id: -1 }).limit(1)
         const cod = await orderModal.find({ peyment: 'cod' }).sort({ _id: -1 }).limit(1)
         let count = 0;
@@ -34,7 +58,7 @@ const adminPage = async (req, res) => {
                 $group: {
                     _id: '$OrderedItems.productId',
                     totalCount: { $sum: '$OrderedItems.quantity' },
-                    orderDates: { $push: '$orderDate' } 
+                    orderDates: { $push: '$orderDate' }
                 }
             },
             {
@@ -47,15 +71,66 @@ const adminPage = async (req, res) => {
             },
             {
                 $sort: { totalCount: -1 }
-            },{
-                $limit:5
+            }, {
+                $limit: 5
             }
 
         ])
+        const daily = await orderModal.aggregate([
+            {
+                $group: {
+                    _id: { $dateToString: { format: '%Y-%m-%d', date: '$orderDate' } },
+                    totalAmount: { $sum: '$orderAmount' }
+                }
+            },
+            {
+                $sort: { _id: -1 }
+            }
+        ])
+        const yearly = await orderModal.aggregate([
+            {
+                $group: {
+                    _id: { $year: '$orderDate' },
+                    totalAmount: { $sum: '$orderAmount' }
+                }
+            },
+            {
+                $sort: { _id: -1 }
+            }
+        ])
 
-        res.render('admin/dashboard', { admin: req.session.admin, home: 'home', most, orderList, count, op, cod })
+        res.render('admin/dashboard', { admin: req.session.admin, home: 'home', most, orderList, count, op, cod, monthSale, daily, yearly, userCount, productCount, orderList1,recentUser })
     } catch (err) {
         console.log(err.message + '     admin first route');
+    }
+}
+
+//year chart fetching
+const year = async (req, res) => {
+    try {
+        const currentYear = new Date().getFullYear();
+        
+
+        const year = await orderModal.aggregate([
+            {
+                $match: {
+                    orderDate: { $gte: new Date(`${currentYear - 5}-01-01`), $lte: new Date(`${currentYear}-12-31`) }
+                }
+            },
+            {
+                $group: {
+                    _id: { $year: '$orderDate' },
+                    totalAmount: { $sum: '$orderAmount' }
+                }
+            },
+            {
+                $sort: { _id: 1 }
+            }
+        ])
+        // console.log(year);
+        res.send({year})
+    } catch (err) {
+        console.log(err.message + '    year fetching ')
     }
 }
 
@@ -171,8 +246,8 @@ const category = async (req, res) => {
 // catgory fetch 
 const categoryFetch = async (req, res) => {
     try {
-        const name = await categoryModal.findOne({ name: req.body.name })
-        console.log(name);
+        const pattern=new RegExp(`^${req.body.name}$`,'i');
+        const name = await categoryModal.findOne({ name: pattern })
         if (name) {
             res.send({ exist: true })
         } else {
@@ -560,5 +635,6 @@ module.exports = {
     orderView,
     removeordeFull,
     orderProstatus,
-    peyment
+    peyment,
+    year
 }

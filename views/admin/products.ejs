@@ -238,57 +238,65 @@
     const catName1 = document.querySelector('.category');
     const gg = document.querySelector('.gg');
     const dname = document.querySelector('.dname');
-    function removeP(i,im) {
+    var L=3
+    function removeP(i,im,L) {
+      
+      
+      if(this.L>1){
+        if(this.L==2){
 
-      const pi = document.getElementById(`p${i}`);
-      const myForm = document.getElementById('myForm1');
-      const hiddenInput = document.createElement('input');
-      const Input = document.createElement('input');
-      Input.type = 'hidden';
-      Input.name = `pe${i}`;
-      Input.value = 'true';
-      hiddenInput.type = 'hidden';
-      hiddenInput.name = `pe`;
-      hiddenInput.value = im;
-      myForm.appendChild(hiddenInput);
-      myForm.appendChild(Input);
-
-      pi.remove()
+          this.L=2
+        }
+        if(this.L==3){
+          this.L=3
+        }
+        this.L-=1;
+        const pi = document.getElementById(`p${i}`);
+        const myForm = document.getElementById('myForm1');
+        const hiddenInput = document.createElement('input');
+        const Input = document.createElement('input');
+        Input.type = 'hidden';
+        Input.name = `pe${i}`;
+        Input.value = 'true';
+        hiddenInput.type = 'hidden';
+        hiddenInput.name = `pe`;
+        hiddenInput.value = im;
+        myForm.appendChild(hiddenInput);
+        myForm.appendChild(Input);
+  
+        pi.remove()
+      }else{
+        document.getElementById('R').remove()
+      }  
     }
 
     function edit(image, id, name, stock, price, catName) {
       let myForm = document.getElementById('myForm1');
       myForm.action = `/admin/edit?id=${id}`;
-      const im = JSON.parse(image)
+      const ima = JSON.parse(image)
       name1.value = name
       price1.value = price
       stock1.value = stock
       catName1.value = catName
-      imageRow.innerHTML = `${im.map((im, i) => `     <div class="d-flex flex-column " id='p${i}'>
-                          <div
-                        class="imcircle d-flex align-items-center justify-content-center  overflow-hidden position-relative  "
-                        style="width: 4.5rem; height: 4.5rem;   border-radius: 50%;  ">
-                        <label for="image${i}"    id="imageL"
-                          class="w-100   position-absolute fs-3 mt-1 d-flex align-items-center justify-content-center      pointer-event "
-                          style="    background-color: rgb(24 23 23 / 11%);
-                       backdrop-filter: blur(2px);
-                       height: 5rem;
-                       transition: all ease 0.3s;
-                       cursor: pointer;
-                       
-                       ">
-                          Edit
-                        </label>
-                        <input type="file" class='file' data-index='${i}' id="image${i}" accept="image/jpeg, image/png, image/jpg" name="images${i}"
-                          style="display: none;" value='${im}'>
-                        <img class="w-100 h-100 " id='im${i}' style="object-fit: cover;"
-                          src="/productImage/${im}" alt="">
-                          </div>
-                          
-                        <div id='d${i}'></div>
-                          <p style='cursor: pointer;'  onclick="removeP('${i}','${im}')" class='mt-1 text-white  '>remove</p>
-                        </div>
-                      `).join('')}`;
+      imageRow.innerHTML = `${ima.map((im, i) => `
+    <div class="d-flex flex-column " id='p${i}'>
+        <div class="imcircle d-flex align-items-center justify-content-center overflow-hidden position-relative"
+            style="width: 4.5rem; height: 4.5rem; border-radius: 50%;">
+            <label for="image${i}" id="imageL"
+                class="w-100 position-absolute fs-3 mt-1 d-flex align-items-center justify-content-center pointer-event"
+                style="background-color: rgb(24 23 23 / 11%); backdrop-filter: blur(2px); height: 5rem;
+                transition: all ease 0.3s; cursor: pointer;">
+                Edit
+            </label>
+            <input type="file" class='file' data-index='${i}' id="image${i}" accept="image/jpeg, image/png, image/jpg"
+                name="images${i}" style="display: none;" value='${im}'>
+            <img class="w-100 h-100 " id='im${i}' style="object-fit: cover;"
+                src="/productImage/${im}" alt="">
+        </div>
+        <div id='d${i}'></div>
+        ${ima.length > 1 ? `<p style='cursor: pointer;' id='R' onclick="removeP('${i}','${im}','${ima.length}')" class='mt-1 text-white'>remove</p>` : ''}
+    </div>
+`).join('')}`;
 
       gg.style.opacity = 1;
       gg.style.zIndex = 9;
