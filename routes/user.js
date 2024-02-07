@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const userController=require('../controller/userControlller')
-const userMidleware=require('../middleware/user')
+const userMidleware=require('../middleware/user');
+const changeassMiddlware=require('../middleware/changePass')
 
 // get home page
 router.get('/',userMidleware.userbloack,userController.home);
@@ -105,8 +106,10 @@ router.get('/orderView/:id',userMidleware.userbloack,userMidleware.user,userCont
 //order canceling 
 router.put('/editOrder',userController.editOrder)
 
-router.get('/check',userController.check)
+//chacking route
+// router.get('/check',userController.check)
 
+//razor pay fetching
 router.post('/razor',userController.razor)
 
 //logout

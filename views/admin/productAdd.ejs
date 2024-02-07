@@ -23,7 +23,8 @@
                 <div class="card-body">
                   <h4 class="card-title">Basic form elements</h4>
                   <p class="card-description"> Basic form elements </p>
-                  <form class="forms-sample" id="myForm" action="/admin/productAdd" method="post"  enctype="multipart/form-data">
+                  <form class="forms-sample" id="myForm" action="/admin/productAdd" method="post"
+                    enctype="multipart/form-data">
                     <div class="form-group">
                       <label for="exampleInputName1">Name</label>
                       <input type="text" class="text form-control text-white " name="name" style="color:white;"
@@ -33,24 +34,26 @@
 
                     <div class="form-group">
                       <label for="exampleInputPassword4">stock</label>
-                      <input type="number" class=" form-control text-white " name="stock" style="color:white;"
+                      <input type="number" class=" form-control text-white " min=0 name="stock" style="color:white;"
                         id="exampleInputPassword4" placeholder="Stock" required>
 
                     </div>
                     <div class="form-group">
                       <label for="exampleInputPassword4">Price</label>
                       <div class="input-group mb-2 mr-sm-2">
-                       
+
                         <div class="input-group-prepend">
-                        
+
                           <div class="input-group-text">$</div>
                         </div>
-                        <input type="number" class="form-control" name="price" id="inlineFormInputGroupUsername2" placeholder="Price">
+                        <input type="number" class="form-control" name="price" id="inlineFormInputGroupUsername2"
+                          placeholder="Price">
                       </div>
-                      </div>
+                    </div>
                     <div class="form-group">
                       <label for="exampleSelectGender">Category</label>
-                      <select class="form-control text-white " name="category" style="color:white;" id="exampleSelectGender" required>
+                      <select class="form-control text-white " name="category" style="color:white;"
+                        id="exampleSelectGender" required>
                         <% locals.categoryList.forEach(e=>{ %>
                           <option>
                             <%=e.name %>
@@ -65,13 +68,49 @@
                       <!-- <input type="file" name="img[]" class="file-upload-default" required>  -->
                       <div class="input-group col-xs-12">
                         <div class="input-group">
-                          <input type="file" class="file-upload-default" name="images" multiple style="display: none;" required>
-                          <input type="text" class="form-control file-upload-info" onkeydown="images(this)" id="ko"
-                            disabled placeholder="Upload Image" multiple required>
-                          <span class="input-group-append">
-                            <button class="file-upload-browse btn btn-primary" type="button">Upload</button>
-                          </span>
+                          <div for="images"
+                            class="image card d-flex align-items-center flex-column  justify-content-center "
+                            style="width: 100%; height: 9rem; border: 0px;">
+                            <div
+                              class=" border-0   aa d-flex align-items-center justify-content-center gap-3  h-100  position-relative "
+                              style="  gap:1rem">
+                              <% for(let i=0;i<3;i++) {%>
+                                <label for="images<%=i  %>"
+                                  class="img-co   l position-relative   d-flex align-items-center justify-content-center "
+                                  style="width: 6rem; height: 90%; cursor:pointer;  border: 2px dashed #ffffff40; border-radius: 15px;">
+                                  <input type="file" class="inp" accept="image/*" onchange='hello(this,"<%=i %>")'
+                                    name='images' id="images<%=i  %>" hidden>
+                                  <p class="opacity-50 text-center text-capitalize w-100  " id="p<%=i  %>"
+                                    style="opacity: .7;"><i class="ri-upload-cloud-2-line text-center   "></i><br>uplaod
+                                    images</p>
+                                  <img src="" alt="" id="i<%=i  %>"
+                                    style="display: none;     border-radius: 15px;  width: 100% ; height: 100%; object-fit: cover; ;">
+                                  <i class="ri-close-circle-line position-absolute fs-3 mt-1 " id="icon<%=i  %>"
+                                    onclick="clear(this,'<%=i%>')"
+                                    style="opacity: 0;  top: -3px; right:0; z-index: 9999999999; scale: 1.5;"></i>
+                                  <div for="images<%=i  %>" id="imageL<%= i %>"
+                                    class="   position-absolute fs-3 mt-1  align-items-center justify-content-center      pointer-event "
+                                    style="
+                               width: 5.5rem;
+                                background-color: rgba(24, 23, 23, 0.11);
+                                backdrop-filter: blur(1px);
+                                height: 6.2rem;
+                                border-radius: 10px;
+                                transition: all 0.3s ease 0s;
+                                cursor: pointer;
+                                letter-spacing: 0.1rem;
+
+                                object-fit: cover;
+                         ">Replace</div>
+                                </label>
+                                <% } %>
+                            </div>
+                            <div class="msg w-100 p-2 d-flex align-items-center justify-content-center ">
+                              <p id="msgP"></p>
+                            </div>
+                          </div>
                         </div>
+
 
                       </div>
                     </div>
@@ -80,8 +119,8 @@
                       <div class="col-sm-2">
                         <div class="form-check">
                           <label class="form-check-label">
-                            <input type="radio" class="form-check-input" name="active" id="membershipRadios1"
-                              value=true checked> Active </label>
+                            <input type="radio" class="form-check-input" name="active" id="membershipRadios1" value=true
+                              checked> Active </label>
                         </div>
                       </div>
                       <div class="col-sm-5">
@@ -94,8 +133,8 @@
                     </div>
                     <div class="form-group">
                       <label for="exampleTextarea1">Description</label>
-                      <textarea class=" text form-control text-white " name="des" style="color:white;" id="exampleTextarea1"
-                        rows="4" required></textarea>
+                      <textarea class=" text form-control text-white " name="des" style="color:white;"
+                        id="exampleTextarea1" rows="4" required></textarea>
                       <p id="err2" class="text-danger "></p>
                     </div>
                     <button type="submit" class="btn submit btn-primary mr-2">Submit</button>
@@ -111,6 +150,25 @@
   </div>
 
   <script>
+
+    for (let i = 0; i < 3; i++) {
+      const icon = document.getElementById(`icon${i}`)
+      icon.addEventListener('click', (event) => {
+        event.stopPropagation();
+        event.preventDefault();
+        const text = document.getElementById(`p${i}`);
+        const im = document.getElementById(`i${i}`);
+        const imL = document.getElementById(`imageL${i}`);
+        const inp = document.getElementById(`images${i}`);
+        inp.value = '';
+        im.src = '';
+        im.style.display = 'none';
+        text.style.display = 'block';
+        imL.style.display = 'none';
+        icon.style.opacity = 0;
+      });
+    }
+
     const textInput = document.querySelectorAll('.text');
     const err1 = document.getElementById('err1');
     const submit11 = document.querySelector('.submit');
@@ -120,6 +178,39 @@
         e.preventDefault();
       }
     });
+    const msgP = document.getElementById(`msgP`);
+    const form = document.getElementById('myForm')
+    const imgco = document.querySelector('.image')
+    form.addEventListener('submit', (ev) => {
+     
+     
+          const inp0 = document.getElementById(`images0`);
+          const inp1 = document.getElementById(`images1`);
+          const inp2 = document.getElementById(`images2`);
+          if (inp1.value !== '' &&inp2.value!==''&&inp0.value!=='' ) {
+            form.submit()
+            
+          } else {
+          msgP.textContent='please fill three images';
+          imgco.style.height='10rem'
+          ev.preventDefault();
+        }
+  
+      
+      })
+  
+    function hello(e, i) {
+      const text = document.getElementById(`p${i}`);
+      const im = document.getElementById(`i${i}`);
+      const imL = document.getElementById(`imageL${i}`);
+
+      im.src = URL.createObjectURL(e.files[0]);
+      const icon = document.getElementById(`icon${i}`)
+      icon.style.opacity = 1;
+      im.style.display = 'block';
+      text.style.display = 'none';
+      imL.style.display = 'flex';
+    }
 
     const regex = /^[a-zA-Z-]/;
 
@@ -132,9 +223,9 @@
         if (inputValue.trim() !== '' && !/\d/.test(inputValue)) {
           submit11.style.pointerEvents = 'all';
           submit11.style.opacity = 1;
-          
-        
-         
+
+
+
           errorElement.textContent = '';
           inputElement.style.borderColor = 'green';
         } else {
@@ -172,7 +263,9 @@
   <script src="/vendors/jvectormap/jquery-jvectormap.min.js"></script>
   <script src="/vendors/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
   <script src="/vendors/owl-carousel-2/owl.carousel.min.js"></script>
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"
+    integrity="sha512-9KkIqdfN7ipEW6B6k+Aq20PV31bjODg4AA52W+tYtAE0jE0kMx49bjJ3FgvS56wzmyfMUHbQ4Km2b7l9+Y/+Eg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="/js/off-canvas.js"></script>
   <script src="/js/hoverable-collapse.js"></script>
   <script src="/js/misc.js"></script>
@@ -180,50 +273,22 @@
   <script src="/js/todolist.js"></script>
   <script src="/js/dashboard.js"></script>
 
-  <script>
-    (function ($) {
-      'use strict';
-
-      $(function () {
-        $('.file-upload-browse').on('click', function () {
-          var filesInput = $(this).parent().parent().find('.file-upload-default');
-          filesInput.trigger('click');
-        });
-
-        $('.file-upload-default').on('change', function () {
-          var filesInput = $(this);
-          var files = filesInput[0].files;
-
-          // Limit the number of allowed files to 3
-          var maxAllowedFiles = 3;
-          if (files.length > maxAllowedFiles) {
-            alert('You can only upload up to 3 files.');
-            // Optionally, clear the file input
-            filesInput.val('');
-            return;
-          }
-
-          // Check file types
-          var allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
-          var invalidFiles = Array.from(files).filter(file => !allowedTypes.includes(file.type));
-
-          if (invalidFiles.length > 0) {
-            alert('Invalid file type. Please upload PNG or JPG files only.');
-            // Optionally, clear the file input
-            filesInput.val('');
-            return;
-          }
-
-          var fileNames = Array.from(files).map(file => file.name).join(', ');
-
-          filesInput.parent().find('.form-control').val(fileNames);
-        });
-      });
-    })(jQuery);
-
-    fileNames
-  </script>
   <style>
+    @media (max-width:900px) {
+      .aa {
+        width: 100% !important;
+      }
+    }
+
+    @font-face {
+      font-family: req;
+      src: url(/fonts/611aee5b70cc88187b78993c_GRIFTER.otf);
+    }
+
+    .aa {
+      width: 50%;
+    }
+
     body::-webkit-scrollbar {
       width: 0;
     }
@@ -239,6 +304,25 @@
     input[type="number"]::-webkit-inner-spin-button,
     input[type="number"]::-webkit-outer-spin-button {
       -webkit-appearance: none !important;
+    }
+
+    #imageL1,
+    #imageL2,
+    #imageL0 {
+      display: none;
+      opacity: 0;
+      font-family: req;
+    }
+    #msgP{
+      letter-spacing: .1rem;
+    text-transform: uppercase;
+    font-family: req;
+    }
+    
+    .l:hover #imageL1,
+    .l:hover #imageL2,
+    .l:hover #imageL0 {
+      opacity: 1;
     }
   </style>
 

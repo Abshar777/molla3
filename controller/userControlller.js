@@ -942,18 +942,37 @@ const editOrder = async (req, res) => {
     }
 }
 
+
+//chacking route
 const check=async(req,res)=>{
     try{
        res.render('check')
-      if(hh){
-        console.log(hh)
-        res.send(hh)
-      }
+
 
     }catch(err){
         console.log(err.messahe+'     check route')
     }
 }
+
+
+// const changePassword=async(req,res)=>{
+//     try{
+//         if(req.session.login){
+//             const id=req.session.login
+//         }else if(req.session.admin){
+//             const id=req.session.admin
+
+//         }else{
+//             res.redirect('/')
+//         }
+//         if(id){
+
+//             await userSchema.find({}) 
+//         }
+//     }catch(err){
+//         console.log(err.message+'   /changePassword')
+//     }
+// }
 
 module.exports = {
     signUp,

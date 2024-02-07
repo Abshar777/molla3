@@ -27,12 +27,12 @@
 
                     </div>
                     <div class="col-md-4 col-12 me-auto mb-md-0 mb-3">
-                        <h2 style='color: #fff;' class="content-title card-title text-white "><%=locals.data  %> Sales Report</h2>
+                        <h2 style='color: #fff;' class="content-title card-title text-white "><%=locals.gg  %> Sales Report</h2>
                     </div>
 
                     <div class="col-md-2 col-6">
                         <% if(locals.data) {%>
-                        <!-- <form action="/admin/report/download/<%=data  %>" method="post"> -->
+                        <!-- <form action="/admin/report/download/" method="post"> -->
                        <a href="/admin/report/download/<%=data  %>"><button class="btn bg-danger text-white  " type="submit">Download</button></a>
                     <!-- </form> -->
                     <% } %>

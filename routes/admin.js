@@ -92,7 +92,7 @@ router.put('/peyment',adminController.peyment)
 router.put('/year',adminController.year)
 
 //sales report in yearly and monthly and weekly
-router.get('/report/:id',adminController.report)
+router.get('/report/:id',adminMidleware.adminRoute,adminController.report)
 
 //sales report in yearly and monthly and weekly
 router.get('/report/download/:id',adminController.reportdownload)

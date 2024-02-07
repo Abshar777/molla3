@@ -627,7 +627,7 @@ const report = async (req, res) => {
             const currentWeekEnd = new Date(currentWeekStart);
             currentWeekEnd.setDate(currentWeekEnd.getDate() + 6);
             const report = await orderModal.find({ orderDate: { $gte: currentWeekStart, $lte: currentWeekEnd } });
-            res.render('admin/report', { report, data: 'weekly' });
+            res.render('admin/report', { report, data: 'weekly',gg:req.params.id  });
         }
         else if (req.params.id == 'monthly') {
             const currentDate = new Date();
@@ -635,7 +635,7 @@ const report = async (req, res) => {
             const startDate = new Date(currentDate.getFullYear(), currentMonth);
             const endDate = new Date(currentDate.getFullYear(), currentMonth + 1, 0);
             const report = await orderModal.find({ orderDate: { $gte: startDate, $lte: endDate } })
-            res.render('admin/report', { report, data: 'monthly' })
+            res.render('admin/report', { report, data: 'monthly',gg:req.params.id })
 
         }
         else if (req.params.id == 'yearly') {
@@ -643,7 +643,7 @@ const report = async (req, res) => {
             const currentYearStart = new Date(currentDate.getFullYear(), 0, 1);
             const currentYearEnd = new Date(currentDate.getFullYear() + 1, 0, 0);
             const report = await orderModal.find({ orderDate: { $gte: currentYearStart, $lte: currentYearEnd } });
-            res.render('admin/report', { report, data: 'yearly' });
+            res.render('admin/report', { report, data: 'yearly' ,gg:req.params.id});
 
         } else {
             res.redirect('/admin')
@@ -653,6 +653,7 @@ const report = async (req, res) => {
     }
 }
 
+//report for download
 const reportG=async(data)=>{
     if (data == 'weekly') {
         const currentDate = new Date();
@@ -687,9 +688,11 @@ const reportdownload = async (req, res) => {
         const params = req.params.id;
         const ejspagepath = path.resolve(__dirname, '../views/admin/report.ejs');
         const report = await reportG(req.params.id);
+        const gg=params
      
         const data = {
-            report: report
+            report: report,
+            gg:req.params.id
         };
         const ejsPage = await ejs.renderFile(ejspagepath, data);
         const browser = await puppeteer.launch({ headless: true }); 
@@ -721,29 +724,7 @@ const reportdownload = async (req, res) => {
 
 
 
-// const pdfCreating = (report, i) => {
-//     const uuidb = uuid();
-//     console.log(uuidb)
-//     const file = path.resolve(__dirname, '../views/admin/report.ejs')
-//     const htmlString = fs.readFileSync(file).toString();
-//     const ejsData = ejs.render(htmlString, { report: report });
-//     let options = {
-//         format: "Letter",
-//     }
-//     pdf.create(ejsData, options).toFile(`${i}Sales${uuidb}.pdf`, (err, response) => {
-//         if (err) console.log(err.message + '   pdf');
-//         const filePath = path.resolve(__dirname, `../${i}Sales${uuidb}.pdf`);
-//         fs.readFile(filePath, (err, file) => {
-//             if (err) {
-//                 console.log(err);
-//                 return res.status(500).send('could note download')
-//             }
-//             res.setHeader('Content-Type', 'application/pdf');
-//             res.setHeader('Content-Disposition', `attachement;filename="${i}Sales${uuidb}.pdf"`);
-//             res.send(file)
-//         })
-//     })
-// }
+
 module.exports = {
     adminPage,
     productAdd,
