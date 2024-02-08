@@ -7,8 +7,12 @@ const productModal = require('../models/products');
 const Razorpay = require('razorpay');
 const nodemailer = require('nodemailer');
 const bycrypt = require('bcrypt');
+const invoiceConfig = require('../config/invoice')
 require('dotenv').config();
-const {RAZORPAY_IDKEY,RAZORPAY_SECRET_KEY}=process.env;
+const fs=require('fs');
+const path=require('path')
+const {v4:uuid}=require('uuid')
+const { RAZORPAY_IDKEY, RAZORPAY_SECRET_KEY } = process.env;
 const e = require("express");
 
 
@@ -21,8 +25,8 @@ const generateOTP = () => {
 
 
 var instance = new Razorpay({
-  key_id: RAZORPAY_IDKEY,
-  key_secret: RAZORPAY_SECRET_KEY,
+    key_id: RAZORPAY_IDKEY,
+    key_secret: RAZORPAY_SECRET_KEY,
 });
 
 const verifyemail = async (name, email, otp) => {
@@ -74,7 +78,7 @@ const options = { day: '2-digit', month: 'short', year: 'numeric' };
 //home
 const home = (req, res) => {
     if (req.session.login) {
-    
+
         res.render('client/home', { login: req.session.login })
     }
     else {
@@ -794,32 +798,32 @@ const success = async (req, res) => {
 }
 
 //razor
-const razor=async(req,res)=>{
-    try{
-        const user=await userSchema.findOne({_id:req.body.userId})
-        const amount=req.body.amount*100
-      const options={
-        amount:amount,
-        currency:"INR",
-        receipt:'absharameen625@gmail.com'
-      }
-      instance.orders.create(options,(err,order)=>{
-        if(!err){
-            res.send({
-                succes:true,
-                msg:'ORDER created',
-                order_id:order.id,
-                amount:amount,
-                key_id:RAZORPAY_IDKEY,
-                name:user.name,
-                email:user.email
-            })
-        }else{
-            console.log(err)
+const razor = async (req, res) => {
+    try {
+        const user = await userSchema.findOne({ _id: req.body.userId })
+        const amount = req.body.amount * 100
+        const options = {
+            amount: amount,
+            currency: "INR",
+            receipt: 'absharameen625@gmail.com'
         }
-      })
-    }catch(err){
-        console.log(err.message+'     razor')
+        instance.orders.create(options, (err, order) => {
+            if (!err) {
+                res.send({
+                    succes: true,
+                    msg: 'ORDER created',
+                    order_id: order.id,
+                    amount: amount,
+                    key_id: RAZORPAY_IDKEY,
+                    name: user.name,
+                    email: user.email
+                })
+            } else {
+                console.log(err)
+            }
+        })
+    } catch (err) {
+        console.log(err.message + '     razor')
     }
 }
 
@@ -832,7 +836,7 @@ const postSucces = async (req, res) => {
             userId: req.session.login,
             orderAmount: cart.TotalPrice,
             deliveryAdress: user.addressId,
-            peyment:req.body.peyment,
+            peyment: req.body.peyment,
             deliveryAdress: {
                 name: req.body.name,
                 city: req.body.city,
@@ -926,15 +930,15 @@ const editOrder = async (req, res) => {
         const newOne = await orderModal.findOneAndUpdate({ userId: req.body.user, 'OrderedItems.productId': req.body.id },
             {
                 $set: {
-                'OrderedItems.$.canceled':true,
-                'OrderedItems.$.orderProStatus':'canceled'
+                    'OrderedItems.$.canceled': true,
+                    'OrderedItems.$.orderProStatus': 'canceled'
                 }
             }
         )
-        if(newOne){
-            res.send({set:true})
-        }else{
-            res.send({issue:true})
+        if (newOne) {
+            res.send({ set: true })
+        } else {
+            res.send({ issue: true })
 
         }
     } catch (err) {
@@ -944,13 +948,41 @@ const editOrder = async (req, res) => {
 
 
 //chacking route
-const check=async(req,res)=>{
-    try{
-       res.render('check')
+const check = async (req, res) => {
+    try {
+        res.render('check')
 
 
-    }catch(err){
-        console.log(err.messahe+'     check route')
+    } catch (err) {
+        console.log(err.messahe + '     check route')
+    }
+}
+
+//invoice
+const invoice = async (req, res) => {
+    try {
+        if(req.params.id){
+            const uuidb=uuid()
+           const orderDta=await orderModal.findOne({_id:req.params.id}).populate('OrderedItems.productId userId')
+           const inv=invoiceConfig(orderDta)
+           const result = await easyinvoice.createInvoice(inv);
+           const filePath = path.join(__dirname, '../public/files', `invoice_${uuidb}.pdf`);
+           await fs.writeFileSync(filePath, result.pdf, 'base64');
+           res.download(filePath, `invoice_${uuidb}.pdf`, (err) => {
+           
+            if (!err) {
+                fs.unlinkSync(filePath);
+              
+            } else {
+                console.error(err);
+            }
+        });
+    } else {
+        res.status(404).send('Invoice ID not provided');
+    }
+        
+    } catch (err) {
+        console.log(err + '     invoice')
     }
 }
 
@@ -1011,5 +1043,6 @@ module.exports = {
     orderView,
     editOrder,
     check,
-    razor
+    razor,
+    invoice
 }

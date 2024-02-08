@@ -30,10 +30,19 @@
                         <h2 style='color: #fff;' class="content-title card-title text-white "><%=locals.gg  %> Sales Report</h2>
                     </div>
 
-                    <div class="col-md-2 col-6">
+                    <div class="col-md-2 col-6 d-flex align-items-center justify-content-center " style="gap: 1rem;">
                         <% if(locals.data) {%>
-                        <!-- <form action="/admin/report/download/" method="post"> -->
-                       <a href="/admin/report/download/<%=data  %>"><button class="btn bg-danger text-white  " type="submit">Download</button></a>
+                            <div class="select">
+                            <form action="/admin/report/download/<%=data  %>" method="post">
+                            <select onchange="execor(this)" id="format" name="report" id="">
+                            <option value="exec">exec</option>
+                            <option value="pdf">pdf</option>
+                            </select>
+                        </div>
+                            <!-- <form action="/admin/report/download/" method="post"> -->
+                                <button type="submit" class="btn bg-danger text-white  " type="submit">Download</button>
+                            </form>
+                       
                     <!-- </form> -->
                     <% } %>
                     </div>
@@ -109,6 +118,27 @@
           
             background-color: #212529;
         }
+        select {
+   -webkit-appearance:none;
+   -moz-appearance:none;
+   -ms-appearance:none;
+   appearance:none;
+   outline:0;
+   box-shadow:none;
+   border:0!important;
+   background: #5c6664;
+   background-image: none;
+   /* flex: 1; */
+   padding: 0 .5em;
+   color:#fff;
+   cursor:pointer;
+   font-size: 1em;
+   font-family: 'Open Sans', sans-serif;
+}
+select::-ms-expand {
+   display: none;
+}
+
     </style>
     <% } %>
 </body>

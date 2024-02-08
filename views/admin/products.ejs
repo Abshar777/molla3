@@ -229,7 +229,7 @@
       </div>
   </div>
   </div>
-
+  <script defer src="https://cdn.crop.guide/loader/l.js?c=KTKDGP"></script>
   <script>
     const imageRow = document.querySelector('.img-row');
     const name1 = document.querySelector('.name');
@@ -238,38 +238,7 @@
     const catName1 = document.querySelector('.category');
     const gg = document.querySelector('.gg');
     const dname = document.querySelector('.dname');
-    var L=3
-    function removeP(i,im,L) {
-      
-      
-      if(this.L>1){
-        if(this.L==2){
-
-          this.L=2
-        }
-        if(this.L==3){
-          this.L=3
-        }
-        this.L-=1;
-        const pi = document.getElementById(`p${i}`);
-        const myForm = document.getElementById('myForm1');
-        const hiddenInput = document.createElement('input');
-        const Input = document.createElement('input');
-        Input.type = 'hidden';
-        Input.name = `pe${i}`;
-        Input.value = 'true';
-        hiddenInput.type = 'hidden';
-        hiddenInput.name = `pe`;
-        hiddenInput.value = im;
-        myForm.appendChild(hiddenInput);
-        myForm.appendChild(Input);
-  
-        pi.remove()
-      }else{
-        document.getElementById('R').remove()
-      }  
-    }
-
+   
     function edit(image, id, name, stock, price, catName) {
       let myForm = document.getElementById('myForm1');
       myForm.action = `/admin/edit?id=${id}`;
@@ -293,8 +262,8 @@
             <img class="w-100 h-100 " id='im${i}' style="object-fit: cover;"
                 src="/productImage/${im}" alt="">
         </div>
-        <div id='d${i}'></div>
-        ${ima.length > 1 ? `<p style='cursor: pointer;' id='R' onclick="removeP('${i}','${im}','${ima.length}')" class='mt-1 text-white'>remove</p>` : ''}
+       
+      
     </div>
 `).join('')}`;
 

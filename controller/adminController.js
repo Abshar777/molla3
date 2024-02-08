@@ -536,9 +536,7 @@ const dltPro = async (req, res) => {
 
             if (fs.existsSync(imagePath)) {
                 fs.unlinkSync(imagePath);
-                console.log(`${e} deleted`);
-            } else {
-                console.log(`${e} does not exist`);
+           
             }
         });
         if (don) {
@@ -685,42 +683,57 @@ const reportG=async(data)=>{
 //report download
 const reportdownload = async (req, res) => {
     try {
-        const params = req.params.id;
-        const ejspagepath = path.resolve(__dirname, '../views/admin/report.ejs');
-        const report = await reportG(req.params.id);
-        const gg=params
+        
+        if(req.body.report=='exec'){
+
+        }else{
+            const params = req.params.id;
+            const ejspagepath = path.resolve(__dirname, '../views/admin/report.ejs');
+            const report = await reportG(req.params.id);
+            const gg = params;
+    
+            const data = {
+                report: report,
+                gg: req.params.id
+            };
+            const ejsPage = await ejs.renderFile(ejspagepath, data);
+    
+            // Optimize Puppeteer launch options for better performance
+            const browser = await puppeteer.launch({
+                headless: true, // Set to true to run in headless mode
+                args: ['--no-sandbox', '--disable-setuid-sandbox'], // Add additional args for improved performance and security
+                defaultViewport: null, // Set to null for faster page loading
+                ignoreHTTPSErrors: true // Ignore HTTPS errors to avoid potential slowdowns
+            });
+    
+            const page = await browser.newPage();
+            await page.setContent(ejsPage);
+    
+            const uuidb = uuid();
+            const pdfPath = path.join(__dirname, '../public/files', `${uuidb}.pdf`);
+    
+            await page.pdf({
+                path: pdfPath,
+                printBackground: true,
+                format: 'A4'
+            });
+    
+            await browser.close();
+    
+            res.download(pdfPath, `${uuidb}.pdf`, (err) => {
+                if (err) {
+                    console.error(err.message + '      reportdownload route');
+                } else {
+                    fs.unlinkSync(pdfPath);
+                }
+            });
+        }
      
-        const data = {
-            report: report,
-            gg:req.params.id
-        };
-        const ejsPage = await ejs.renderFile(ejspagepath, data);
-        const browser = await puppeteer.launch({ headless: true }); 
-        const page = await browser.newPage();
-        await page.setContent(ejsPage);
-
-        const uuidb = uuid();
-        const pdfPath = path.join(__dirname, '../public/files', `${uuidb}.pdf`);
-
-        await page.pdf({
-            path: pdfPath,
-            printBackground: true,
-            format: 'A4'
-        });
-
-        await browser.close();
-
-        res.download(pdfPath, `${uuidb}.pdf`, (err) => {
-            if (err) {
-                console.error(err.message + '      reportdownload route');
-            } else {
-                fs.unlinkSync(pdfPath);
-            }
-        });
     } catch (err) {
         console.log(err.message + '      reportdownload route');
     }
 };
+
 
 
 

@@ -95,6 +95,6 @@ router.put('/year',adminController.year)
 router.get('/report/:id',adminMidleware.adminRoute,adminController.report)
 
 //sales report in yearly and monthly and weekly
-router.get('/report/download/:id',adminController.reportdownload)
+router.post('/report/download/:id',adminController.reportdownload)
 
 module.exports=router;

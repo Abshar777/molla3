@@ -112,6 +112,9 @@ router.put('/editOrder',userController.editOrder)
 //razor pay fetching
 router.post('/razor',userController.razor)
 
+//invoice download
+router.get('/invoice/:id',userController.invoice)
+
 //logout
 router.post('/logout',userController.logout)
 
