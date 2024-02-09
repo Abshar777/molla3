@@ -11,7 +11,7 @@
 
 <body style="background-color: #212529; ">
 
-    <section class="content-main " >
+    <section class="content-main ">
         <div class="content-header">
             <div>
                 <h2 class="content-title card-title"></h2>
@@ -27,24 +27,35 @@
 
                     </div>
                     <div class="col-md-4 col-12 me-auto mb-md-0 mb-3">
-                        <h2 style='color: #fff;' class="content-title card-title text-white "><%=locals.gg  %> Sales Report</h2>
+                        <h2 style='color: #fff;' class="content-title card-title text-white ">
+                            <%=locals.gg %> Sales Report
+                        </h2>
                     </div>
 
-                    <div class="col-md-2 col-6 d-flex align-items-center justify-content-center " style="gap: 1rem;">
-                        <% if(locals.data) {%>
-                            <div class="select">
-                            <form action="/admin/report/download/<%=data  %>" method="post">
-                            <select onchange="execor(this)" id="format" name="report" id="">
-                            <option value="exec">exec</option>
-                            <option value="pdf">pdf</option>
-                            </select>
-                        </div>
-                            <!-- <form action="/admin/report/download/" method="post"> -->
-                                <button type="submit" class="btn bg-danger text-white  " type="submit">Download</button>
-                            </form>
-                       
-                    <!-- </form> -->
-                    <% } %>
+                    <div class=" col-6 d-flex align-items-center justify-content-center " style="gap: 1rem;">
+                        <% if(locals.custom){ %>
+                            <input type="date" onchange="change(this)" name="start" id="start">
+                            <input type="date" onchange="change(this)" name="end" id="end">
+
+                            <% } %>
+                                <% if(locals.data) {%>
+
+                                    <div class="select">
+                                        <form action="/admin/report/download/<%=data  %>" id="myForm" method="post">
+                                            <select onchange="execor(this)" id="format" name="report" id="">
+                                                <option value="exec">exec</option>
+                                                <option value="pdf">pdf</option>
+
+                                            </select>
+                                    </div>
+                                    <!-- <form action="/admin/report/download/" method="post"> -->
+                                    <button type="submit" class="btn bg-danger text-white"
+                                        type="submit">Download</button>
+                                    </form>
+
+                                    <!-- </form> -->
+                                    <% } %>
+
                     </div>
                 </div>
             </header>
@@ -67,20 +78,21 @@
 
                                 </tr>
                             </thead>
-                            <tbody>
-                                <% locals.report.forEach((e,i)=>{ %>
-                                    <tr>
-                                        <td scope="col">
-                                            <%= i+1 %>
-                                        </td>
-                                        <td scope="col">
-                                            <%= e._id %>
-                                        </td>
-                                        <td scope="col">
-                                            <%=e.deliveryAdress.name %>
-                                        </td>
-                                        <td scope="col">
-                                            <%= e.orderDate.toString().split(' ').slice(0,4).join('  ') %>
+                            <tbody id="tb">
+                                <% if(locals.report){ %>
+                                    <% locals.report.forEach((e,i)=>{ %>
+                                        <tr>
+                                            <td scope="col">
+                                                <%= i+1 %>
+                                            </td>
+                                            <td scope="col">
+                                                <%= e._id %>
+                                            </td>
+                                            <td scope="col">
+                                                <%=e.deliveryAdress.name %>
+                                            </td>
+                                            <td scope="col">
+                                                <%= e.orderDate.toString().split(' ').slice(0,4).join(' ') %>
                                         </td>
                                         <td scope="col">
                                             <%=e.orderAmount %>
@@ -89,7 +101,7 @@
                                             <%=e.peyment %>
                                         </td>
                                     </tr>
-                                    <% }) %>
+                                    <% })} %>
                             </tbody>
                         </table>
                     </div>
@@ -106,7 +118,54 @@
 
 
 
+<script>
+const tb=document.getElementById('tb')
+const start=document.getElementById('start')
+const end=document.getElementById('end');
+const form=document.getElementById('myForm');
 
+function change(e){
+    if(start.value!=='' &&end.value!=='' ){
+        
+        fetch('/admin/report',{
+            method:'put',
+            headers:{"Content-Type":'application/json'},
+            body:JSON.stringify({start:start.value ,end:end.value })
+        }).then(res=>res.json()).then(data=>{
+            console.log(data)
+         if(data.data.length>0){
+            tb.innerHTML=data.data.map((e,i)=>`
+            <tr>
+                                            <td scope="col">
+                                               ${i+1}
+                                            </td>
+                                            <td scope="col">
+                                                ${e._id}
+                                            </td>
+                                            <td scope="col">
+                                                ${e.deliveryAdress.name}
+                                            </td>
+                                            <td scope="col">
+                                                ${e.orderDate.toString().split(' ').slice(0,4).join(' ')}
+                                        </td>
+                                        <td scope="col">
+                                            ${e.orderAmount}
+                                        </td>
+                                        <td scope="col">
+                                           ${e.peyment}
+                                        </td>
+                                    </tr>
+            `).join('');
+            form.action=`/admin/report/download/custom?start=${start.value}&&end=${end.value}`;
+         } else{
+            tb.innerHTML='no data here'
+         }
+        })
+    }
+}
+
+
+</script>
 
 
 
@@ -133,14 +192,8 @@
    color:#fff;
    cursor:pointer;
    font-size: 1em;
-   font-family: 'Open Sans', sans-serif;
-}
-select::-ms-expand {
-   display: none;
-}
-
-    </style>
-    <% } %>
+   font-family: ' Open Sans', sans-serif; } select::-ms-expand { display: none; } </style>
+                                                    <% } %>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
