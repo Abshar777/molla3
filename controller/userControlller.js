@@ -9,9 +9,9 @@ const nodemailer = require('nodemailer');
 const bycrypt = require('bcrypt');
 const invoiceConfig = require('../config/invoice')
 require('dotenv').config();
-const fs=require('fs');
-const path=require('path')
-const {v4:uuid}=require('uuid')
+const fs = require('fs');
+const path = require('path')
+const { v4: uuid } = require('uuid')
 const { RAZORPAY_IDKEY, RAZORPAY_SECRET_KEY } = process.env;
 const e = require("express");
 
@@ -961,50 +961,79 @@ const check = async (req, res) => {
 //invoice
 const invoice = async (req, res) => {
     try {
-        if(req.params.id){
-            const uuidb=uuid()
-           const orderDta=await orderModal.findOne({_id:req.params.id}).populate('OrderedItems.productId userId')
-           const inv=invoiceConfig(orderDta)
-           const result = await easyinvoice.createInvoice(inv);
-           const filePath = path.join(__dirname, '../public/files', `invoice_${uuidb}.pdf`);
-           await fs.writeFileSync(filePath, result.pdf, 'base64');
-           res.download(filePath, `invoice_${uuidb}.pdf`, (err) => {
-           
-            if (!err) {
-                fs.unlinkSync(filePath);
-              
-            } else {
-                console.error(err);
-            }
-        });
-    } else {
-        res.status(404).send('Invoice ID not provided');
-    }
-        
+        if (req.params.id) {
+            const uuidb = uuid()
+            const orderDta = await orderModal.findOne({ _id: req.params.id }).populate('OrderedItems.productId userId')
+            const inv = invoiceConfig(orderDta)
+            const result = await easyinvoice.createInvoice(inv);
+            const filePath = path.join(__dirname, '../public/files', `invoice_${uuidb}.pdf`);
+            await fs.writeFileSync(filePath, result.pdf, 'base64');
+            res.download(filePath, `invoice_${uuidb}.pdf`, (err) => {
+
+                if (!err) {
+                    fs.unlinkSync(filePath);
+
+                } else {
+                    console.error(err);
+                }
+            });
+        } else {
+            res.status(404).send('Invoice ID not provided');
+        }
+
     } catch (err) {
         console.log(err + '     invoice')
     }
 }
 
+//changePassword render
+const changePassword = async (req, res) => {
+    try {
+        const msg = req.flash('msg')
+        res.render('client/changepass', { msg })
+    } catch (err) {
+        console.log(err.message + '   changePassword render')
+    }
+}
 
-// const changePassword=async(req,res)=>{
-//     try{
-//         if(req.session.login){
-//             const id=req.session.login
-//         }else if(req.session.admin){
-//             const id=req.session.admin
+// change password post
+const changePasswordpost = async (req, res) => {
+    try {
+        const id = req.session.login ? req.session.login : req.session.admin_id;
+        if (id) {
+            const data = await userSchema.findOne({ _id: id });
+            console.log(req.body.current)
+            const passmatch= await bycrypt.compare(req.body.current, data.password);
+            if (passmatch) {
+             
+                const sp = await securePassword(req.body.password)
 
-//         }else{
-//             res.redirect('/')
-//         }
-//         if(id){
+                const updatPass = await userSchema.findOneAndUpdate({ _id: id }, { $set: { password: sp } })
+                console.log(updatPass)
+                res.redirect('/profile')
+            } else {
+                req.flash('msg', 'the password is incorrect')
+                res.redirect('/changpass')
+            }
+        }
+    } catch (err) {
+        console.log(err.message + '   /changePassword')
+    }
+}
 
-//             await userSchema.find({}) 
-//         }
-//     }catch(err){
-//         console.log(err.message+'   /changePassword')
-//     }
-// }
+//edit profile post
+const editprofile=async(req,res)=>{
+    try{
+        const data=await userSchema.findOneAndUpdate({_id:req.params.id},{$set:{name:req.body.name,email:req.body.email}});
+        if(data){
+            res.redirect('/profile'); 
+        }else{
+            res.redirect('/login')
+        }
+    }catch(err){
+        console.log(err.message+'    editprofile')
+    }
+}
 
 module.exports = {
     signUp,
@@ -1044,5 +1073,8 @@ module.exports = {
     editOrder,
     check,
     razor,
-    invoice
+    invoice,
+    changePassword,
+    changePasswordpost,
+    editprofile
 }

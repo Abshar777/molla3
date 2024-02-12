@@ -115,6 +115,15 @@ router.post('/razor',userController.razor)
 //invoice download
 router.get('/invoice/:id',userController.invoice)
 
+//invoice download
+router.get('/changpass',changeassMiddlware.changePass,userController.changePassword)
+
+//invoice download
+router.post('/changpass',userController.changePasswordpost);
+
+//edit profile
+router.post('/edit/:id',userController.editprofile)
+
 //logout
 router.post('/logout',userController.logout)
 

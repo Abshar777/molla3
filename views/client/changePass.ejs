@@ -1,0 +1,213 @@
+<%- include('../layout/header.ejs') -%>
+    <link rel="stylesheet" href="css/mycss/otp.css">
+    </head>
+
+    <body>
+        <div class="page-wrapper">
+            <header class="header">
+
+
+                <div class="header-middle sticky-header">
+                    <div class="container">
+                        <div class="header-left">
+                            <button class="mobile-menu-toggler">
+                                <span class="sr-only">Toggle mobile menu</span>
+                                <i class="icon-bars"></i>
+                            </button>
+
+                            <a href="/" class="logo">
+                                <img src="images/logo.png" alt="Molla Logo" width="105" height="25">
+                            </a>
+
+                            <nav class="main-nav">
+                                <ul class="menu ">
+                                    <li class="megamenu-container active">
+                                        <a href="/" class="">Home</a>
+
+                                        <!-- End .megamenu -->
+                                    </li>
+                                    <li>
+                                        <a href="/shop" class="">Shop</a>
+
+                                        <!-- End .megamenu megamenu-md -->
+                                    </li>
+                                    <li>
+                                        <a class="sf-with-ul">Category</a>
+                                        <ul>
+                                            <li><a href="login.html">Men</a></li>
+                                            <li><a href="faq.html">Woman</a></li>
+                                        </ul>
+
+                                    </li>
+
+                                    <li>
+                                        <a href="/about">About</a>
+
+
+                                    </li>
+
+                                </ul><!-- End .menu -->
+                            </nav>
+                        </div>
+
+                        <!-- End .header-right -->
+                    </div><!-- End .container -->
+                </div><!-- End .header-middle -->
+            </header><!-- End .header -->
+
+            <main class="main">
+                <nav aria-label="breadcrumb" class="breadcrumb-nav border-0 mb-0">
+                    <div class="container">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/">Home</a></li>
+                            <li class="breadcrumb-item"><a href="">login</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">otp</li>
+                        </ol>
+                    </div><!-- End .container -->
+                </nav><!-- End .breadcrumb-nav -->
+
+                <div class="login-page bg-image pt-8 pb-8 pt-md-12 pb-md-12 pt-lg-17 pb-lg-17"
+                    style="background-image: url('images/backgrounds/login-bg.jpg')">
+                    <div class="container">
+                        <div class="form-box">
+                            <div class="form-tab">
+
+                                <ul class="nav nav-pills nav-fill" role="tablist">
+
+                                    <li class="nav-item">
+                                        <a class="nav-link active" id="register-tab-2" data-toggle="tab"
+                                            href="#register-2" role="tab" aria-controls="register-2"
+                                            aria-selected="true">cahnge password</a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content">
+
+                                    <!-- sign-up part -->
+
+                                    <div class="tab-pane  show active" id="signin-2" role="tabpanel"
+                                        aria-labelledby="signin-tab-2">
+                                        <form action="/changpass" method="post">
+
+
+                                            <div class="form-group">
+                                                <label for="register-password-2">current password *</label>
+                                                <input type="password" class="form-control" id="current"
+                                                    name="current" placeholder="current password" required>
+                                                    <% if(locals.msg){ %>
+                                                        <p class="text-danger "><%= locals.msg  %></p>
+                                                        <% } %>
+
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="register-password-2">New Password *</label>
+                                                <input type="password" oninput="pass(this)" class="form-control" id="password"
+                                                    name="password" placeholder="enter your new password" required>
+                                                <div id="Pmsg" class="text-danger "></div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="register-password-2">Confirm Password *</label>
+                                                <input type="password" class="form-control" id="confirmPassword"
+                                                    placeholder="Confirm Password:" required>
+                                                <p id="message"></p>
+                                            </div>
+                                            <div class="form-footer ">
+                                                <a href="/profile">back to profile</a>
+                                                <button type="submit" class="btn submit btn-outline-primary-2">
+                                                    <span>Submit</span>
+                                                    <i class="icon-long-arrow-right"></i>
+                                                </button>
+
+
+                                            </div><!-- End .form-footer -->
+                                        </form>
+
+                                        <!-- End .form-choice -->
+                                    </div><!-- .End .tab-pane -->
+                                </div><!-- End .tab-content -->
+                            </div><!-- End .form-tab -->
+                        </div><!-- End .form-box -->
+                    </div><!-- End .container -->
+                </div><!-- End .login-page section-bg -->
+            </main><!-- End .main -->
+            <%- include('../layout/lyfooter.ejs') -%>
+
+        </div><!-- End .page-wrapper -->
+        <button id="scroll-top" title="Back to Top"><i class="icon-arrow-up"></i></button>
+
+        <%- include('../layout/mobMenu.ejs') -%>
+            <script>
+
+                const passwordField = document.getElementById('password');
+                const confirmPasswordField = document.getElementById('confirmPassword');
+                const submit = document.querySelector('.submit');
+                const Pmsg = document.getElementById('Pmsg');
+                const current=document.getElementById('current');
+
+
+                // Get reference to the message div
+                const messageDiv = document.getElementById('message');
+
+                // Function to check if passwords match
+                function checkPassword() {
+                    const password = passwordField.value;
+                    const confirmPassword = confirmPasswordField.value;
+
+                    if (password === confirmPassword) {
+                        messageDiv.textContent = 'Passwords match!';
+                        messageDiv.style.color = 'green';
+                        submit.style.pointerEvents = 'all',
+                            submit.style.opacity = 1
+                       
+                    } else {
+                        messageDiv.textContent = 'Passwords do not match.';
+                        messageDiv.style.color = 'red';
+                        submit.style.pointerEvents = 'none',
+                            submit.style.opacity = 0.5
+                       
+                    }
+                }
+                function pass(e) {
+                    const regex = /^(?=.*[a-z])(?=.*\d).{8,}$/;
+                    if(e.value==current.value){
+                        submit.style.pointerEvents = 'none',
+							submit.style.opacity = 0.5;
+						e.style.border = '1px solid red';
+						Pmsg.textContent = 'the current pass and new password i same'
+                    }
+					else if (regex.test(e.value)) {
+						console.log('passgood');
+						submit.style.opacity = 1;
+						e.style.border = '1px solid #ebebeb';
+						Pmsg.textContent = '';
+						submit.style.pointerEvents = 'none';
+					} else {
+						console.log('suckkk');
+						submit.style.pointerEvents = 'none',
+							submit.style.opacity = 0.5;
+						e.style.border = '1px solid red';
+						Pmsg.textContent = 'its week password please containe atleast 8 cherecters and it contain one number  and spellings'
+					}
+				}
+
+                // Add event listeners to both password fields to check on input
+                // passwordField.addEventListener('input', checkPassword);
+                confirmPasswordField.addEventListener('input', checkPassword);			
+            </script>
+
+
+
+            <style>
+                *::-webkit-scrollbar {
+                    width: 0;
+                }
+
+                input[type="number"]::-webkit-inner-spin-button,
+                input[type="number"]::-webkit-outer-spin-button {
+                    -webkit-appearance: none !important;
+                }
+            </style>
+            <script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@3.5.4/dist/locomotive-scroll.js"></script>
+            <script src="js/demos/demo-6.js"></script>
+            <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
+            <%- include('../layout/footer.ejs') -%>
+                <script src="js/base.js"></script>

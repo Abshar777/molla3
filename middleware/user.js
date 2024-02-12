@@ -40,11 +40,10 @@ const userbloack = async (req, res, next) => {
                     }
                 });
             } else {
-                // Only call next() if the user is not blocked
+             
                 next();
             }
         } else {
-            // Only call next() if there is no session login
             next();
         }
     } catch (err) {
