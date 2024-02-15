@@ -159,13 +159,34 @@
                                                         </h2>
                                                     </div>
                                                     <br>
+                                                    <input type="text" name="" id="" onclick="submit()" hidden >
                                                     <!-- End .card-header -->
+                                                    <%  if(walletAmount>=cart.TotalPrice){%>
+                                                    <div class="card-header" id="heading-1">
+                                                        <h2 class="card-title">
+
+                                                            <input type="radio" name="peyment" id="wallet"
+                                                                value="wallet" class="bg-primary  " >
+                                                            <label for="wallet">wallet</label>
+                                                        </h2>
+                                                    </div>
+                                                <% }else{ %>
+                                                    <div class="card-header" id="heading-1">
+                                                        <h2 class="card-title">
+
+                                                            <input type="radio" name="peyment" id="wallet"
+                                                                value="wallet" disabled class="bg-primary opacity-50 " >
+                                                            <label for="wallet" class="" style="text-decoration: line-through;">wallet</label>
+                                                        </h2>
+                                                    </div>
+                                                    <% } %>
+                                                    <br>
                                                     <div class="card-header" id="heading-1">
                                                         <h2 class="card-title">
 
                                                             <input type="radio" name="peyment" id="online"
                                                                 value="online peyment" class="bg-primary ">
-                                                            <label for="">online pey ment</label>
+                                                            <label for="online">online pey ment</label>
                                                         </h2>
                                                     </div><!-- End .card-header -->
 
@@ -181,7 +202,7 @@
                                             <% if(cart.products.length>0 ){ %>
                                                 <% if(locals.add){ %>
                             </form>
-                            <p onclick="submit(this,'<%= cart.TotalPrice %>','<%=cart.userId  %>')" type="submit"
+                            <p onclick="submit1(this,'<%= cart.TotalPrice %>','<%=cart.userId  %>')" type="submit"
                                 class="btn btn-outline-primary-2 ">
                                 <span class="btn-text">Place Order</span>
                                 <span class="btn-hover-text">Proceed to Checkout</span>
@@ -213,8 +234,8 @@
             <script>
 
 
-                function submit(e, amount, userId) {
-
+                function submit1(e, amount, userId) {
+                    console.log('lllll');
                     const form = document.getElementById('myForm');
 
                     var formData = new FormData(document.getElementById('myForm'));

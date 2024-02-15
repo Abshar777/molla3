@@ -12,8 +12,9 @@ require('dotenv').config();
 const fs = require('fs');
 const path = require('path')
 const { v4: uuid } = require('uuid')
+const wallet = require('../models/wallet');
 const { RAZORPAY_IDKEY, RAZORPAY_SECRET_KEY } = process.env;
-const e = require("express");
+
 
 
 // fungctions
@@ -405,12 +406,13 @@ const shop = async (req, res) => {
 const profile = async (req, res) => {
     try {
 
-        const user = await userSchema.findOne({ _id: req.session.login })
-
+        const user = await userSchema.findOne({ _id: req.session.login });
+        const wallet1 = await wallet.findOne({ userId: req.session.login })
+        const walletAmount = wallet1?.amount || 0;
         // console.log(user);
         if (user.is_admin === 0) {
             // console.log('is note admin')
-            res.render('client/profile', { user, login: req.session.login })
+            res.render('client/profile', { user, login: req.session.login, walletAmount })
         }
         else {
             req.session.admin = user;
@@ -739,7 +741,8 @@ const checkoutPage = async (req, res) => {
     try {
         const user = await userSchema.findOne({ _id: req.session.login })
         const cart = await cartModal.findOne({ userId: req.session.login }).populate('products.productId');
-
+        const wallet1 = await wallet.findOne({ userId: req.session.login })
+        const walletAmount = wallet1?.amount || 0;
         let add;
         const adress = await addressModal.findOne({ userId: req.session.login })
         if (adress) {
@@ -752,9 +755,9 @@ const checkoutPage = async (req, res) => {
 
                 }
             })
-            res.render('client/checkout', { login: req.session.login, add, cart })
+            res.render('client/checkout', { login: req.session.login, add, cart, walletAmount })
         } else {
-            res.render('client/checkout', { login: req.session.login, cart })
+            res.render('client/checkout', { login: req.session.login, cart, walletAmount })
 
         }
 
@@ -819,7 +822,8 @@ const razor = async (req, res) => {
                     email: user.email
                 })
             } else {
-                console.log(err)
+                console.error("Error creating order:", err);
+                res.status(500).send({ success: false, msg: "Failed to create order" });
             }
         })
     } catch (err) {
@@ -850,7 +854,10 @@ const postSucces = async (req, res) => {
                 price: e.price,
             })),
         })
-
+        if (req.body.peyment == 'wallet') {
+            const ne=0-cart.TotalPrice
+            await wallet.findOneAndUpdate({userId:req.session.login},{$inc:{amount:ne}})
+        }
         if (orderSet) {
             orderSet.OrderedItems.forEach(async (e) => {
                 let product = await productModal.findOne({ _id: e.productId })
@@ -884,7 +891,8 @@ const orderDet = async (req, res) => {
     try {
         const order = await orderModal.find({ userId: req.session.login });
         if (order) {
-            res.render('client/orderDet', { login: req.session.login, order })
+            let order1 = order.reverse()
+            res.render('client/orderDet', { login: req.session.login, order: order1 })
         } else {
             res.render('client/orderDet', { login: req.session.login })
         }
@@ -918,6 +926,7 @@ const logout = async (req, res) => {
 const orderView = async (req, res) => {
     try {
         const order = await orderModal.findOne({ _id: req.params.id }).populate('OrderedItems.productId')
+        console.log(order)
         res.render('client/order', { login: req.session.login, order })
     } catch (err) {
         console.log(err.message + '      ORDER VIEW PAGE RENDERING ')
@@ -927,15 +936,33 @@ const orderView = async (req, res) => {
 //editOrder
 const editOrder = async (req, res) => {
     try {
-        const newOne = await orderModal.findOneAndUpdate({ userId: req.body.user, 'OrderedItems.productId': req.body.id },
+        const newOne = await orderModal.findOneAndUpdate({ _id: req.body.orderId, 'OrderedItems.productId': req.body.id },
             {
                 $set: {
                     'OrderedItems.$.canceled': true,
                     'OrderedItems.$.orderProStatus': 'canceled'
                 }
+            },
+            {
+                new:true
             }
         )
         if (newOne) {
+
+            if (newOne.OrderedItems.length == 1) {
+                const k=await orderModal.findOneAndUpdate({ _id: newOne._id }, { $set: { orderStatus: 'canceled' } })
+            
+            }else{
+                let flag = newOne.OrderedItems.filter(e => e.orderProStatus === 'canceled').length;
+                if (flag === newOne.OrderedItems.length) {
+                    const k=await orderModal.findOneAndUpdate({ _id: newOne._id }, { $set: { orderStatus: 'canceled' } })
+
+                }
+            }
+            if (newOne.peyment != 'cod') {
+                 await wallet.findOneAndUpdate({ userId: req.body.user }, { $inc: { amount: req.body.price } }, { new: true, upsert: true });
+            } 
+           
             res.send({ set: true })
         } else {
             res.send({ issue: true })
@@ -950,6 +977,7 @@ const editOrder = async (req, res) => {
 //chacking route
 const check = async (req, res) => {
     try {
+
         res.render('check')
 
 
@@ -1003,9 +1031,9 @@ const changePasswordpost = async (req, res) => {
         if (id) {
             const data = await userSchema.findOne({ _id: id });
             console.log(req.body.current)
-            const passmatch= await bycrypt.compare(req.body.current, data.password);
+            const passmatch = await bycrypt.compare(req.body.current, data.password);
             if (passmatch) {
-             
+
                 const sp = await securePassword(req.body.password)
 
                 const updatPass = await userSchema.findOneAndUpdate({ _id: id }, { $set: { password: sp } })
@@ -1022,16 +1050,16 @@ const changePasswordpost = async (req, res) => {
 }
 
 //edit profile post
-const editprofile=async(req,res)=>{
-    try{
-        const data=await userSchema.findOneAndUpdate({_id:req.params.id},{$set:{name:req.body.name,email:req.body.email}});
-        if(data){
-            res.redirect('/profile'); 
-        }else{
+const editprofile = async (req, res) => {
+    try {
+        const data = await userSchema.findOneAndUpdate({ _id: req.params.id }, { $set: { name: req.body.name, email: req.body.email } });
+        if (data) {
+            res.redirect('/profile');
+        } else {
             res.redirect('/login')
         }
-    }catch(err){
-        console.log(err.message+'    editprofile')
+    } catch (err) {
+        console.log(err.message + '    editprofile')
     }
 }
 

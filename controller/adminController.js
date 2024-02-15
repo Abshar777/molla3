@@ -17,7 +17,7 @@ const options = { day: '2-digit', month: 'short', year: 'numeric' };
 //admin page rendering
 const adminPage = async (req, res) => {
     try {
-        const orderList1 = await orderModal.find({}).populate('userId');
+        const orderList1 = await orderModal.find({}).sort({ _id: -1 }).populate('userId');
         const productCount = await productModal.find({})
         const userCount = await userSchema.find({}).sort({ date: -1 });
         const recentUser = userCount.slice(0, 3)
@@ -554,7 +554,8 @@ const order = async (req, res) => {
         const orderList = await orderModal.find({}).populate('userId');
 
         if (orderList) {
-            res.render('admin/orderDets', { admin: req.session.admin, order: true, orderList })
+            let order1 = orderList.reverse()
+            res.render('admin/orderDets', { admin: req.session.admin, order: true, orderList: order1 })
         }
     } catch (err) {
         console.log(err.message + '   admin order page rendering route ')
@@ -572,15 +573,6 @@ const orderView = async (req, res) => {
         }
     } catch (err) {
         console.log(err.message + '     order view ')
-    }
-}
-
-//order status fethibg
-const orderstaus = async (req, res) => {
-    try {
-        await orderModal.findOneAndUpdate({})
-    } catch (err) {
-        console.log(err.message + '   oder staus ')
     }
 }
 
@@ -611,7 +603,43 @@ const removeordeFull = async (req, res) => {
 //orderProstatus
 const orderProstatus = async (req, res) => {
     try {
-        await orderModal.findOneAndUpdate({ _id: req.body.id, 'OrderedItems.productId': req.body.proId }, { $set: { 'OrderedItems.$.orderProStatus': req.body.val } })
+        const orderNew = await orderModal.findOneAndUpdate({ _id: req.body.id, 'OrderedItems.productId': req.body.proId }, { $set: { 'OrderedItems.$.orderProStatus': req.body.val } }, { new: true })
+        if (orderNew.OrderedItems.length == 1) {
+            await orderModal.findOneAndUpdate({ _id: orderNew._id }, { $set: { orderStatus: req.body.val } })
+        } else {
+            let counts = {};
+            let length=orderNew.OrderedItems.length
+            orderNew.OrderedItems.forEach(element => {
+                counts[element.orderProStatus] = (counts[element.orderProStatus] || 0) + 1;   
+            });
+            let mostRepeatedElement;
+            let maxCount = 0;
+            console.log(counts)
+            for (const element in counts) {
+                if (counts[element] > maxCount) {
+                    mostRepeatedElement = element;
+                    maxCount = counts[element];
+                }else if(counts[element] = maxCount){
+                    if(element=='canceled'){
+                       continue; 
+                    }else if(mostRepeatedElement=='canceled'){
+                        mostRepeatedElement=element;
+                    }
+                }else if(mostRepeatedElement=='canceled'){
+                    if( maxCount !== length){
+                        mostRepeatedElement='shipped'
+                    }
+                }else if(mostRepeatedElement=='delivered'){
+                    if( maxCount !== length){
+                        mostRepeatedElement='shipped'
+                    }
+                }
+        
+            }
+            
+            await orderModal.findOneAndUpdate({ _id: orderNew._id }, { $set: { orderStatus:  mostRepeatedElement } })
+
+        }
     } catch (err) {
         console.log(err.message + ' orderProstatus')
     }
@@ -657,13 +685,13 @@ const report = async (req, res) => {
 //customreport
 const customreport = async (req, res) => {
     try {
-        const start=new Date(req.body.start);
-        const end=new Date(req.body.end)
-        console.log(start,end);
-        
-       const data= await orderModal.find({ orderDate: { $gte: start, $lte: end } })
-       res.send({data})
-        
+        const start = new Date(req.body.start);
+        const end = new Date(req.body.end)
+        console.log(start, end);
+
+        const data = await orderModal.find({ orderDate: { $gte: start, $lte: end } })
+        res.send({ data })
+
     } catch (err) {
         console.log(err.message + '     customreport')
     }
@@ -696,8 +724,8 @@ const reportG = async (data, end) => {
 
 
     } else {
-        const start=new Date(data);
-        const end1=new Date(end);
+        const start = new Date(data);
+        const end1 = new Date(end);
         return await orderModal.find({ orderDate: { $gte: start, $lte: end1 } })
     }
 }
@@ -707,10 +735,10 @@ const reportdownload = async (req, res) => {
     try {
 
         if (req.body.report == 'exec') {
-            console.log(req.query.start,req.query.end)
-            if(req.query.start && req.query.end){
-                var data = await reportG(req.query.start,req.query.end);
-            }else if(req.params.id){
+            console.log(req.query.start, req.query.end)
+            if (req.query.start && req.query.end) {
+                var data = await reportG(req.query.start, req.query.end);
+            } else if (req.params.id) {
 
                 var data = await reportG(req.params.id);
             }
@@ -741,10 +769,10 @@ const reportdownload = async (req, res) => {
             res.setHeader('Content-Disposition', 'attachment; filename=data.xlsx');
             res.send(buffer);
         } else {
-            if(req.query.start && req.query.end){
-                
-                var report = await reportG(req.query.start,req.query.end);
-            }else if(req.params.id){
+            if (req.query.start && req.query.end) {
+
+                var report = await reportG(req.query.start, req.query.end);
+            } else if (req.params.id) {
 
                 var report = await reportG(req.params.id);
             }

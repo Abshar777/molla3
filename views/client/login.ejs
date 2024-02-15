@@ -1,10 +1,11 @@
 <%- include('../layout/header.ejs') -%>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/locomotive-scroll@3.5.4/dist/locomotive-scroll.css">
 	</head>
 
 	<body>
-		<div class="page-wrapper">
+		<div class="page-wrapper" >
 			<header class="header">
-
+<!-- nav -->
 
 				<div class="header-middle sticky-header">
 					<div class="container">
@@ -53,8 +54,9 @@
 					</div><!-- End .container -->
 				</div><!-- End .header-middle -->
 			</header><!-- End .header -->
-
-			<main class="main">
+<!-- main , brudcrump -->
+<div class="" >
+			<main class="main"  >
 				<nav aria-label="breadcrumb" class="breadcrumb-nav border-0 mb-0">
 					<div class="container">
 						<ol class="breadcrumb">
@@ -63,11 +65,11 @@
 						</ol>
 					</div><!-- End .container -->
 				</nav><!-- End .breadcrumb-nav -->
-
+<!-- sign-tab -->
 				<div class="login-page bg-image pt-8 pb-8 pt-md-12 pb-md-12 pt-lg-17 pb-lg-17"
-					style="background-image: url('images/backgrounds/login-bg.jpg')">
-					<div class="container">
-						<div class="form-box">
+					style="background-image: url('https://www.prada.com/content/dam/pradanux/e-commerce/2024/Re_nylon_2024/Collection/Review/Woman_2/Landscape_rev/Mosaic_landscape_DT.jpg')">
+					<div class="container" data-scroll data-scroll-speed="-1">
+						<div class="form-box" style="    border-radius: 15px;">
 							<div class="form-tab">
 								<ul class="nav nav-pills nav-fill" role="tablist">
 									<li class="nav-item">
@@ -199,9 +201,10 @@
 			</main><!-- End .main -->
 			<%- include('../layout/lyfooter.ejs') -%>
 
+
 		</div><!-- End .page-wrapper -->
 		<button id="scroll-top" title="Back to Top"><i class="icon-arrow-up"></i></button>
-
+</div>
 		<%- include('../layout/mobMenu.ejs') -%>
 
 			<script>
@@ -287,6 +290,10 @@
 				}	
 			</script>
 			<style>
+				*{
+					transition: all ease 0.5s !important;
+					/* border-radius: 15px; */
+				}
 				*::-webkit-scrollbar {
 					width: 0;
 				}
@@ -297,7 +304,7 @@
 
 				}
 			</style>
-			<script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@3.5.4/dist/locomotive-scroll.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@3.5.4/dist/locomotive-scroll.js"></script>
 			<script src="js/demos/demo-6.js"></script>
 			<script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
 			<%- include('../layout/footer.ejs') -%>

@@ -74,7 +74,7 @@
 										
 									<!-- End .product -->
 								</td>
-								<td class="price-col <%=e.orderStatus=='pending'? 'text-primary' : 'text-success' %>"><%=e.orderStatus %></td>
+								<td class="price-col <%=e.orderStatus=='pending' ||'canceled'? 'text-primary' : 'text-success' %>"><%=e.orderStatus %></td>
 								<td class=""><%=e.OrderedItems.length %></td>
 								
 								

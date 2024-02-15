@@ -11,7 +11,7 @@ const order = new mongoose.Schema({
     },
     peyment: { type: String },
     orderDate: { type: Date, required: true, default: Date.now },
-    orderStatus: { type: String, enum: ['pending', 'shipped', 'delivered'], default: 'pending' },
+    orderStatus: { type: String, enum: ['pending', 'shipped', 'delivered','canceled'], default: 'pending' },
     OrderedItems: [{
         productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
         quantity: {
