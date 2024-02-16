@@ -100,4 +100,10 @@ router.post('/report/download/:id',adminController.reportdownload)
 //report custom
 router.put('/report',adminController.customreport)
 
+//coupen page rendering
+router.get('/coupen',adminMidleware.adminRoute,adminController.coupenPage)
+
+//coupen page rendering
+router.post('/coupen',adminController.coupenCreating)
+
 module.exports=router;

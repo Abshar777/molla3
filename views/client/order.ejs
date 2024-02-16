@@ -121,7 +121,7 @@
                                     onclick="cancel('<%=product.productId._id %>','<%=locals.order._id%>','<%=locals.login%>','<%=product.price %>')"
                                     style="border-radius: 5px; transition: all ease 0.5s; background-color: #c96;"
                                     class="p-3 rounded-2  border-0 text-white " id="bt<%=product.productId._id  %>">
-                                    cancel</button>
+                                    <%=product.orderProStatus=='delivered'? 'return' :'cancel'%></button>
 
 
                                   <%}else{ %>
@@ -129,7 +129,7 @@
                                       onclick="cancel('<%=product.productId._id %>','<%=locals.login%>')"
                                       style="border-radius: 5px; transition: all ease 0.5s; background-color: #c96; pointer-events: none; opacity: .5;"
                                       class="p-3 rounded-2  border-0 text-white " id="bt<%=product.productId._id  %>">
-                                      cancel</button>
+                                      <%=product.orderProStatus=='delivered'? 'return' :'cancel'%></button>
 
                                     <%}%>
 

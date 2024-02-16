@@ -1,6 +1,7 @@
 const userSchema = require("../models/userSchema");
 const categoryModal = require('../models/catagory')
 const productModal = require('../models/products');
+const coupenId=require('../config/coupenId')
 const path = require('path');
 const fs = require('fs');
 const pdf = require('html-pdf');
@@ -12,6 +13,7 @@ const bycrypt = require('bcrypt');
 const dotEnv = require('dotenv');
 const puppeteer = require('puppeteer');
 const ExcelJS = require('exceljs');
+const coupenSchema=require("../models/coupen");
 const options = { day: '2-digit', month: 'short', year: 'numeric' };
 
 //admin page rendering
@@ -819,8 +821,32 @@ const reportdownload = async (req, res) => {
     }
 };
 
+//coupenPage rendering
+const coupenPage=async(req,res)=>{
+    res.render('admin/coupen',{admin: req.session.admin})
+}
 
-
+// coupenCreating 
+const coupenCreating=async(req,res)=>{
+    try{
+        const id=coupenId.generateRandomId()
+        const coupen1=await coupenSchema.create({
+            name:req.body.name,
+            offer:req.body.offer,
+            from:req.body.from,
+            to:req.body.to,
+            ID:id
+        
+        })
+        if(coupen1){
+            res.redirect('/admin/coupen')
+        }else{
+            res.send('somthing wrong')
+        }
+    }catch(err){
+        console.log(err.message+'    coupenCreating')
+    }
+}
 
 
 module.exports = {
@@ -847,5 +873,7 @@ module.exports = {
     year,
     report,
     reportdownload,
-    customreport
+    customreport,
+    coupenPage,
+    coupenCreating
 }
