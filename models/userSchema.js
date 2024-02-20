@@ -9,7 +9,11 @@ const userSchema = new mongoose.Schema({
   date:{type:String},
   addressId:{ type: mongoose.Schema.Types.ObjectId, ref:'addr'},
   is_admin: { type: Number, required: true, default: 0 },
-  is_block:{type:Boolean,required:true,default:false}
+  is_block:{type:Boolean,required:true,default:false},
+  coupens:[{
+    ID:{type:String},
+    coupenId: { type: mongoose.SchemaTypes.ObjectId,  ref:'coupen' },
+  }]
 
 });
 

@@ -3,30 +3,34 @@
 
     <%- include('../layout/adminnav.ejs') -%>
 
-    <div class="main-panel">
+      <div class="main-panel">
         <div class="content-wrapper">
-            <div class="row">
-                <div class="col-md-6 col-xl-4 grid-margin stretch-card">
-                    <div class="card" style="border-radius: 15px;">
-                        <form action="/admin/coupen" method="post" enctype="multipart/form-data">
-                      <div class="card-body">
-                        <h4 class="card-title">Add coupen+</h4>
-                        
-                            <% for(let i=0;i<1;i++) {%>
-                                <label for="images<%=i  %>"
-                                  class="img-co   l position-relative   d-flex align-items-center justify-content-center "
-                                  style=" height: 10rem; overflow: hidden;  cursor:pointer;  border: 2px dashed #ffffff40; border-radius: 15px;">
-                                  <input type="file" class="inp" accept="image/*" onchange='hello(this,"<%=i %>")'
-                                    name='images' id="images<%=i  %>" hidden>
-                                  <p class="opacity-50 text-center text-capitalize w-100  " id="p<%=i  %>"
-                                    style="opacity: .7;"><i class="ri-upload-cloud-2-line text-center   "></i><br>uplaod
-                                    images</p>
-                                  <img src="" alt="" id="i<%=i  %>"
-                                    style="display: none;     border-radius: 15px;  width: 100% ; height: 100%; object-fit: cover; ">
-                                  
-                                  <div for="images<%=i  %>" id="imageL<%= i %>"
-                                    class="   position-absolute fs-3 mt-1  align-items-center justify-content-center      pointer-event "
-                                    style="
+          <div class="row">
+            <input type="text" hidden oninput="from2(this)" name="" id="">
+            <input type="text" hidden oninput="to2(this)" name="" id="">
+            <% if( coupen.length==0) {%>
+              <div class="col-md-6 col-xl-4 grid-margin stretch-card">
+                <div class="card" style="border-radius: 15px;">
+                  <form id="myform" action="/admin/coupen" method="post" enctype="multipart/form-data">
+                    <div class="card-body">
+                      <h4 class="card-title">Add coupen+</h4>
+
+                      <% for(let i=0;i<1;i++) {%>
+                        <label for="images<%=i  %>"
+                          class="img-co   l position-relative   d-flex align-items-center justify-content-center "
+                          style=" height: 10rem; overflow: hidden;  cursor:pointer;  border: 2px dashed #ffffff40; border-radius: 15px;">
+                          <input required type="file" class="inp" accept="image/*" onchange='hello(this,"<%=i %>")'
+                            name='images' id="images<%=i  %>" hidden required>
+                          <p class="opacity-50 text-center text-capitalize w-100  " id="p<%=i  %>" style="opacity: .7;">
+                            <i class="ri-upload-cloud-2-line text-center   "></i><br>uplaod
+                            images
+                          </p>
+                          <img src="" alt="" id="i<%=i  %>"
+                            style="display: none;     border-radius: 15px;  width: 100% ; height: 100%; object-fit: cover; ">
+
+                          <div for="images<%=i  %>" id="imageL<%= i %>"
+                            class="   position-absolute fs-3 mt-1  align-items-center justify-content-center      pointer-event "
+                            style="
                                width:100%;
                                 background-color: rgba(24, 23, 23, 0.11);
                                 backdrop-filter: blur(1px);
@@ -38,78 +42,294 @@
 
                                 object-fit: cover;
                          ">Replace</div>
-                                </label>
-                                <% } %>
-                 <br>
-                        <div class="d-flex ">
-                          <div class="preview-list w-100">
-                            <div class="preview-item p-0">
-                        
-                              <div class="preview-item-content d-flex flex-grow">
-                                <div class="form-group w-100">
+                        </label>
+                        <% } %>
+                          <br>
+                          <div class="d-flex ">
+                            <div class="preview-list w-100">
+                              <div class="preview-item p-0">
+
+                                <div class="preview-item-content d-flex flex-grow">
+                                  <div class="form-group w-100">
                                     <label for="exampleInputName1">Name</label>
                                     <div class="dname">
-                                      <input type="text" class="text w-100 name form-control text-white " style="letter-spacing: 1px;"
-                                        name="name" style="color:white;" id="exampleInputName1" value="" placeholder="Name" required>
+                                      <input required type="text" oninput="validation(this)"
+                                        class="text w-100 name form-control text-white " style="letter-spacing: 1px;"
+                                        name="name" style="color:white;" id="exampleInputName1" value=""
+                                        placeholder="Name" required>
                                       <p id="err1" class="text-danger "></p>
                                     </div>
-                                  </div>  
-                              
-                              </div>
-                           
-                            </div>
-                          </div>
-                        </div>
-                        <div class=" w-100  d-flex align-items-center justify-content-center "
-                        style="display: flex; gap:.5rem;">
-                        <div class="form-group">
-                          <label for="exampleInputPassword4">from</label>
-                          <div class="input-group mb-2 mr-sm-2">
-  
-                            <div class="input-group-prepend">
-                              <div class="input-group-text">$</div>
-                            </div>
-                            <input type="number" class="form-control price" min="0" name="price"
-                              style="letter-spacing: 1px;" id="price inlineFormInputGroupUsername2" placeholder="Price">
-                          </div>
-                        </div>
-                        <div class="form-group">
-                          <label for="exampleInputPassword4">to</label>
-                          <div class="input-group mb-2 mr-sm-2">
-  
-  
-                            <input type="number" class="form-control stock" min="0" name="stock"
-                              style="letter-spacing: 1px;" id=" stock inlineFormInputGroupUsername2" placeholder="Price">
-                          </div>
-                        </div>
-                      </div>
-                      <div class=" w-100  d-flex align-items-center justify-content-center "
-                      style="display: flex; gap:.5rem;">
-                      <div class="form-group">
-                        <label for="exampleInputPassword4">offer</label>
-                        <div class="input-group mb-2 mr-sm-2">
+                                  </div>
 
-                            <input type="number" class="form-control price" min="0" name="price"
-                              style="letter-spacing: 1px;" id="price inlineFormInputGroupUsername2" placeholder="Price">
-                          <div class="input-group-prepend">
-                            <div class="input-group-text">%</div>
+                                </div>
+
+                              </div>
+                            </div>
                           </div>
+                          <div class=" w-100  d-flex align-items-center justify-content-center "
+                            style="display: flex; gap:.5rem;">
+                            <div class="form-group w-100">
+                              <label for="exampleInputPassword4">from</label>
+                              <div class="input-group mb-2 mr-sm-2">
+
+                                <div class="input-group-prepend">
+                                  <div class="input-group-text">$</div>
+                                </div>
+                                <input required oninput="from2(this)" id="from" type="number" class="form-control price"
+                                  min="0" name="from" style="letter-spacing: 1px;"
+                                  id="price inlineFormInputGroupUsername2" placeholder="Price">
+                              </div>
+                            </div>
+                            <div class="form-group w-100">
+                              <label for="exampleInputPassword4">to</label>
+                              <div class="input-group mb-2 mr-sm-2">
+
+
+                                <input required type="number" oninput="to2(this)" id="to" class="form-control stock"
+                                  min="0" name="to" style="letter-spacing: 1px;"
+                                  id=" stock inlineFormInputGroupUsername2" placeholder="Price">
+                              </div>
+                            </div>
+                          </div>
+                          <div class=" w-100  d-flex align-items-center justify-content-center "
+                            style="display: flex; gap:.5rem;">
+                            <div class="form-group w-100 w-100">
+                              <label for="exampleInputPassword4">offer</label>
+                              <div class="input-group mb-2 mr-sm-2">
+
+                                <input required type="number" class="form-control price" min="0" name="offer"
+                                  style="letter-spacing: 1px;" id="price inlineFormInputGroupUsername2"
+                                  placeholder="Price">
+                                <div class="input-group-prepend">
+                                  <div class="input-group-text">%</div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group ">
+                              <button type="submit" id="submit" class="btn bg-primary text-white m-0"
+                                style="margin-top: 1rem !important;">submit</button>
+                            </div>
+                          </div>
+
+                    </div>
+                  </form>
+                </div>
+              </div>
+              <% }else{ %>
+                <% coupen.forEach((e,j)=>{ %>
+                  <% if( j==0) {%>
+                    <div class="col-md-6 col-xl-4 grid-margin stretch-card">
+                      <div class="card" style="border-radius: 15px;">
+                        <form id="myform" action="/admin/coupen" method="post" enctype="multipart/form-data">
+                          <div class="card-body">
+                            <h4 class="card-title">Add coupen+</h4>
+
+                            <% for(let i=0;i<1;i++) {%>
+                              <label for="images<%=i  %>"
+                                class="img-co   l position-relative   d-flex align-items-center justify-content-center "
+                                style=" height: 10rem; overflow: hidden;  cursor:pointer;  border: 2px dashed #ffffff40; border-radius: 15px;">
+                                <input required type="file" class="inp" accept="image/*"
+                                  onchange='hello(this,"<%=i %>")' name='images' id="images<%=i  %>" hidden required>
+                                <p class="opacity-50 text-center text-capitalize w-100  " id="p<%=i  %>"
+                                  style="opacity: .7;"><i class="ri-upload-cloud-2-line text-center   "></i><br>uplaod
+                                  images</p>
+                                <img src="" alt="" id="i<%=i  %>"
+                                  style="display: none;     border-radius: 15px;  width: 100% ; height: 100%; object-fit: cover; ">
+
+                                <div for="images<%=i  %>" id="imageL<%= i %>"
+                                  class="   position-absolute fs-3 mt-1  align-items-center justify-content-center      pointer-event "
+                                  style="
+                                     width:100%;
+                                      background-color: rgba(24, 23, 23, 0.11);
+                                      backdrop-filter: blur(1px);
+                                      height: 100%;
+                                      border-radius: 10px;
+                                      transition: all 0.3s ease 0s;
+                                      cursor: pointer;
+                                      letter-spacing: 0.1rem;
+      
+                                      object-fit: cover;
+                               ">Replace</div>
+                              </label>
+                              <% } %>
+                                <br>
+                                <div class="d-flex ">
+                                  <div class="preview-list w-100">
+                                    <div class="preview-item p-0">
+
+                                      <div class="preview-item-content d-flex flex-grow">
+                                        <div class="form-group w-100 w-100">
+                                          <label for="exampleInputName1">Name</label>
+                                          <div class="dname">
+                                            <input required type="text" oninput="validation(this)"
+                                              class="text w-100 name form-control text-white "
+                                              style="letter-spacing: 1px;" name="name" style="color:white;"
+                                              id="exampleInputName1" value="" placeholder="Name" required>
+                                            <p id="err1" class="text-danger "></p>
+                                          </div>
+                                        </div>
+
+                                      </div>
+
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class=" w-100  d-flex align-items-center justify-content-center "
+                                  style="display: flex; gap:.5rem;">
+                                  <div class="form-group w-100">
+                                    <label for="exampleInputPassword4">from</label>
+                                    <div class="input-group mb-2 mr-sm-2">
+
+                                      <div class="input-group-prepend">
+                                        <div class="input-group-text">$</div>
+                                      </div>
+
+                                      <input required oninput="from2(this)" id="from" type="number"
+                                        class="form-control price" min="0" name="from" style="letter-spacing: 1px;"
+                                        id="price inlineFormInputGroupUsername2" placeholder="Price">
+                                    </div>
+                                  </div>
+                                  <div class="form-group w-100">
+                                    <label for="exampleInputPassword4">to</label>
+                                    <div class="input-group mb-2 mr-sm-2">
+
+
+                                      <input required type="number" oninput="to2(this)" id="to"
+                                        class="form-control stock" min="0" name="to" style="letter-spacing: 1px;"
+                                        id=" stock inlineFormInputGroupUsername2" placeholder="Price">
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class=" w-100  d-flex align-items-center justify-content-center "
+                                  style="display: flex; gap:.5rem;">
+                                  <div class="form-group w-100">
+                                    <label for="exampleInputPassword4">offer</label>
+                                    <div class="input-group mb-2 mr-sm-2">
+
+                                      <input required type="number" class="form-control price" min="0" max="100"
+                                        name="offer" style="letter-spacing: 1px;"
+                                        id="price inlineFormInputGroupUsername2" placeholder="Price">
+                                      <div class="input-group-prepend">
+                                        <div class="input-group-text">%</div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="form-group ">
+                                    <button type="submit" id="submit" class="btn bg-primary text-white m-0"
+                                      style="margin-top: 1rem !important;">submit</button>
+                                  </div>
+                                </div>
+
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                    <% } %>
+                      <div id="c<%=e._id%>" class="col-md-6 col-xl-4 grid-margin stretch-card">
+                        <div class="card hh" id="hh<%=e._id  %>" style="border-radius: 15px;">
+                          <form action="/admin/coupen" method="post" enctype="multipart/form-data">
+                            <div class="card-body">
+                              <h4 class="card-title">
+                                <%= e.name %>
+                              </h4>
+
+
+                              <div for="images"
+                                class="img-co  bg-primary  l position-relative   d-flex align-items-center justify-content-center "
+                                style=" height: 10rem; overflow: hidden;  cursor:pointer;   border-radius: 15px;">
+
+                                <img src="/productImage/<%=e.image  %>" alt="" id="i"
+                                  style="     border-radius: 15px;  width: 100% ; height: 100%; object-fit: cover; ">
+
+                              </div>
+
+                              <br>
+                              <div class="d-flex ">
+                                <div class="preview-list w-100">
+                                  <div class="preview-item p-0">
+
+                                    <div class="preview-item-content d-flex flex-grow">
+                                      <div class="form-group w-100 w-100">
+                                        <label for="exampleInputName1">Id</label>
+                                        <div class="dname " id="name<%=e._id  %>">
+                                          <h3 class="card-title">
+                                            <%= e.ID %>
+                                          </h3>
+                                        </div>
+                                      </div>
+
+                                    </div>
+
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="d-flex w-100 d-flex align-items-center justify-content-between ">
+                                <div
+                                  class="preview-list w-100 w-100 d-flex align-items-center justify-content-between ">
+                                  <div
+                                    class="preview-item p-0 w-100 d-flex align-items-center justify-content-between  ">
+
+                                    <div class="preview-item-content d-flex flex-grow">
+                                      <div class="form-group w-100">
+                                        <label for="exampleInputName1">starting price</label>
+                                        <div class="dname " id="from<%=e._id  %>">
+                                          <h3 class="card-title">$<%= e.from %>
+                                          </h3>
+                                        </div>
+                                      </div>
+
+                                    </div>
+                                    <div class="preview-item-content d-flex flex-grow text-end"
+                                      style="text-align: end;">
+                                      <div class="form-group w-100" style="text-align: end;">
+                                        <label for="exampleInputName1">end price</label>
+                                        <div class="dname " id="to<%=e._id  %>">
+                                          <h3 class="card-title">$<%= e.to %>
+                                          </h3>
+                                        </div>
+                                      </div>
+
+                                    </div>
+
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div class=" w-100  d-flex align-items-center justify-content-between  "
+                                style="display: flex; gap:.5rem;">
+                                <div class="form-group">
+                                  <label for="exampleInputPassword4">offer</label>
+                                  <h3 class="card-title">
+                                    <%= e.offer %>%
+                                  </h3>
+                                </div>
+                                <div class="d-flex" style="gap: 1rem;">
+                                  <div class="form-group">
+                                    <a class="btn bg-primary text-white m-0"
+                                      onclick="edit('<%=j%>','<%=e._id%>','<%=e.name%>','<%=e.from%>','<%=e.to%>','<%=e.offer%>','<%=e.image%>')"
+                                      style="">edit</a>
+                                  </div>
+                                  <div class="form-group">
+                                    <a onclick="can('<%=e._id  %>')" hidden>sss</a>
+                                    <a onclick="remove1('<%=e._id%>')" class="btn   text-white m-0"
+                                      style="background-color: red;" style="">remove</a>
+                                  </div>
+                                </div>
+
+                              </div>
+
+                            </div>
+                          </form>
                         </div>
                       </div>
-                      <div class="form-group">
-                       <button type="submit" class="btn bg-primary text-white m-0" style="margin-top: 1rem !important;">submit</button>
-                      </div>
-                    </div>
-                       
-                      </div>
-                    </form>
-                    </div>
-                  </div>
-            </div>
+                      <% })} %>
+          </div>
         </div>
       </div>
   </div>
   </div>
+  <script src="sweetalert2/dist/sweetalert2.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script defer src="https://cdn.crop.guide/loader/l.js?c=KTKDGP"></script>
 
   <script src="/vendors/js/vendor.bundle.base.js"></script>
@@ -119,23 +339,218 @@
   <script src="/vendors/jvectormap/jquery-jvectormap.min.js"></script>
   <script src="/vendors/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
   <!-- <script src="/vendors/owl-carousel-2/owl.carousel.min.js"></script> -->
-<script>
+  <script>
+    const submit1 = document.getElementById("submit")
+    submit1.style.opacity = .7;
+    submit1.style.pointerEvents = 'none';
 
-      
-function hello(e, i) {
+
+
+    function edit(i, id, name, from, to, offer, image) {
+      const imL = document.getElementById(`imageL${i}`);
+
+      const card = document.getElementById(`c${id}`);
+      const old = card.innerHTML;
+
+      card.innerHTML = `  <div class="card" style="border-radius: 15px;">
+                        <form id="myform" action="/admin/coupenEdit/${id}" method="post" enctype="multipart/form-data">
+                          <div class="card-body">
+                            <h4 class="card-title">edit coupen</h4>
+
+                           
+                              <label for="images${i+1}"
+                                class="img-co   l position-relative   d-flex align-items-center justify-content-center "
+                                style=" height: 10rem; overflow: hidden;  cursor:pointer;  border: 2px dashed #ffffff40; border-radius: 15px;">
+                                <input  type="file" class="inp" accept="image/*"
+                                  onchange='hello(this,"${i+1}")' name='images' id="images${i+1}" hidden  >
+                                <p class="opacity-50 text-center text-capitalize w-100  " id="p${i+1}"
+                                  style="opacity: .7; display:none;"><i class="ri-upload-cloud-2-line text-center   "></i><br>uplaod
+                                  images</p>
+                                <img src="/productImage/${image}"" alt="" id="i${i+1}"
+                                  style="     border-radius: 15px;  width: 100% ; height: 100%; object-fit: cover; ">
+
+                                <div for="images${i+1}" id="imageL${i+1}"
+                                  class="   position-absolute fs-3 mt-1  align-items-center justify-content-center      pointer-event "
+                                  style="
+                                     width:100%;
+                                      background-color: rgba(24, 23, 23, 0.11);
+                                      backdrop-filter: blur(1px);
+                                      height: 100%;
+                                      border-radius: 10px;
+                                      transition: all 0.3s ease 0s;
+                                      cursor: pointer;
+                                      letter-spacing: 0.1rem;
+                                      display:flex;
+                                      object-fit: cover;
+                               ">Replace</div>
+                              </label>
+                      
+                                <br>
+                                <div class="d-flex ">
+                                  <div class="preview-list w-100">
+                                    <div class="preview-item p-0">
+
+                                      <div class="preview-item-content d-flex flex-grow">
+                                        <div class="form-group w-100 w-100">
+                                          <label for="exampleInputName1">Name</label>
+                                          <div class="dname">
+                                            <input required value='${name}' type="text" oninput="validation(this)"
+                                              class="text w-100 name form-control text-white "
+                                              style="letter-spacing: 1px;" name="name" style="color:white;"
+                                              id="exampleInputName1" value="" placeholder="Name" required>
+                                            <p id="err1" class="text-danger "></p>
+                                          </div>
+                                        </div>
+
+                                      </div>
+
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class=" w-100  d-flex align-items-center justify-content-center "
+                                  style="display: flex; gap:.5rem;">
+                                  <div class="form-group w-100">
+                                    <label for="exampleInputPassword4">from</label>
+                                    <div class="input-group mb-2 mr-sm-2">
+
+                                      <div class="input-group-prepend">
+                                        <div class="input-group-text">$</div>
+                                      </div>
+
+                                      <input required value='${from}' oninput="from2(this)" id="from" type="number"
+                                        class="form-control price" min="0" name="from" style="letter-spacing: 1px;"
+                                        id="price inlineFormInputGroupUsername2" placeholder="Price">
+                                    </div>
+                                  </div>
+                                  <div class="form-group w-100">
+                                    <label for="exampleInputPassword4">to</label>
+                                    <div class="input-group mb-2 mr-sm-2">
+
+
+                                      <input required value='${to}' type="number" oninput="to2(this)" id="to"
+                                        class="form-control stock" min="0" name="to" style="letter-spacing: 1px;"
+                                        id=" stock inlineFormInputGroupUsername2" placeholder="Price">
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class=" w-100  d-flex align-items-center justify-content-center "
+                                  style="display: flex; gap:.5rem;">
+                                  <div class="form-group w-100">
+                                    <label for="exampleInputPassword4">offer</label>
+                                    <div class="input-group mb-2 mr-sm-2">
+
+                                      <input required value='${offer}' type="number" class="form-control price" min="0" max="100"
+                                        name="offer" style="letter-spacing: 1px;"
+                                        id="price inlineFormInputGroupUsername2" placeholder="Price">
+                                      <div class="input-group-prepend">
+                                        <div class="input-group-text">%</div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="form-group">
+                                    <a id='can${id}' class="btn bg-primary text-white m-0"   style="margin-top: 1rem !important;"
+                                     
+                                      style="">cancel</a>
+                                  </div>
+                                  <div class="form-group ">
+                                    
+                                    <button type="submit" id="submit" class="btn bg-primary text-white m-0"
+                                      style="margin-top: 1rem !important;">submit</button>
+                                  </div>
+                                </div>
+
+                          </div>
+                        </form>
+                      </div>`;
+
+   
+
+
+document.getElementById(`can${id}`).addEventListener('click',()=>{
+  card.innerHTML=old
+})
+
+    }
+    
+
+
+
+    function hello(e, i) {
+      submit1.style.opacity = 1;
+      submit1.style.pointerEvents = 'all';
       const text = document.getElementById(`p${i}`);
       const im = document.getElementById(`i${i}`);
       const imL = document.getElementById(`imageL${i}`);
 
       im.src = URL.createObjectURL(e.files[0]);
-  
+
       im.style.display = 'block';
       text.style.display = 'none';
       imL.style.display = 'flex';
     }
 
+    function remove1(id) {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          fetch(`/admin/coupenRemove/${id}`, { method: 'delete' }).then(res => res.json()).then(data => {
+            if (data.set) {
+              document.getElementById(`c${id}`).remove()
+              Swal.fire({
+                title: "Deleted!",
+                text: "Your file has been deleted.",
+                icon: "success"
+              });
+            }
+          })
 
-</script>
+        }
+      })
+    }
+    const from1 = document.getElementById('from');
+    const to1 = document.getElementById('to')
+    const im = document.getElementById(`i0`);
+    const form = document.getElementById('myform');
+    function from2(e) {
+      if (to1.value !== '') {
+
+        e.max = to.value;
+      }
+    }
+
+    form.addEventListener('submit', (e) => {
+      if (im.src == '') {
+        e.preventDefault()
+      } else {
+        e.submit()
+      }
+    })
+
+    function validation(e) {
+      if (e.value.trim() == '') {
+        submit1.style.opacity = .7;
+        submit1.style.pointerEvents = 'none';
+      } else {
+        submit1.style.opacity = 1;
+        submit1.style.pointerEvents = 'all';
+
+      }
+    }
+
+    function to2(e) {
+      if (from1.value != '') {
+
+        e.min = from.value;
+      }
+    }
+  </script>
   <script src="/js/off-canvas.js"></script>
   <script src="/js/hoverable-collapse.js"></script>
   <script src="/js/misc.js"></script>
@@ -143,6 +558,36 @@ function hello(e, i) {
   <script src="/js/todolist.js"></script>
   <script src="/js/dashboard.js"></script>
   <style>
+    div:where(.swal2-container).swal2-top,
+    div:where(.swal2-container).swal2-center,
+    div:where(.swal2-container).swal2-bottom {
+      overflow-y: auto;
+      background-color: #000000d9;
+      backdrop-filter: blur(5px);
+      transition: all ease 0.3s;
+    }
+
+    .swal2-show {
+      backdrop-filter: blur(21px) !important;
+      background-color: #0f1116 !important;
+    }
+
+    .swal2-icon {
+      margin-bottom: 0px !important;
+    }
+
+    div:where(.swal2-icon).swal2-success .swal2-success-fix {
+      background-color: #0f1116 !important;
+    }
+
+    div:where(.swal2-icon).swal2-success [class^=swal2-success-circular-line][class$=left] {
+      background-color: #0f1116 !important;
+    }
+
+    div:where(.swal2-icon).swal2-success.swal2-icon-show .swal2-success-circular-line-right {
+      background-color: #0f1116 !important;
+    }
+
     @media (max-width:900px) {
       .aa {
         width: 100% !important;
@@ -174,6 +619,7 @@ function hello(e, i) {
     input[type="number"]::-webkit-outer-spin-button {
       -webkit-appearance: none !important;
     }
+
     #imageL3,
     #imageL1,
     #imageL2,
@@ -182,12 +628,30 @@ function hello(e, i) {
       opacity: 0;
       font-family: req;
     }
-    #msgP{
+
+    #msgP {
       letter-spacing: .1rem;
-    text-transform: uppercase;
-    font-family: req;
+      text-transform: uppercase;
+      font-family: req;
     }
-    
+
+    @font-face {
+      font-family: req;
+      src: url(/fonts/611aee5b70cc88187b78993c_GRIFTER.otf);
+    }
+
+    .card {
+      font-family: req;
+      letter-spacing: 2px;
+
+
+    }
+
+    .hh label {
+      opacity: .8 !important;
+      font-size: .8rem;
+    }
+
     .l:hover #imageL3,
     .l:hover #imageL1,
     .l:hover #imageL2,

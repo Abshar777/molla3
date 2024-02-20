@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const order = new mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'user' },
     orderAmount: { type: Number, required: true },
+    offer:{type:Number},
     deliveryAdress: {
         name: { type: String, required: true },
         city: { type: String, required: true },

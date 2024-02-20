@@ -130,10 +130,14 @@
                                                             </td>
                                                         </tr>
                                                         <% }) %>
+                                                        <tr>
+                                                            <td>coupen offer:</td>
+                                                            <td><%=locals.coupenOffer  %>%</td>
+                                                        </tr>
 
                                                             <tr class="summary-subtotal">
                                                                 <td>Subtotal:</td>
-                                                                <td>$<%= cart.TotalPrice %>
+                                                                <td>$<%= cart.TotalPrice/100*(100-locals.coupenOffer) %>
                                                                 </td>
                                                             </tr><!-- End .summary-subtotal -->
                                                             <tr>
@@ -142,7 +146,7 @@
                                                             </tr>
                                                             <tr class="summary-total">
                                                                 <td>Total:</td>
-                                                                <td>$<%= cart.TotalPrice %>
+                                                                <td>$<%= cart.TotalPrice/100*(100-locals.coupenOffer) %>
                                                                 </td>
                                                             </tr><!-- End .summary-total -->
                                                 </tbody>
@@ -161,7 +165,7 @@
                                                     <br>
                                                     <input type="text" name="" id="" onclick="submit()" hidden >
                                                     <!-- End .card-header -->
-                                                    <%  if(walletAmount>=cart.TotalPrice){%>
+                                                    <%  if(walletAmount>=cart.TotalPrice/100*(100-locals.coupenOffer)){%>
                                                     <div class="card-header" id="heading-1">
                                                         <h2 class="card-title">
 
@@ -202,7 +206,7 @@
                                             <% if(cart.products.length>0 ){ %>
                                                 <% if(locals.add){ %>
                             </form>
-                            <p onclick="submit1(this,'<%= cart.TotalPrice %>','<%=cart.userId  %>')" type="submit"
+                            <p onclick="submit1(this,'<%= cart.TotalPrice/100*(100-locals.coupenOffer)%>','<%=cart.userId  %>')" type="submit"
                                 class="btn btn-outline-primary-2 ">
                                 <span class="btn-text">Place Order</span>
                                 <span class="btn-hover-text">Proceed to Checkout</span>

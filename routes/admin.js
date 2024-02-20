@@ -104,6 +104,12 @@ router.put('/report',adminController.customreport)
 router.get('/coupen',adminMidleware.adminRoute,adminController.coupenPage)
 
 //coupen page rendering
-router.post('/coupen',adminController.coupenCreating)
+router.post('/coupen',upload.array('images'),adminController.coupenCreating)
+
+//coupen page rendering
+router.delete('/coupenRemove/:id',adminController.coupenRemove)
+
+//coupen page rendering
+router.post('/coupenEdit/:id',upload.array('images'),adminController.coupenEdit)
 
 module.exports=router;

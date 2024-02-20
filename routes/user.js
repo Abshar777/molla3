@@ -107,7 +107,7 @@ router.get('/orderView/:id',userMidleware.userbloack,userMidleware.user,userCont
 router.put('/editOrder',userController.editOrder)
 
 //chacking route
-// router.get('/check',userController.check)
+router.get('/check',userController.check)
 
 //razor pay fetching
 router.post('/razor',userController.razor)
@@ -115,14 +115,20 @@ router.post('/razor',userController.razor)
 //invoice download
 router.get('/invoice/:id',userController.invoice)
 
-//invoice download
+//change password
 router.get('/changpass',changeassMiddlware.changePass,userController.changePassword)
 
 //invoice download
 router.post('/changpass',userController.changePasswordpost);
 
 //edit profile
-router.post('/edit/:id',userController.editprofile)
+router.post('/edit/:id',userController.editprofile);
+
+//coupen code posting
+router.post('/coupenCode/:id',userController.coupenCode);
+
+//  order det page rendering
+router.get('/coupen',userMidleware.userbloack,userMidleware.user,userController.coupenView)
 
 //logout
 router.post('/logout',userController.logout)

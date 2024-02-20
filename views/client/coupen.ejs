@@ -1,0 +1,137 @@
+<%- include('../layout/header.ejs') -%>
+    <link rel="stylesheet" href="css/mycss/profile.css">
+    </head>
+
+    <body>
+
+        <%- include('../layout/nave.ejs') -%>
+            <nav aria-label="breadcrumb" class="breadcrumb-nav mb-3">
+                <div class="container">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">coupen</li>
+                    </ol>
+                </div><!-- End .container -->
+            </nav>
+            <br>
+
+
+
+            <section class="">
+                <div class="container-fluid  py-5 h-100 position-relative ">
+                    <div class="row d-flex    align-items-start  h-100" style="gap: 10rem;">
+                        <aside class="col-md-4 col-lg-3  ">
+                            <ul class="nav nav-dashboard flex-column mb-3 mb-md-0" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link " id="tab-dashboard-link" href="/profile"
+                                        aria-selected="false">Profile</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="tab-orders-link" href="/order"
+                                        aria-selected="false">Orders</a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link " id="tab-address-link" href="/adress"
+                                        aria-selected="true">Adresses</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="tab-account-link" href="/coupen"
+                                        aria-selected="false">Coupens</a>
+                                </li>
+                                <li class="nav-item">
+                                    <form action="/logout" method="post">
+                                        <a class="nav-link" href="#">
+                                            <button type="submit" class=" border-0 bg-transparent ">Sign
+                                                Out</button></a>
+                                    </form>
+                                </li>
+                            </ul>
+                        </aside>
+                        <aside class="col col-lg-8 mb-4 mb-lg-0">
+                            <div class="row w-100" style="gap: 2rem;">
+
+                                <div class="container">
+                                    <div class="row">
+                                        <% coupen.forEach((e,i)=>{%>
+                                            <div class="col-md-6">
+                                                <div class="banner" style='border-radius: 15px;'>
+                                                    <a href="#" style=" overflow: hidden;
+                            border-radius: 10px; height: 20rem;">
+                                                        <img src="/productImage/<%=e.coupenId.image  %>"
+                                                            style="width: 100%; height: 100%; object-fit: cover;"
+                                                            alt="Banner">
+                                                    </a>
+
+                                                    <div class="banner-content text-white ">
+                                                        <h4 class="banner-subtitle  text-white "
+                                                            style='    text-shadow: -2px 0px 7px black'>
+                                                            <%=e.coupenId.name %>
+                                                        </h4>
+                                                        <h2 class="  text-white"
+                                                            style='    text-shadow: -2px 0px 7px black;   mix-blend-mode: difference !important;'>
+                                                            <%= e.coupenId.offer %>% offer
+                                                        </h2>
+                                                        <h4 class="banner-subtitle  text-white  text-body-emphasis  "
+                                                            style='    text-shadow: -2px 0px 7px black'><span
+                                                                class="bg-primary ">coupen Id:</span> <span
+                                                                style="background-color:transparent ;"
+                                                                class="bg-transparent  text-white">
+                                                                <input  style="background-color:transparent ; border: 0px !important; outline: 0px !important; color: #fff; pointer-events: none; cursor: none;"  type="text" id="<%= e.ID  %>"
+                                                                value="<%= e.ID  %> " name="" >
+                                                               
+                                                            </span></h4>
+                                                      
+                                                        <a  data-swal-toast-template="#my-template"
+                                                            onclick="copy(`<%= e.ID  %>`)"
+                                                            class="banner-link text-white " style="cursor: pointer;"> click,copy the code</a>
+                                                    </div><!-- End .banner-content -->
+                                                </div><!-- End .banner -->
+                                            </div><!-- End .col-md-6 -->
+                                            <% }) %>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </aside>
+                    </div>
+
+                </div>
+            </section>
+
+            <script>
+                function copy(id) {
+                    const fild = document.getElementById(`${id}`);
+
+                    const g=fild.select();
+                    fild.setSelectionRange(0, 99999);
+                    document.execCommand('copy');
+                    Swal.fire({
+                        
+                  title: "succes",
+                  text: "code is copied "+fild.value,
+                  icon: "success"
+                });
+                }
+            </script>
+
+            <%- include('../layout/mobMenu.ejs') -%>
+                <%- include('../layout/lyfooter') -%>
+
+                    <style>
+                        *::-webkit-scrollbar {
+                            width: 0;
+                        }
+
+                        input[type="number"]::-webkit-inner-spin-button,
+                        input[type="number"]::-webkit-outer-spin-button {
+                            -webkit-appearance: none !important;
+                        }
+                    </style>
+                             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                    <script
+                        src="https://cdn.jsdelivr.net/npm/locomotive-scroll@3.5.4/dist/locomotive-scroll.js"></script>
+                    <script src="js/demos/demo-6.js"></script>
+                    <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
+                    <%- include('../layout/footer.ejs') -%>
+                        <!-- <script src="js/base.js"></script> -->

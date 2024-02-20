@@ -13,6 +13,8 @@ const fs = require('fs');
 const path = require('path')
 const { v4: uuid } = require('uuid')
 const wallet = require('../models/wallet');
+const coupenSchema = require("../models/coupen");
+const coupenId = require('../config/coupenId')
 const { RAZORPAY_IDKEY, RAZORPAY_SECRET_KEY } = process.env;
 
 
@@ -22,7 +24,7 @@ const generateOTP = () => {
     return Math.floor(1000 + Math.random() * 9000);
 };
 
-//razorpay instence
+
 
 
 var instance = new Razorpay({
@@ -457,9 +459,11 @@ const cart = async (req, res) => {
                 new: true,
             };
             const totalPriceAdding = await cartModal.findOneAndUpdate({ userId: req.session.login }, { $set: { TotalPrice: total } }, options).exec()
-            res.render('client/cart', { cart, login: req.session.login, totalprice: totalPriceAdding.TotalPrice })
+           const msg=req.flash('msg')
+            res.render('client/cart', { cart, login: req.session.login, totalprice: totalPriceAdding.TotalPrice,msg })
         } else {
-            res.render('client/cart', { login: req.session.login, totalprice: 0 })
+            const msg=req.flash('msg')
+            res.render('client/cart', { login: req.session.login, totalprice: 0 ,msg})
         }
 
 
@@ -541,9 +545,8 @@ const addcartPost = async (req, res) => {
                     }
                 }
             }).exec();
-            console.log('hello')
+
             if (!result) {
-                console.log('noe')
                 const tp = product.price * req.body.q;
 
                 const filter = { userId: req.query.user };
@@ -739,6 +742,7 @@ const removeadress = async (req, res) => {
 // checkoutPage page rendering
 const checkoutPage = async (req, res) => {
     try {
+        const coupenOffer=req.session.offer || 0;
         const user = await userSchema.findOne({ _id: req.session.login })
         const cart = await cartModal.findOne({ userId: req.session.login }).populate('products.productId');
         const wallet1 = await wallet.findOne({ userId: req.session.login })
@@ -755,9 +759,9 @@ const checkoutPage = async (req, res) => {
 
                 }
             })
-            res.render('client/checkout', { login: req.session.login, add, cart, walletAmount })
+            res.render('client/checkout', { login: req.session.login, add, cart, walletAmount,coupenOffer })
         } else {
-            res.render('client/checkout', { login: req.session.login, cart, walletAmount })
+            res.render('client/checkout', { login: req.session.login, cart, walletAmount,coupenOffer })
 
         }
 
@@ -834,11 +838,14 @@ const razor = async (req, res) => {
 //postSucces
 const postSucces = async (req, res) => {
     try {
+        const offer =req.session.offer || 0;
         const user = await userSchema.findOne({ _id: req.session.login })
         const cart = await cartModal.findOne({ userId: req.session.login })
+        const orderAmount=cart.TotalPrice/100*(100-offer)
         const orderSet = await orderModal.create({
             userId: req.session.login,
-            orderAmount: cart.TotalPrice,
+            orderAmount: orderAmount,
+            offer:offer,
             deliveryAdress: user.addressId,
             peyment: req.body.peyment,
             deliveryAdress: {
@@ -854,9 +861,16 @@ const postSucces = async (req, res) => {
                 price: e.price,
             })),
         })
+        if(req.session.offer && req.session.coupenId){
+           
+            const hh=req.session.coupenId.trim()
+            const id=String(hh)
+           const coupenRemove= await userSchema.findOneAndUpdate({_id:user._id  },{$pull:{coupens:{ID:id}}})
+          
+        }
         if (req.body.peyment == 'wallet') {
-            const ne=0-cart.TotalPrice
-            await wallet.findOneAndUpdate({userId:req.session.login},{$inc:{amount:ne}})
+            const ne = 0 - cart.TotalPrice
+            await wallet.findOneAndUpdate({ userId: req.session.login }, { $inc: { amount: ne } })
         }
         if (orderSet) {
             orderSet.OrderedItems.forEach(async (e) => {
@@ -869,14 +883,51 @@ const postSucces = async (req, res) => {
                 { userId: req.session.login },
                 { $unset: { products: 1 } }
             );
+           
+            const coupen = await coupenSchema.find({
+                from: { $lte: cart.TotalPrice },
+                to:{$gte:cart.TotalPrice}
+              });
+            if (coupen.length !== 0) {
+                for (const e of coupen) {
+                    let id = coupenId.generateRandomId()
+                    let flag = 0;
+                    while (flag == 1) {
+            
+                        let data =  await userSchema.findOne({
+                            _id: req.session.login,
+                            "coupens.ID":id
+                        });
+                        if (!data) {
+                            console.log(flag)
+                            flag = 1
+                        } else {
+                            id = coupenId.generateRandomId()
+                        }
+                    }
+                   
+                   const coupenSet=await userSchema.findOneAndUpdate(
+                      { _id: req.session.login },
+                      {
+                        $push: {
+                          coupens: {
+                            ID: id,
+                            coupenId: e._id
+                          }
+                        }
+                      }
+                    );
+                   
+                  }
+                  
+            }
             if (removeCart) {
 
                 req.session.succes = true
                 res.redirect('/success')
 
             } else {
-
-
+                res.send('its fucked up')
             }
         } else {
             res.send('irs note')
@@ -944,25 +995,25 @@ const editOrder = async (req, res) => {
                 }
             },
             {
-                new:true
+                new: true
             }
         )
         if (newOne) {
 
             if (newOne.OrderedItems.length == 1) {
-                const k=await orderModal.findOneAndUpdate({ _id: newOne._id }, { $set: { orderStatus: 'canceled' } })
-            
-            }else{
+                const k = await orderModal.findOneAndUpdate({ _id: newOne._id }, { $set: { orderStatus: 'canceled' } })
+
+            } else {
                 let flag = newOne.OrderedItems.filter(e => e.orderProStatus === 'canceled').length;
                 if (flag === newOne.OrderedItems.length) {
-                    const k=await orderModal.findOneAndUpdate({ _id: newOne._id }, { $set: { orderStatus: 'canceled' } })
+                    const k = await orderModal.findOneAndUpdate({ _id: newOne._id }, { $set: { orderStatus: 'canceled' } })
 
                 }
             }
             if (newOne.peyment != 'cod') {
-                 await wallet.findOneAndUpdate({ userId: req.body.user }, { $inc: { amount: req.body.price } }, { new: true, upsert: true });
-            } 
-           
+                await wallet.findOneAndUpdate({ userId: req.body.user }, { $inc: { amount: req.body.price } }, { new: true, upsert: true });
+            }
+
             res.send({ set: true })
         } else {
             res.send({ issue: true })
@@ -977,12 +1028,26 @@ const editOrder = async (req, res) => {
 //chacking route
 const check = async (req, res) => {
     try {
+        const coupen1=await coupenSchema.find({})
+        const coupen = await coupenSchema.findOne({
+            from: { $lte: 1 },
+          
+            
+          });
 
+          console.log(coupen)
+          res.send(coupen1)
+        if (12<=128 && 180>=12) {
+            res.send(true)
+        } else {
+            res.send(false)
+
+        }
         res.render('check')
 
 
     } catch (err) {
-        console.log(err.messahe + '     check route')
+        console.log(err.message + '     check route')
     }
 }
 
@@ -1063,6 +1128,42 @@ const editprofile = async (req, res) => {
     }
 }
 
+//ccoupenView
+const coupenView=async(req,res)=>{
+    try{
+        const coupen=await userSchema.findOne({_id:req.session.login}).populate('coupens.coupenId')
+
+        res.render('client/coupen',{ login: req.session.login, coupen:coupen.coupens })
+    }catch(err){
+        console.log(err.message+'     coupenView')
+    }
+}
+
+//coupenCode
+const coupenCode=async(req,res)=>{
+    try{
+        const hh=req.body.id.trim()
+        const id=String(hh)
+       const dataExist=await userSchema.findOne({_id:req.params.id  ,'coupens.ID':id}).populate("coupens.coupenId");
+       req.session.coupenId=id
+       let offer;
+       dataExist.coupens.forEach((e)=>{
+        if(e.ID==id){
+            offer=e.coupenId.offer
+        }
+       })
+       req.session.offer=offer
+        if(dataExist){
+            res.redirect('/checkoutPage')
+        }else{
+            req.flash('msg',"coupen did'nt exist")
+            res.redirect('/cart')
+        }
+    }catch(err){
+        console.log(err.message+' coupenCode')
+    }
+}
+
 module.exports = {
     signUp,
     getSignUp,
@@ -1104,5 +1205,7 @@ module.exports = {
     invoice,
     changePassword,
     changePasswordpost,
-    editprofile
+    editprofile,
+    coupenView,
+    coupenCode
 }

@@ -84,15 +84,17 @@
 
                                         <div class="cart-bottom">
                                             <div class="cart-discount">
-                                                <form action="#">
+                                                <form action="/coupenCode/<%=locals.login  %>" method="post">
                                                     <div class="input-group">
-                                                        <input type="text" class="form-control" required
-                                                            placeholder="coupon code">
-                                                        <div class="input-group-append">
+                                                        <input type="text" name="id"  class="form-control" required
+                                                            placeholder="coupon code" oninput="check(this)">
+                                                          
+                                                        <div  id="codeSubmit" class="input-group-append">
                                                             <button class="btn btn-outline-primary-2" type="submit"><i
                                                                     class="icon-long-arrow-right"></i></button>
                                                         </div><!-- .End .input-group-append -->
-                                                    </div><!-- End .input-group -->
+                                                    </div>
+                                                    <p id="msg" class="text-danger "><%=locals.msg || ''  %></p><!-- End .input-group -->
                                                 </form>
                                             </div><!-- End .cart-discount -->
 
@@ -167,6 +169,17 @@
         <%- include('../layout/mobMenu.ejs') -%>
 
             <script>
+               const codeSubmit=document.getElementById('codeSubmit')
+                function check(e){
+                    if(e.value.trim()==''){
+                        codeSubmit.style.opacity=.6;
+                        codeSubmit.style.pointerEvents='none'
+                    }else{
+                        codeSubmit.style.opacity=1;
+                        codeSubmit.style.pointerEvents='all'
+                    }
+                }
+
                 function stock(e,price,i,id){
                     const Tprice= document.getElementById(`price${i}`)
                     const Total= document.getElementById(`total`)
