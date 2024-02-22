@@ -9,6 +9,8 @@ const product= new mongoose.Schema({
     status: {type:Boolean,default: true  },
     stock: { type: Number, default: 1 },
     images: {type:Array, required:true},
+    offer:{type: mongoose.Schema.Types.ObjectId, ref: 'offer'},
+    actualPrice:{type: Number}
 })
 
 

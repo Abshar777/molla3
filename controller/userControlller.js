@@ -390,13 +390,20 @@ const getLogin = async (req, res) => {
 //shop
 const shop = async (req, res) => {
     try {
-        const Allproduct = await productModal.find({ stock: { $gt: 0 } }).populate('category')
+        const Allproduct = await productModal.find({ stock: { $gt: 0 } }).populate('category');
+        let product=[];
+        Allproduct.forEach((e,i)=>{
+            if(e.category.active==true){
+                product.push(e)
+            }
+        })
+   
         if (req.session.login) {
 
-            res.render('client/shop', { login: req.session.login, Allproduct })
+            res.render('client/shop', { login: req.session.login, Allproduct:product })
 
         } else {
-            res.render('client/shop', { Allproduct })
+            res.render('client/shop', { Allproduct:product })
 
         }
     } catch (err) {

@@ -22,11 +22,7 @@
                 <div class="checkout">
                     <div class="container">
                         <div class="checkout-discount">
-                            <form action="#">
-                                <input type="text" class="form-control" required id="checkout-discount-input">
-                                <label for="checkout-discount-input" class="text-truncate">Have a coupon? <span>Click
-                                        here to enter your code</span></label>
-                            </form>
+                           <a href="/cart">have coupen?</a>
                         </div><!-- End .checkout-discount -->
                         <%let b=cart.products.map(e=> e.productId._id).join(','); %>
                             <form action="/success?p=<%=cart._id  %> %>" id="myForm" method="post">

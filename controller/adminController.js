@@ -1,4 +1,5 @@
 const userSchema = require("../models/userSchema");
+const offerSchema = require("../models/offer");
 const categoryModal = require('../models/catagory')
 const productModal = require('../models/products');
 const coupenId = require('../config/coupenId')
@@ -862,44 +863,117 @@ const coupenCreating = async (req, res) => {
 // coupenRemove
 const coupenRemove = async (req, res) => {
     try {
-       const coupen=await coupenSchema.findOneAndDelete({_id:req.params.id});
-       const imagePath = path.join(__dirname, '../public/productImage',coupen.image );
-       if (fs.existsSync(imagePath)) {
-           fs.unlinkSync(imagePath);}
-           if(coupen){
-            res.send({set:true})
-           }
+        const coupen = await coupenSchema.findOneAndDelete({ _id: req.params.id });
+        const imagePath = path.join(__dirname, '../public/productImage', coupen.image);
+        if (fs.existsSync(imagePath)) {
+            fs.unlinkSync(imagePath);
+        }
+        if (coupen) {
+            res.send({ set: true })
+        }
     } catch (err) {
-       console.log(err.message+'  coupenRemove') 
+        console.log(err.message + '  coupenRemove')
     }
 }
 
 // coupenRemove
 const coupenEdit = async (req, res) => {
     try {
-        const coupen=await coupenSchema.findOne({_id:req.params.id});
-        const image=req.files[0] ||coupen.image;
-        const coupenNew=await coupenSchema.findOneAndUpdate({_id:req.params.id},{$set:{  name: req.body.name,
-            offer: req.body.offer,
-            from: req.body.from,
-            to: req.body.to,
-            image: image}});
-        if(req.files[0]){
+        const coupen = await coupenSchema.findOne({ _id: req.params.id });
+        const image = req.files[0] || coupen.image;
+        const coupenNew = await coupenSchema.findOneAndUpdate({ _id: req.params.id }, {
+            $set: {
+                name: req.body.name,
+                offer: req.body.offer,
+                from: req.body.from,
+                to: req.body.to,
+                image: image
+            }
+        });
+        if (req.files[0]) {
 
-            const imagePath = path.join(__dirname, '../public/productImage',coupen.image );
+            const imagePath = path.join(__dirname, '../public/productImage', coupen.image);
             if (fs.existsSync(imagePath)) {
-                fs.unlinkSync(imagePath);}
-             
+                fs.unlinkSync(imagePath);
+            }
+
         }
-        if(coupenNew){
+        if (coupenNew) {
             res.redirect('/admin/coupen')
-        }else{
+        } else {
             res.send('somthing issue')
         }
     } catch (err) {
-       console.log(err.message+'  coupenEdit') 
+        console.log(err.message + '  coupenEdit')
     }
 }
+
+//offerPage
+const offerPage = async (req, res) => {
+    try {
+        const offer = await offerSchema.find({})
+        res.render('admin/offer', { admin: req.session.admin, offer })
+    } catch (err) {
+        console.log(err.message + ' offerPage')
+    }
+}
+
+//offerCreating
+const offerCreating = async (req, res) => {
+    try {
+        const offerCreate = await offerSchema.create({
+            name: req.body.name,
+            offer: req.body.offer
+        })
+        if (offerCreate) {
+            res.redirect('/admin/offer')
+        } else {
+            res.send('somthing issue there')
+        }
+    } catch (err) {
+        console.log(err.message + ' offerCreating')
+    }
+}
+
+//offerProductAdd and removing
+const offerProductAdd = async (req, res) => {
+    try {
+        await offerSchema.findOne({ _id: req.params.id })
+        if (req.body.add) {
+            const data = await productModal.findOne({ _id: req.body.id });
+            const offerPrice = data.price / 100 * (100 - req.body.offer)
+            await productModal.findOneAndUpdate({ _id: req.body.id }, { $set: { offer: req.params.id, actualPrice: data.price, price: offerPrice } })
+        } else {
+            const data = await productModal.findOne({ _id: req.body.id });
+            await productModal.findOneAndUpdate({ _id: req.body.id }, { $unset: { offer: 1, actualPrice: 1 }, $set: { price: data.actualPrice } })
+        }
+    } catch (err) {
+        console.log(err.message + '   offerProductAdd')
+    }
+}
+
+
+//offerProduct
+const offerProduct = async (req, res) => {
+    try {
+const offer=await offerSchema.findOne({_id:req.params.id })
+console.log(offer.offer)
+        const product = await productModal.find({});
+        res.render('admin/offerProduct', { admin: req.session.admin, product, id: req.params.id ,offer:offer.offer})
+    } catch (err) {
+        conosle.log(err.message + '    offerProduct')
+    }
+}
+
+//addOfferPage
+const addOfferPage = async (req, res) => {
+    try {
+        res.render('admin/addOffer', { admin: req.session.admin })
+    } catch (err) {
+        console.log(err.message + '  addOfferPage')
+    }
+}
+
 
 module.exports = {
     adminPage,
@@ -929,5 +1003,10 @@ module.exports = {
     coupenPage,
     coupenCreating,
     coupenRemove,
-    coupenEdit
+    coupenEdit,
+    offerPage,
+    offerCreating,
+    offerProductAdd,
+    offerProduct,
+    addOfferPage
 }

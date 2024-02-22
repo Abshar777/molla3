@@ -1,0 +1,112 @@
+<%- include('../layout/adminlayout.ejs') -%>
+  <div class="container-scroller">
+
+    <%- include('../layout/adminnav.ejs') -%>
+
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="col-12 grid-margin stretch-card">
+            <div class="circle position-absolute " style="background-color: rebeccapurple;
+            filter: blur(136px);
+            width: 13rem;
+            height: 10rem;
+            border-radius: 50%;
+            transform: translate(57rem, 0rem);"></div>
+            <div class="circle position-absolute " style="background-color: rgba(0, 0, 255, 0.589);
+            filter: blur(136px);
+            width: 13rem;
+            height: 10rem;
+            border-radius: 50%;
+         "></div>
+            <div class="card" style="border-radius: 15px; box-shadow: 0 0 0 0; border: 0;">
+              <div class="card-body">
+                <h4 class="card-title">offer</h4>
+
+                <form class="forms-sample" action="/admin/offer" method="post" id="myForm">
+                  <div class="form-group">
+                    <label for="exampleInputName1">offer Name</label>
+                    <input type="text" class="form-control text-white text" oninput='check(this)' name="name"
+                      style="color:white;" id="exampleInputName1" placeholder="Name" required>
+                  </div>
+                  <p class="text-danger err"></p>
+                  <div class="form-group">
+                    <label for="exampleInputName1">offer</label>
+                    <div class="input-group mb-2 mr-sm-2">
+
+                        <input type="number" class="form-control" name="offer" oninput='check(this)' id="inlineFormInputGroupUsername2"
+                          placeholder="Price" min="0" max="100">
+                        <div class="input-group-prepend">
+
+                          <div class="input-group-text">%</div>
+                        </div>
+                      </div>
+                  </div>
+                  
+
+             
+                  <button type="submit" id="submit" class="btn submit btn-primary mr-2">Submit</button>
+                  <button type="reset" class="btn btn-dark"><a href="/admin/offer">cancel</a></button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+  </div>
+
+  <script>
+   const submit= document.getElementById('submit')
+    function check(e){
+        if(e.value.trim()==''){
+            submit.style.pointerEvents='none';
+            submit.style.opacity=.6;
+        }else{
+            submit.style.pointerEvents='all';
+            submit.style.opacity=1;
+            
+        }
+    }
+  </script>
+  <script src="/vendors/js/vendor.bundle.base.js"></script>
+
+  <script src="/vendors/chart.js/Chart.min.js"></script>
+  <script src="/vendors/progressbar.js/progressbar.min.js"></script>
+  <script src="/vendors/jvectormap/jquery-jvectormap.min.js"></script>
+  <script src="/vendors/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
+  <script src="/vendors/owl-carousel-2/owl.carousel.min.js"></script>
+
+  <script src="/js/off-canvas.js"></script>
+  <script src="/js/hoverable-collapse.js"></script>
+  <script src="/js/misc.js"></script>
+  <script src="/js/settings.js"></script>
+  <script src="/js/todolist.js"></script>
+  <script src="/js/dashboard.js"></script>
+  <style>
+    body::-webkit-scrollbar {
+      width: 0;
+    }
+
+    body {
+      overflow: hidden !important;
+    }
+
+    .container-scroller {
+      overflow: hidden;
+    }
+
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none !important;
+    }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@3.5.4/dist/locomotive-scroll.js"></script>
+
+  <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
+
+  <script src="/js/base.js"></script>
+
+  </body>
+
+  </html>

@@ -1,0 +1,126 @@
+<%- include('../layout/adminlayout.ejs') -%>
+  <div class="container-scroller">
+
+    <%- include('../layout/adminnav.ejs') -%>
+
+      <div class="main-panel">
+        <div class="content-wrapper">
+            
+          <div class="row ">
+            <div class="circle position-absolute " style="background-color: rebeccapurple;
+            filter: blur(136px);
+            width: 13rem;
+            height: 10rem;
+            border-radius: 50%;
+            transform: translate(57rem, 23rem);"></div>
+            <div class="circle position-absolute " style="background-color: rgba(0, 0, 255, 0.589);
+            filter: blur(136px);
+            width: 13rem;
+            height: 10rem;
+            border-radius: 50%;
+         "></div>
+            <div class="col-12 grid-margin">
+              <div class="card " style="height: 80vh; border-radius: 15px; box-shadow: 0 0 0 0; border: 0;">
+                <div class="card" style="border-radius: 15px; box-shadow: 0 0 0 0; border: 0;">
+                  <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between ">
+                      <h4 class="card-title">offer product adding Status</h4>
+                      <a href="/admin/addOffer" class="btn btn-primary text-white " style="outline: 0; border:0; margin-top: -1rem;">back to offer</a>
+                    </div>
+                    <div class="table-responsive">
+                        <form action="/admin/offer" method="post">
+                      <table class="table">
+                        <thead>
+                          <tr>
+                            <th>
+                              No
+                            </th>
+                            <th>image</th>
+                            <th>  Name </th>
+                            <th> price </th>
+                            <th> add </th>
+
+                  
+                          </tr>
+                        </thead>
+                        <tbody>
+                            <%locals.product.forEach((e,i)=>{%>
+                       <tr>
+                        <td><%=i+1  %></td>
+                        <td><img src="/productImage/<%=e.images[0]  %>" alt=""></td>
+                        <td  ><%=e.name  %></td>
+                        <td  >$<%=e.price  %></td>
+                        <td  >    <div class="form-check form-check-flat form-check-primary">
+                            <label class="form-check-label">
+                                <% console.log(locals.offer); %>
+                              <input type="checkbox"  <%= locals.id==e.offer?"checked":'' %> onchange="hello(this,'<%=e._id%>','<%=locals.id%>',<%=locals.offer%>)" class="form-check-input"></label>
+                          </div> </td>
+                       </tr>
+                       <% }) %>
+                        </tbody>
+                      </table>
+                   
+                      </form>
+                    </div>
+                  </div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+<script>
+    function hello(e,id,offerId,offer){
+        console.log('add');
+        const add=e.checked?true:false
+        console.log(add);
+        fetch(`/admin/offer/${offerId}`,{
+            method:'put',
+            headers:{ "Content-Type": "application/json" },
+            body:JSON.stringify({id,add,offer})
+        }).then(res=>res.json())
+    }
+</script>
+  <script src="/vendors/js/vendor.bundle.base.js"></script>
+
+  <script src="/vendors/chart.js/Chart.min.js"></script>
+  <script src="/vendors/progressbar.js/progressbar.min.js"></script>
+  <script src="/vendors/jvectormap/jquery-jvectormap.min.js"></script>
+  <script src="/vendors/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
+  <script src="/vendors/owl-carousel-2/owl.carousel.min.js"></script>
+
+  <script src="/js/off-canvas.js"></script>
+  <script src="/js/hoverable-collapse.js"></script>
+  <script src="/js/misc.js"></script>
+  <script src="/js/settings.js"></script>
+  <script src="/js/todolist.js"></script>
+  <script src="/js/dashboard.js"></script>
+  <style>
+    body::-webkit-scrollbar {
+      width: 0;
+    }
+
+    body {
+      overflow: hidden !important;
+    }
+
+    .container-scroller {
+      overflow: hidden;
+    }
+
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none !important;
+    }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@3.5.4/dist/locomotive-scroll.js"></script>
+
+  <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
+
+  <script src="/js/base.js"></script>
+
+  </body>
+
+  </html>

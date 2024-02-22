@@ -103,6 +103,18 @@ router.put('/report',adminController.customreport)
 //coupen page rendering
 router.get('/coupen',adminMidleware.adminRoute,adminController.coupenPage)
 
+//offer page rendering
+router.get('/offer',adminMidleware.adminRoute,adminController.offerPage)
+
+//coupen page rendering
+router.post('/offer',adminController.offerCreating)
+
+//offer product adding and removing
+router.put('/offer/:id',adminController.offerProductAdd)
+
+//offer product showing page rendering
+router.get('/offerProduct/:id',adminMidleware.adminRoute,adminController.offerProduct)
+
 //coupen page rendering
 router.post('/coupen',upload.array('images'),adminController.coupenCreating)
 
@@ -110,6 +122,10 @@ router.post('/coupen',upload.array('images'),adminController.coupenCreating)
 router.delete('/coupenRemove/:id',adminController.coupenRemove)
 
 //coupen page rendering
-router.post('/coupenEdit/:id',upload.array('images'),adminController.coupenEdit)
+router.post('/coupenEdit/:id',upload.array('images'),adminController.coupenEdit);
+
+//coupen page rendering
+router.get('/addOffer',adminMidleware.adminRoute,adminController.addOfferPage);
+
 
 module.exports=router;
