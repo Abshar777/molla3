@@ -956,10 +956,9 @@ const offerProductAdd = async (req, res) => {
 //offerProduct
 const offerProduct = async (req, res) => {
     try {
-const offer=await offerSchema.findOne({_id:req.params.id })
-console.log(offer.offer)
+        const offer = await offerSchema.findOne({ _id: req.params.id })
         const product = await productModal.find({});
-        res.render('admin/offerProduct', { admin: req.session.admin, product, id: req.params.id ,offer:offer.offer})
+        res.render('admin/offerProduct', { admin: req.session.admin, product, id: req.params.id, offer: offer.offer })
     } catch (err) {
         conosle.log(err.message + '    offerProduct')
     }
@@ -968,12 +967,49 @@ console.log(offer.offer)
 //addOfferPage
 const addOfferPage = async (req, res) => {
     try {
-        res.render('admin/addOffer', { admin: req.session.admin })
+        
+        res.render('admin/addOffer', { admin: req.session.admin,creat:'offer' })
     } catch (err) {
         console.log(err.message + '  addOfferPage')
     }
 }
 
+//offerEdit
+const offerEdit=async(req,res)=>{
+    try{
+        const data=await offerSchema.findOne({ _id: req.params.id })
+        res.render('admin/addOffer', { admin: req.session.admin,edit:'offeredit' ,data,id:data._id})
+    }catch(err){
+        console.log(err.message+'   offerEdit')
+    }
+}
+
+// getofferEdit
+const getofferEdit=async(req,res)=>{
+    try{
+        const {name,offer}=req.body;
+        console.log(name,offer);
+        const data=await offerSchema.findOneAndUpdate({ _id: req.params.id },{$set:{name,offer}})
+        res.redirect('/admin/offer')
+
+    }catch(err){
+        console.log(err.message+'    getofferEdit')
+    }
+}
+
+//offerdeleat
+const offerdeleat=async(req,res)=>{
+    try{
+       const gg= await productModal.find({offer:req.params.id})
+        gg.forEach(async(e)=>{
+            await productModal.findOneAndUpdate({_id:e._id},{$unset:{offer:'',actualPrice:''},$set:{price:e.actualPrice}})
+        })
+        await offerSchema.findOneAndDelete({_id:req.params.id})
+        res.redirect('/admin/offer')
+    }catch(err){
+        console.log(err.message+' offerdeleat')
+    }
+}
 
 module.exports = {
     adminPage,
@@ -1008,5 +1044,8 @@ module.exports = {
     offerCreating,
     offerProductAdd,
     offerProduct,
-    addOfferPage
+    addOfferPage,
+    offerEdit,
+    getofferEdit,
+    offerdeleat
 }

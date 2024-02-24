@@ -21,11 +21,12 @@
             <div class="card" style="border-radius: 15px; box-shadow: 0 0 0 0; border: 0;">
               <div class="card-body">
                 <h4 class="card-title">offer</h4>
-
-                <form class="forms-sample" action="/admin/offer" method="post" id="myForm">
+<% const editOrCreat=locals.creat ?locals.creat:locals.edit; const name=locals.data?.name ?locals.data?.name:''; const offer=locals.data?.offer ?locals.data?.offer:'';  %>
+<%const id=locals.id ?locals.id:null;  %>
+                <form class="forms-sample" action="/admin/<%=editOrCreat%>/<%=id  %>" method="post" id="myForm">
                   <div class="form-group">
                     <label for="exampleInputName1">offer Name</label>
-                    <input type="text" class="form-control text-white text" oninput='check(this)' name="name"
+                    <input value="<%=name  %>" type="text" class="form-control text-white text" oninput='check(this)' name="name"
                       style="color:white;" id="exampleInputName1" placeholder="Name" required>
                   </div>
                   <p class="text-danger err"></p>
@@ -33,7 +34,7 @@
                     <label for="exampleInputName1">offer</label>
                     <div class="input-group mb-2 mr-sm-2">
 
-                        <input type="number" class="form-control" name="offer" oninput='check(this)' id="inlineFormInputGroupUsername2"
+                        <input value="<%=offer  %>" type="number" class="form-control" name="offer" oninput='check(this)' id="inlineFormInputGroupUsername2"
                           placeholder="Price" min="0" max="100">
                         <div class="input-group-prepend">
 

@@ -25,7 +25,7 @@
                   <div class="card-body">
                     <div class="d-flex align-items-center justify-content-between ">
                       <h4 class="card-title">offer product adding Status</h4>
-                      <a href="/admin/addOffer" class="btn btn-primary text-white " style="outline: 0; border:0; margin-top: -1rem;">back to offer</a>
+                      <a href="/admin/offer" class="btn btn-primary text-white " style="outline: 0; border:0; margin-top: -1rem;">back to offer</a>
                     </div>
                     <div class="table-responsive">
                         <form action="/admin/offer" method="post">
@@ -53,7 +53,7 @@
                         <td  >    <div class="form-check form-check-flat form-check-primary">
                             <label class="form-check-label">
                                 <% console.log(locals.offer); %>
-                              <input type="checkbox"  <%= locals.id==e.offer?"checked":'' %> onchange="hello(this,'<%=e._id%>','<%=locals.id%>',<%=locals.offer%>)" class="form-check-input"></label>
+                              <input type="checkbox"  <%= e.offer?"checked":'' %> onchange="hello(this,'<%=e._id%>','<%=locals.id%>',<%=locals.offer%>)" class="form-check-input"></label>
                           </div> </td>
                        </tr>
                        <% }) %>

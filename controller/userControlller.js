@@ -640,7 +640,7 @@ const cartEdit = async (req, res) => {
 //cart remove
 const cartree = async (req, res) => {
     try {
-        console.log(req.body.tot)
+    
         const remove = await cartModal.updateOne({ _id: req.body.id }, { $set: { TotalPrice: req.body.tot }, $pull: { products: { productId: req.body.proid } } })
         if (remove.modifiedCount === 0) {
 
@@ -1036,11 +1036,8 @@ const editOrder = async (req, res) => {
 const check = async (req, res) => {
     try {
         const coupen1=await coupenSchema.find({})
-        const coupen = await coupenSchema.findOne({
-            from: { $lte: 1 },
-          
-            
-          });
+        const coupen = await coupenSchema.updateOne({
+          },{$set:{to:{$toDecimal:'$to'}}},);
 
           console.log(coupen)
           res.send(coupen1)
