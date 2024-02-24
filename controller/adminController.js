@@ -346,6 +346,7 @@ const getproduct = async (req, res) => {
             status: req.body.active,
             stock: req.body.stock,
             images: imgeArray,
+            actualPrice:req.body.price
         })
         res.redirect('/admin/product')
     } catch (err) {
@@ -942,10 +943,10 @@ const offerProductAdd = async (req, res) => {
         if (req.body.add) {
             const data = await productModal.findOne({ _id: req.body.id });
             const offerPrice = data.price / 100 * (100 - req.body.offer)
-            await productModal.findOneAndUpdate({ _id: req.body.id }, { $set: { offer: req.params.id, actualPrice: data.price, price: offerPrice } })
+            await productModal.findOneAndUpdate({ _id: req.body.id }, { $set: { offer: req.params.id, price: offerPrice } })
         } else {
             const data = await productModal.findOne({ _id: req.body.id });
-            await productModal.findOneAndUpdate({ _id: req.body.id }, { $unset: { offer: 1, actualPrice: 1 }, $set: { price: data.actualPrice } })
+            await productModal.findOneAndUpdate({ _id: req.body.id }, { $unset: { offer: 1}, $set: { price: data.actualPrice } })
         }
     } catch (err) {
         console.log(err.message + '   offerProductAdd')
@@ -1002,7 +1003,7 @@ const offerdeleat=async(req,res)=>{
     try{
        const gg= await productModal.find({offer:req.params.id})
         gg.forEach(async(e)=>{
-            await productModal.findOneAndUpdate({_id:e._id},{$unset:{offer:'',actualPrice:''},$set:{price:e.actualPrice}})
+            await productModal.findOneAndUpdate({_id:e._id},{$unset:{offer:''},$set:{price:e.actualPrice}})
         })
         await offerSchema.findOneAndDelete({_id:req.params.id})
         res.redirect('/admin/offer')

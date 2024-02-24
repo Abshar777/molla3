@@ -130,6 +130,9 @@ router.post('/coupenCode/:id',userController.coupenCode);
 //  order det page rendering
 router.get('/coupen',userMidleware.userbloack,userMidleware.user,userController.coupenView)
 
+//  category list showing
+router.get('/cetgory/:id',userMidleware.userbloack,userController.catgory)
+
 //logout
 router.post('/logout',userController.logout)
 

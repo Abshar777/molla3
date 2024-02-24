@@ -196,7 +196,7 @@
                                   <div
                                     class="edit d-flex flex-column gap-2  h-100 w-100 justify-content-center align-items-center ">
                                     <% let b=[]; locals.ca.forEach(e=>{ b.push(e.name) }) %>
-                                      <p onclick="edit('<%=JSON.stringify(e.images)%>','<%= e._id%>','<%= e.name %>','<%=e.stock  %>','<%=e.price  %>','<%=e.category.name  %>')"
+                                      <p onclick="edit('<%=JSON.stringify(e.images)%>','<%= e._id%>','<%= e.name %>','<%=e.stock  %>','<%=e.actualPrice  %>','<%=e.category.name  %>')"
                                         class="fs-5 "
                                         style="cursor: pointer; line-height: 0; margin-bottom: 0; color:#6c7293;">
                                         edit&nbsp;<i class="ri-edit-line  "></i></p>

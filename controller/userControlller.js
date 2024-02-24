@@ -79,32 +79,33 @@ const options = { day: '2-digit', month: 'short', year: 'numeric' };
 
 // routing controllers
 //home
-const home = (req, res) => {
+const home = async (req, res) => {
+    const cetgory = await categoryModal.find({})
     if (req.session.login) {
-
-        res.render('client/home', { login: req.session.login })
+        res.render('client/home', { login: req.session.login, cetgory })
     }
     else {
 
-        res.render('client/home')
+        res.render('client/home', { cetgory })
     }
 }
 
 //sign-up page rendering 
-const signUp = (req, res) => {
+const signUp = async (req, res) => {
+    const cetgory = await categoryModal.find({})
     if (req.session.login) {
         res.redirect('/')
     }
     else if (req.session.err1) {
         const err = req.session.err1
         req.session.err1 = undefined
-        res.render('client/login', { err1: err })
+        res.render('client/login', { err1: err, cetgory })
 
     }
     else if (req.session.err2) {
         const err = req.session.err2
         req.session.err2 = undefined
-        res.render('client/login', { err2: err })
+        res.render('client/login', { err2: err, cetgory })
 
     }
     else if (req.session.otp) {
@@ -114,7 +115,7 @@ const signUp = (req, res) => {
 
     else {
 
-        res.render('client/login')
+        res.render('client/login', { cetgory })
     }
 }
 
@@ -167,16 +168,16 @@ const getSignUp = async (req, res) => {
 const otp = async (req, res) => {
     try {
         console.log(req.session.otp);
-
+        const cetgory = await categoryModal.find({})
         if (req.session.otp) {
             if (req.session.wrong) {
 
-                res.render('client/otp', { message: req.session.wrong });
+                res.render('client/otp', { message: req.session.wrong, cetgory });
             } else if (req.session.resend) {
-                res.render('client/otp', { resend: req.session.resend })
+                res.render('client/otp', { resend: req.session.resend, cetgory })
             }
             else {
-                res.render('client/otp');
+                res.render('client/otp',{ cetgory });
             }
         }
         else {
@@ -283,8 +284,8 @@ const resend = async (req, res) => {
 const forgetPassword = async (req, res) => {
     try {
         if (!req.session.otp) {
-
-            res.render('client/forgetPassword')
+        const cetgory = await categoryModal.find({})
+            res.render('client/forgetPassword', { cetgory })
         }
         else {
             res.redirect('/otp')
@@ -350,7 +351,7 @@ const newPass = async (req, res) => {
     try {
         if (req.session.forget) {
 
-            res.render('client/newPass')
+            res.render('client/newPass', { cetgory })
         } else {
             res.redirect('/login')
         }
@@ -390,20 +391,21 @@ const getLogin = async (req, res) => {
 //shop
 const shop = async (req, res) => {
     try {
-        const Allproduct = await productModal.find({ stock: { $gt: 0 } }).populate('category');
-        let product=[];
-        Allproduct.forEach((e,i)=>{
-            if(e.category.active==true){
+            const cetgory = await categoryModal.find({})
+        const Allproduct = await productModal.find({ stock: { $gt: 0 } }).populate('category offer');
+        let product = [];
+        Allproduct.forEach((e, i) => {
+            if (e.category.active == true) {
                 product.push(e)
             }
         })
-   
+
         if (req.session.login) {
 
-            res.render('client/shop', { login: req.session.login, Allproduct:product })
+            res.render('client/shop', { login: req.session.login, Allproduct: product, cetgory,banner:'all product' })
 
         } else {
-            res.render('client/shop', { Allproduct:product })
+            res.render('client/shop', { Allproduct: product, cetgory ,banner:'all product'})
 
         }
     } catch (err) {
@@ -414,14 +416,14 @@ const shop = async (req, res) => {
 //profile
 const profile = async (req, res) => {
     try {
-
+        const cetgory = await categoryModal.find({})
         const user = await userSchema.findOne({ _id: req.session.login });
         const wallet1 = await wallet.findOne({ userId: req.session.login })
         const walletAmount = wallet1?.amount || 0;
         // console.log(user);
         if (user.is_admin === 0) {
             // console.log('is note admin')
-            res.render('client/profile', { user, login: req.session.login, walletAmount })
+            res.render('client/profile', { user, login: req.session.login, walletAmount, cetgory })
         }
         else {
             req.session.admin = user;
@@ -435,15 +437,16 @@ const profile = async (req, res) => {
 //product dets
 const productDets = async (req, res) => {
     try {
+        const cetgory = await categoryModal.find({})
         if (req.query.proId) {
 
             if (req.session.login) {
 
                 const productDet = await productModal.findOne({ _id: req.query.proId }).populate('category')
-                res.render('client/productDet', { login: req.session.login, productDet })
+                res.render('client/productDet', { login: req.session.login, productDet, cetgory })
             } else {
                 const productDet = await productModal.findOne({ _id: req.query.proId }).populate('category')
-                res.render('client/productDet', { productDet })
+                res.render('client/productDet', { productDet, cetgory })
 
             }
         } else {
@@ -457,6 +460,7 @@ const productDets = async (req, res) => {
 //cart 
 const cart = async (req, res) => {
     try {
+        const cetgory = await categoryModal.find({})
         const cart = await cartModal.findOne({ userId: req.session.login }).populate('products.productId');
 
         if (cart) {
@@ -466,11 +470,11 @@ const cart = async (req, res) => {
                 new: true,
             };
             const totalPriceAdding = await cartModal.findOneAndUpdate({ userId: req.session.login }, { $set: { TotalPrice: total } }, options).exec()
-           const msg=req.flash('msg')
-            res.render('client/cart', { cart, login: req.session.login, totalprice: totalPriceAdding.TotalPrice,msg })
+            const msg = req.flash('msg')
+            res.render('client/cart', { cart, login: req.session.login, totalprice: totalPriceAdding.TotalPrice, msg, cetgory })
         } else {
-            const msg=req.flash('msg')
-            res.render('client/cart', { login: req.session.login, totalprice: 0 ,msg})
+            const msg = req.flash('msg')
+            res.render('client/cart', { login: req.session.login, totalprice: 0, msg, cetgory })
         }
 
 
@@ -482,11 +486,12 @@ const cart = async (req, res) => {
 //wishlist 
 const wishlist = async (req, res) => {
     try {
+        const cetgory = await categoryModal.find({})
         const wishlist = await cartModal.find({})
 
 
 
-        res.render('client/wishlist', { wishlist, login: req.session.login })
+        res.render('client/wishlist', { wishlist, login: req.session.login, cetgory })
 
     } catch (err) {
         console.log(err.message + '      wishList page route')
@@ -640,7 +645,7 @@ const cartEdit = async (req, res) => {
 //cart remove
 const cartree = async (req, res) => {
     try {
-    
+
         const remove = await cartModal.updateOne({ _id: req.body.id }, { $set: { TotalPrice: req.body.tot }, $pull: { products: { productId: req.body.proid } } })
         if (remove.modifiedCount === 0) {
 
@@ -660,12 +665,12 @@ const cartree = async (req, res) => {
 const adress = async (req, res) => {
     try {
         const user = await userSchema.findOne({ _id: req.session.login })
-
+        const cetgory = await categoryModal.find({})
         if (user.is_admin === 0) {
             const adress = await addressModal.findOne({ userId: req.session.login })
             if (adress) { }
 
-            res.render('client/adress', { user, login: req.session.login, adress })
+            res.render('client/adress', { user, login: req.session.login, adress, cetgory })
         }
         else {
             req.session.admin = user;
@@ -749,7 +754,8 @@ const removeadress = async (req, res) => {
 // checkoutPage page rendering
 const checkoutPage = async (req, res) => {
     try {
-        const coupenOffer=req.session.offer || 0;
+        const cetgory = await categoryModal.find({})
+        const coupenOffer = req.session.offer || 0;
         const user = await userSchema.findOne({ _id: req.session.login })
         const cart = await cartModal.findOne({ userId: req.session.login }).populate('products.productId');
         const wallet1 = await wallet.findOne({ userId: req.session.login })
@@ -766,9 +772,9 @@ const checkoutPage = async (req, res) => {
 
                 }
             })
-            res.render('client/checkout', { login: req.session.login, add, cart, walletAmount,coupenOffer })
+            res.render('client/checkout', { login: req.session.login, add, cart, walletAmount, coupenOffer, cetgory })
         } else {
-            res.render('client/checkout', { login: req.session.login, cart, walletAmount,coupenOffer })
+            res.render('client/checkout', { login: req.session.login, cart, walletAmount, coupenOffer, cetgory })
 
         }
 
@@ -799,10 +805,11 @@ const Defaddress = async (req, res) => {
 //succes msg rendering
 const success = async (req, res) => {
     try {
+    const cetgory = await categoryModal.find({})
         if (req.session.succes) {
             delete req.session.succes;
 
-            res.render('client/succes', { login: req.session.login })
+            res.render('client/succes', { login: req.session.login, cetgory })
         } else {
             res.redirect('/order')
         }
@@ -845,14 +852,14 @@ const razor = async (req, res) => {
 //postSucces
 const postSucces = async (req, res) => {
     try {
-        const offer =req.session.offer || 0;
+        const offer = req.session.offer || 0;
         const user = await userSchema.findOne({ _id: req.session.login })
         const cart = await cartModal.findOne({ userId: req.session.login })
-        const orderAmount=cart.TotalPrice/100*(100-offer)
+        const orderAmount = cart.TotalPrice / 100 * (100 - offer)
         const orderSet = await orderModal.create({
             userId: req.session.login,
             orderAmount: orderAmount,
-            offer:offer,
+            offer: offer,
             deliveryAdress: user.addressId,
             peyment: req.body.peyment,
             deliveryAdress: {
@@ -868,12 +875,12 @@ const postSucces = async (req, res) => {
                 price: e.price,
             })),
         })
-        if(req.session.offer && req.session.coupenId){
-           
-            const hh=req.session.coupenId.trim()
-            const id=String(hh)
-           const coupenRemove= await userSchema.findOneAndUpdate({_id:user._id  },{$pull:{coupens:{ID:id}}})
-          
+        if (req.session.offer && req.session.coupenId) {
+
+            const hh = req.session.coupenId.trim()
+            const id = String(hh)
+            const coupenRemove = await userSchema.findOneAndUpdate({ _id: user._id }, { $pull: { coupens: { ID: id } } })
+
         }
         if (req.body.peyment == 'wallet') {
             const ne = 0 - cart.TotalPrice
@@ -890,20 +897,20 @@ const postSucces = async (req, res) => {
                 { userId: req.session.login },
                 { $unset: { products: 1 } }
             );
-           
+
             const coupen = await coupenSchema.find({
                 from: { $lte: cart.TotalPrice },
-                to:{$gte:cart.TotalPrice}
-              });
+                to: { $gte: cart.TotalPrice }
+            });
             if (coupen.length !== 0) {
                 for (const e of coupen) {
                     let id = coupenId.generateRandomId()
                     let flag = 0;
                     while (flag == 1) {
-            
-                        let data =  await userSchema.findOne({
+
+                        let data = await userSchema.findOne({
                             _id: req.session.login,
-                            "coupens.ID":id
+                            "coupens.ID": id
                         });
                         if (!data) {
                             console.log(flag)
@@ -912,21 +919,21 @@ const postSucces = async (req, res) => {
                             id = coupenId.generateRandomId()
                         }
                     }
-                   
-                   const coupenSet=await userSchema.findOneAndUpdate(
-                      { _id: req.session.login },
-                      {
-                        $push: {
-                          coupens: {
-                            ID: id,
-                            coupenId: e._id
-                          }
+
+                    const coupenSet = await userSchema.findOneAndUpdate(
+                        { _id: req.session.login },
+                        {
+                            $push: {
+                                coupens: {
+                                    ID: id,
+                                    coupenId: e._id
+                                }
+                            }
                         }
-                      }
                     );
-                   
-                  }
-                  
+
+                }
+
             }
             if (removeCart) {
 
@@ -947,12 +954,13 @@ const postSucces = async (req, res) => {
 //order det page rendering
 const orderDet = async (req, res) => {
     try {
+        const cetgory = await categoryModal.find({})
         const order = await orderModal.find({ userId: req.session.login });
         if (order) {
             let order1 = order.reverse()
-            res.render('client/orderDet', { login: req.session.login, order: order1 })
+            res.render('client/orderDet', { login: req.session.login, order: order1, cetgory })
         } else {
-            res.render('client/orderDet', { login: req.session.login })
+            res.render('client/orderDet', { login: req.session.login, cetgory })
         }
 
 
@@ -983,9 +991,9 @@ const logout = async (req, res) => {
 // order view details page 
 const orderView = async (req, res) => {
     try {
+        const cetgory = await categoryModal.find({})
         const order = await orderModal.findOne({ _id: req.params.id }).populate('OrderedItems.productId')
-        console.log(order)
-        res.render('client/order', { login: req.session.login, order })
+        res.render('client/order', { login: req.session.login, order, cetgory })
     } catch (err) {
         console.log(err.message + '      ORDER VIEW PAGE RENDERING ')
     }
@@ -1035,13 +1043,13 @@ const editOrder = async (req, res) => {
 //chacking route
 const check = async (req, res) => {
     try {
-        const coupen1=await coupenSchema.find({})
+        const coupen1 = await coupenSchema.find({})
         const coupen = await coupenSchema.updateOne({
-          },{$set:{to:{$toDecimal:'$to'}}},);
+        }, { $set: { to: { $toDecimal: '$to' } } },);
 
-          console.log(coupen)
-          res.send(coupen1)
-        if (12<=128 && 180>=12) {
+        console.log(coupen)
+        res.send(coupen1)
+        if (12 <= 128 && 180 >= 12) {
             res.send(true)
         } else {
             res.send(false)
@@ -1086,8 +1094,9 @@ const invoice = async (req, res) => {
 //changePassword render
 const changePassword = async (req, res) => {
     try {
+    const cetgory = await categoryModal.find({})
         const msg = req.flash('msg')
-        res.render('client/changepass', { msg })
+        res.render('client/changepass', { msg,cetgory })
     } catch (err) {
         console.log(err.message + '   changePassword render')
     }
@@ -1133,38 +1142,60 @@ const editprofile = async (req, res) => {
 }
 
 //ccoupenView
-const coupenView=async(req,res)=>{
-    try{
-        const coupen=await userSchema.findOne({_id:req.session.login}).populate('coupens.coupenId')
+const coupenView = async (req, res) => {
+    try {
+        const cetgory = await categoryModal.find({})
+        const coupen = await userSchema.findOne({ _id: req.session.login }).populate('coupens.coupenId')
 
-        res.render('client/coupen',{ login: req.session.login, coupen:coupen.coupens })
-    }catch(err){
-        console.log(err.message+'     coupenView')
+        res.render('client/coupen', { login: req.session.login, coupen: coupen.coupens, cetgory })
+    } catch (err) {
+        console.log(err.message + '     coupenView')
     }
 }
 
 //coupenCode
-const coupenCode=async(req,res)=>{
-    try{
-        const hh=req.body.id.trim()
-        const id=String(hh)
-       const dataExist=await userSchema.findOne({_id:req.params.id  ,'coupens.ID':id}).populate("coupens.coupenId");
-       req.session.coupenId=id
-       let offer;
-       dataExist.coupens.forEach((e)=>{
-        if(e.ID==id){
-            offer=e.coupenId.offer
-        }
-       })
-       req.session.offer=offer
-        if(dataExist){
+const coupenCode = async (req, res) => {
+    try {
+        const hh = req.body.id.trim()
+        const id = String(hh)
+        const dataExist = await userSchema.findOne({ _id: req.params.id, 'coupens.ID': id }).populate("coupens.coupenId");
+        req.session.coupenId = id
+        let offer;
+        dataExist.coupens.forEach((e) => {
+            if (e.ID == id) {
+                offer = e.coupenId.offer
+            }
+        })
+        req.session.offer = offer
+        if (dataExist) {
             res.redirect('/checkoutPage')
-        }else{
-            req.flash('msg',"coupen did'nt exist")
+        } else {
+            req.flash('msg', "coupen did'nt exist")
             res.redirect('/cart')
         }
+    } catch (err) {
+        console.log(err.message + ' coupenCode')
+    }
+}
+
+//catgory
+const catgory=async(req,res)=>{
+    try{
+        const cetgory=await categoryModal.find({})
+        const name=RegExp(`${req.params.id}`,'i')
+
+        const data=await categoryModal.findOne({name:name})
+        const product=await productModal.find({category:data._id})
+        if (req.session.login) {
+
+            res.render('client/shop', { login: req.session.login, Allproduct: product, cetgory,banner:req.params.id })
+
+        } else {
+            res.render('client/shop', { Allproduct: product, cetgory,banner:req.params.id })
+
+        }
     }catch(err){
-        console.log(err.message+' coupenCode')
+        console.log(err.message+'   catgory')
     }
 }
 
@@ -1211,5 +1242,6 @@ module.exports = {
     changePasswordpost,
     editprofile,
     coupenView,
-    coupenCode
+    coupenCode,
+    catgory
 }

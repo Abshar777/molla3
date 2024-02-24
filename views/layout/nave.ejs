@@ -59,10 +59,12 @@
                             <!-- End .megamenu megamenu-md -->
                         </li>
                         <li>
-                            <a href="" class="sf-with-ul">Category</a>
+                            <a  class="sf-with-ul">Category</a>
                             <ul>
-                                <li><a href="/shop">Men</a></li>
-                                <li><a href="/shop">Woman</a></li>
+                                <%locals.cetgory.forEach(e=>{%>
+                                <li><a href="/cetgory/<%=e.name  %>"><%=e.name  %></a></li>
+                                
+                                <% }) %>
                             </ul>
 
                         </li>
