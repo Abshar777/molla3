@@ -5,13 +5,30 @@
             <div class="header-left">
                 <div class="header-search header-search-extended header-search-visible d-none d-lg-block">
                     <a href="#" class="search-toggle" role="button"><i class="icon-search"></i></a>
-                    <form action="#" method="get">
-                        <div class="header-search-wrapper search-wrapper-wide d-flex align-items-center justify-content-center " >
-                        
-                            <i class="ri-search-line text-primary fs-1" style="font-size: 2rem;"></i>
-                            <input type="search" class="form-control " style="border-radius: 0px; border-bottom: .5px solid rgba(0, 0, 0, 0.473);" name="q" id="q" placeholder="Search product ..." required>
-                        </div><!-- End .header-search-wrapper -->
+                    <form action="" id="myform" method="get">
+                        <div
+                            class="header-search-wrapper search-wrapper-wide d-flex align-items-center justify-content-center ">
+
+                            <button class="border-0 bg-transparent " style="outline: 0px;"><i
+                                    class="ri-search-line text-primary fs-1" style="font-size: 2rem;"></i></button>
+                            <input type="search" oninput="search(this)" class="form-control "
+                                style="border-radius: 0px; border-bottom: .5px solid rgba(0, 0, 0, 0.473);" name="q"
+                                id="q" placeholder="Search product ..." required>
+                        </div>
+
+                        <!-- End .header-search-wrapper -->
                     </form>
+                    <div id="result" class="w-100 d-flex justify-content-end position-relative "
+                        style="display: none; opacity: 0; transition: all ease 0.3s;      width: 100%;">
+                        <div id="ll" class=" d-flex flex-column  position-absolute bg-white p-5  " style=" transition: all ease 0.3s;      width: 100%;
+                 box-shadow: 0px 5px 5px 4px #4f4f4f4d;
+                 z-index: 999999999999;
+             ">
+                            <p class="py-3 sea" style="border-bottom : .5px solid rgba(128, 128, 128, 0.24);">hhhh</p>
+
+                        </div>
+                    </div>
+
                 </div><!-- End .header-search -->
             </div>
             <div class="header-center">
@@ -21,25 +38,24 @@
             </div><!-- End .header-left -->
             <!-- // wishlist and cart -->
             <% if(locals.login) {%>
-            <div class="header-right">
-                <a href="/wishlist" class="wishlist-link">
-                    <i class="icon-heart-o"></i>
-                    <span class="wishlist-count">3</span>
-                    <span class="wishlist-txt">My Wishlist</span>
-                </a>
-
-                <div  class=" cart-dropdown" >
-                    <a  href="/cart" class="dropdown-toggle" 
-                       >
-                        <i class="icon-shopping-cart"></i>
-                        <span class="cart-count">2</span>
-                        <span class="cart-txt">Cart</span>
+                <div class="header-right">
+                    <a href="/wishlist" class="wishlist-link">
+                        <i class="icon-heart-o"></i>
+                        <span class="wishlist-count">3</span>
+                        <span class="wishlist-txt">My Wishlist</span>
                     </a>
 
-          <!-- End .dropdown-menu -->
-                </div><!-- End .cart-dropdown -->
-            </div>
-            <% } %>
+                    <div class=" cart-dropdown">
+                        <a href="/cart" class="dropdown-toggle">
+                            <i class="icon-shopping-cart"></i>
+                            <span class="cart-count">2</span>
+                            <span class="cart-txt">Cart</span>
+                        </a>
+
+                        <!-- End .dropdown-menu -->
+                    </div><!-- End .cart-dropdown -->
+                </div>
+                <% } %>
         </div>
     </div>
 
@@ -59,12 +75,14 @@
                             <!-- End .megamenu megamenu-md -->
                         </li>
                         <li>
-                            <a  class="sf-with-ul">Category</a>
+                            <a class="sf-with-ul">Category</a>
                             <ul>
                                 <%locals.cetgory.forEach(e=>{%>
-                                <li><a href="/cetgory/<%=e.name  %>"><%=e.name  %></a></li>
-                                
-                                <% }) %>
+                                    <li><a href="/cetgory/<%=e.name  %>">
+                                            <%=e.name %>
+                                        </a></li>
+
+                                    <% }) %>
                             </ul>
 
                         </li>
@@ -75,8 +93,10 @@
 
                         </li>
                         <li>
-                            
-                            <a href="<%= locals.login ? '/profile' : '/login' %>" class=""><%= locals.login ? 'Profile' : 'Login' %></a>
+
+                            <a href="<%= locals.login ? '/profile' : '/login' %>" class="">
+                                <%= locals.login ? 'Profile' : 'Login' %>
+                            </a>
                         </li>
                     </ul><!-- End .menu -->
                 </nav><!-- End .main-nav -->
@@ -96,7 +116,64 @@
 </header>
 
 <script>
-    function redirect(e){
-        window.location.href = e;
-    }
+  
+
+    const form = document.getElementById('myform');
+    const result = document.getElementById('result');
+    const show = document.getElementById('ll');
+    function search(e) {
+   
+        let clutter = '';
+        
+        if(e.value.trim()==''){
+            console.log('hello');
+            result.style.display='none';
+                result.style.opacity=0
+              form.addEventListener('submit',(e)=>{
+                e.preventDefault()
+              })
+        }else{
+             
+            fetch(`/search?val=${e.value}`).then(res => res.json()).then(data => {
+                if (data.result.length == 0) {
+                    form.action='/searchItem'
+                    result.style.display='none';
+                    result.style.opacity=0;
+                    form.addEventListener('submit',(es)=>{
+                es.preventDefault();
+         
+              })
+                } else {
+                    form.action=`/searchItem?q=${e.value}`
+                    result.style.display='flex';
+                    result.style.opacity=1
+                    data.result.forEach(e=>{
+                        clutter+=` <a href='/searchItem?q=${e.name}' class="py-3 sea" style="border-bottom : .5px solid rgba(128, 128, 128, 0.24);"><p>${e.name}</p></a><br>
+    `
+                    })
+                    show.innerHTML=clutter;
+                    form.addEventListener('submit',(e)=>{
+                        form.submit()
+                      })
+                }
+            })
+              const sea=document.querySelectorAll('.sea');
+        
+        sea.forEach(e1=>{
+            document.addEventListener('mouseover',(h)=>{
+        if(h.target.classList.contains('sea')){
+            e.value=h.target.textContent
+        }
+           
+        
+            })
+        })
+        }
+        
+        }
 </script>
+<style>
+    .sea:hover{
+        background-color: #4f4f4f4d;
+    }
+</style>

@@ -90,11 +90,12 @@
 						
 						</tbody>
 					</table>
+          <%let next=Number(now);  %>
                     <% if(locals.order) {%>
 	            	<div class="wishlist-share">
 	            		<div class="social-icons social-icons-sm mb-2">
 	            			<label class="social-label">Total Order:</label>
-	    					<%=order.length  %>
+	    					<%=le  %>
 	    				</div><!-- End .soial-icons -->
 	            	</div>
                     <% }else{ %>
@@ -108,6 +109,50 @@
             	</div>
         
               </div>
+              <br>
+<br>
+
+                                <nav aria-label="Page navigation">
+                                    <ul class="pagination justify-content-center">
+                                        <% if(gg<=1){ %>
+                                            <li class="page-item disabled">
+                                                <a class="page-link page-link-prev" href="#" aria-label="Previous" tabindex="-1" aria-disabled="true">
+                                                    <span aria-hidden="true"><i class="icon-long-arrow-left"></i></span>Prev
+                                                </a>
+                                            </li>
+                                            <li class="page-item active" aria-current="page"><a class="page-link" href="/order?page=1">1</a></li>
+                                            <li class="page-item-total">1 of <%= gg==0?gg+1:gg %></li>
+                                            
+                                            <li class="page-item disabled">
+                                                <a class="page-link page-link-next" href="#" aria-label="Next">
+                                                    Next <span aria-hidden="true"><i class="icon-long-arrow-right"></i></span>
+                                                </a>
+                                            </li>
+                                            <% }else{ %>
+                                                <li class="page-item <%=now==1?'disabled ':''  %> ">
+                                                    <a class="page-link page-link-prev" href="/order?page=<%=now-1  %>" aria-label="Previous" tabindex="-1" aria-disabled="true">
+                                                        <span aria-hidden="true"><i class="icon-long-arrow-left"></i></span>Prev
+                                                    </a>
+                                                </li>
+                                                <%let flag=0;  %>
+                                                <% for(let i=now;i<=gg;i++){ %>
+                                                    <% if(flag==3){ %>
+                                                        <% break;} flag++; %>
+                                                        <li class="page-item active" aria-current="page"><a class="page-link" href="/order?page=<%=i  %>"><%=i  %></a></li>
+                                                        
+                                               <% } %>
+
+                                                <li class="page-item-total"><%=now%>of <%=gg  %></li>
+                                      
+                                        <li class="page-item <%=now==gg?'disabled ':''  %>">
+                     
+                                            <a class="page-link page-link-next " href="/order?page=<%=next+1  %>" >
+                                                Next <span aria-hidden="true"><i class="icon-long-arrow-right"></i></span>
+                                            </a>
+                                        </li>
+                                        <% } %>
+                                    </ul>
+                                </nav>
             </aside>
           </div>
 

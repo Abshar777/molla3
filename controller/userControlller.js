@@ -177,7 +177,7 @@ const otp = async (req, res) => {
                 res.render('client/otp', { resend: req.session.resend, cetgory })
             }
             else {
-                res.render('client/otp',{ cetgory });
+                res.render('client/otp', { cetgory });
             }
         }
         else {
@@ -284,7 +284,7 @@ const resend = async (req, res) => {
 const forgetPassword = async (req, res) => {
     try {
         if (!req.session.otp) {
-        const cetgory = await categoryModal.find({})
+            const cetgory = await categoryModal.find({})
             res.render('client/forgetPassword', { cetgory })
         }
         else {
@@ -391,8 +391,19 @@ const getLogin = async (req, res) => {
 //shop
 const shop = async (req, res) => {
     try {
-            const cetgory = await categoryModal.find({})
-        const Allproduct = await productModal.find({ stock: { $gt: 0 } }).populate('category offer');
+
+        const perPage = 12;
+        const page = req.query.page || 1;
+        const cetgory = await categoryModal.find({});
+
+        const le = await productModal.find({ stock: { $gt: 0 } })
+        const gg = Math.ceil(le.length / 12)
+        if (gg < page) {
+            res.redirect(`/shop/`)
+        }
+
+        const Allproduct = await productModal.find({ stock: { $gt: 0 } }).populate('category offer').skip((perPage * page) - perPage)
+            .limit(perPage);
         let product = [];
         Allproduct.forEach((e, i) => {
             if (e.category.active == true) {
@@ -402,10 +413,10 @@ const shop = async (req, res) => {
 
         if (req.session.login) {
 
-            res.render('client/shop', { login: req.session.login, Allproduct: product, cetgory,banner:'all product' })
+            res.render('client/shop', { login: req.session.login, Allproduct: product, cetgory, banner: 'all product', le: le.length, gg, now: page })
 
         } else {
-            res.render('client/shop', { Allproduct: product, cetgory ,banner:'all product'})
+            res.render('client/shop', { Allproduct: product, cetgory, banner: 'all product', le: le.length, gg, now: page })
 
         }
     } catch (err) {
@@ -805,7 +816,7 @@ const Defaddress = async (req, res) => {
 //succes msg rendering
 const success = async (req, res) => {
     try {
-    const cetgory = await categoryModal.find({})
+        const cetgory = await categoryModal.find({})
         if (req.session.succes) {
             delete req.session.succes;
 
@@ -954,13 +965,23 @@ const postSucces = async (req, res) => {
 //order det page rendering
 const orderDet = async (req, res) => {
     try {
+
+        const perPage = 5;
+        const page = req.query.page || 1;
         const cetgory = await categoryModal.find({})
-        const order = await orderModal.find({ userId: req.session.login });
+        const order = await orderModal.find({ userId: req.session.login }).skip((perPage * page) - perPage)
+            .limit(perPage);;
+
+        const le = await orderModal.find({ userId: req.session.login });
+        const gg = Math.ceil(le.length / 5)
+        if (gg < page) {
+            res.redirect(`/order`)
+        }
         if (order) {
             let order1 = order.reverse()
-            res.render('client/orderDet', { login: req.session.login, order: order1, cetgory })
+            res.render('client/orderDet', { login: req.session.login, order: order1, cetgory, le: le.length, gg, now: page })
         } else {
-            res.render('client/orderDet', { login: req.session.login, cetgory })
+            res.render('client/orderDet', { login: req.session.login, cetgory, le: le.length, gg, now: page })
         }
 
 
@@ -1094,9 +1115,9 @@ const invoice = async (req, res) => {
 //changePassword render
 const changePassword = async (req, res) => {
     try {
-    const cetgory = await categoryModal.find({})
+        const cetgory = await categoryModal.find({})
         const msg = req.flash('msg')
-        res.render('client/changepass', { msg,cetgory })
+        res.render('client/changepass', { msg, cetgory })
     } catch (err) {
         console.log(err.message + '   changePassword render')
     }
@@ -1179,23 +1200,117 @@ const coupenCode = async (req, res) => {
 }
 
 //catgory
-const catgory=async(req,res)=>{
-    try{
-        const cetgory=await categoryModal.find({})
-        const name=RegExp(`${req.params.id}`,'i')
+const catgory = async (req, res) => {
+    try {
+        const cetgory = await categoryModal.find({})
+        const name = RegExp(`${req.params.id}`, 'i')
+        const perPage = 12;
+        const page = req.query.page || 1;
+        const data = await categoryModal.findOne({ name: name })
+        const le = await productModal.find({ category: data._id })
 
-        const data=await categoryModal.findOne({name:name})
-        const product=await productModal.find({category:data._id})
+        const gg = Math.ceil(le.length / 12)
+        if (gg < page) {
+            res.redirect(`/cetgory/${req.params.id}`)
+        }
+        const product = await productModal.find({ category: data._id }).populate('category offer').skip((perPage * page) - perPage)
+            .limit(perPage);
         if (req.session.login) {
 
-            res.render('client/shop', { login: req.session.login, Allproduct: product, cetgory,banner:req.params.id })
+            res.render('client/shop', { login: req.session.login, Allproduct: product, cetgory, banner: req.params.id, le: le.length, gg, now: page })
 
         } else {
-            res.render('client/shop', { Allproduct: product, cetgory,banner:req.params.id })
+            res.render('client/shop', { Allproduct: product, cetgory, banner: req.params.id, le: le.length, gg, now: page })
 
         }
+    } catch (err) {
+        console.log(err.message + '   catgory')
+    }
+}
+
+//serach suggetion
+const search = async (req, res) => {
+    try {
+        const type =  typeof req.query.val === 'string'
+        if (type) {
+            const payload=req.query.val.trim()
+            const content = new RegExp(`.*${payload}.*`, 'i');
+            const data = await productModal.find({ $or: [{ name: { $regex: content } }, { description: { $regex: content } }, { createdAt: { $regex: content } }] }).populate('category offer').exec()
+           const cat=await categoryModal.find({$or:[{name:{$regex:content}},{gender:{$regex:content}}]})
+           const result=data.concat(cat)
+            res.send({ result })
+         
+        }else{
+            const result= await productModal.find({ $or: [{price:req.body.val},{stock:req.body.val}] }).populate('category offer').exec()
+            res.send({ result })
+            console.log(result)
+        }
+    } catch (err) {
+        console.log(err.message + ' search')
+    }
+}
+
+//searchItem
+const searchItem=async(req,res)=>{
+    try{
+        const perPage = 12;
+        const page = req.query.page || 1;
+        console.log(page)
+        const payload=req.query.q.trim()
+        const content = new RegExp(`.*${payload}.*`, 'i');
+         const cetgory = await categoryModal.find({});
+        const cat=await categoryModal.find({$or:[{name:{$regex:content}},{gender:{$regex:content}}]})
+        if(cat.length==0){
+            const le = await productModal.find({ $or: [{ name: { $regex: content } }, { description: { $regex: content } }, { createdAt: { $regex: content } }] }).populate('category offer').exec()
+            const product = await productModal.find({ $or: [{ name: { $regex: content } }, { description: { $regex: content } }, { createdAt: { $regex: content } }] }).populate('category offer').skip((perPage * page) - perPage)
+            .limit(perPage);
+            const gg = Math.ceil(le.length / 12);
+            if(le.length==0){
+            
+                res.render('client/shop', { Allproduct: product,cetgory, banner: req.query.q, le: le.length, gg, now: page })
+        
+              }  else if (gg < page) {
+                    console.log('jjjjjjhhg')
+                    res.redirect(`/shop`)
+                }
+            if (req.session.login) {
+
+                res.render('client/shop', { login: req.session.login, Allproduct: product, cetgory, banner: req.params.id, le: le.length, gg, now: page })
+    
+            } else {
+                res.render('client/shop', { Allproduct: product, cetgory, banner: req.params.id, le: le.length, gg, now: page })
+    
+            }
+        }else{
+            let le = [];
+            for (const e of cat) {
+                const g = await productModal.find({ category: e._id });
+                le = le.concat(g);
+                
+            }
+            const f=(perPage * page) - perPage;
+         console.log(le)
+            const product=le.slice(f,f+perPage)
+            const gg = Math.ceil(le.length / 12)
+          if(le.length==0){
+            
+            res.render('client/shop', { Allproduct: product,cetgory, banner: req.query.q, le: le.length, gg, now: page })
+    
+          }  else if (gg < page) {
+                console.log('jjjjjjhhg')
+                res.redirect(`/shop`)
+            }
+            if (req.session.login) {
+
+                res.render('client/shop', { login: req.session.login,cetgory, Allproduct: product,  banner: req.query.q, le: le.length, gg, now: page })
+    
+            } else {
+                res.render('client/shop', { Allproduct: product,cetgory, banner: req.query.q, le: le.length, gg, now: page })
+    
+            }
+        }
     }catch(err){
-        console.log(err.message+'   catgory')
+        console.log(err.message+'  searchItem')
     }
 }
 
@@ -1243,5 +1358,7 @@ module.exports = {
     editprofile,
     coupenView,
     coupenCode,
-    catgory
+    catgory,
+    search,
+    searchItem
 }

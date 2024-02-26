@@ -133,6 +133,12 @@ router.get('/coupen',userMidleware.userbloack,userMidleware.user,userController.
 //  category list showing
 router.get('/cetgory/:id',userMidleware.userbloack,userController.catgory)
 
+//seach suggetions
+router.get('/search',userController.search)
+
+//search result
+router.get('/searchItem',userMidleware.userbloack,userController.searchItem)
+
 //logout
 router.post('/logout',userController.logout)
 

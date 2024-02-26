@@ -42,7 +42,9 @@
 
                     <div class="page-header text-center" style="background-image: url('images/page-header-bg.jpg')">
                         <div class="container">
-                            <h1 class="page-title text-capitalize "><%=locals.banner || 'products'%><span>Shop</span></h1>
+                            <h1 class="page-title text-capitalize ">
+                                <%=locals.banner || 'products' %><span>Shop</span>
+                            </h1>
                         </div><!-- End .container -->
                     </div><!-- End .page-header -->
                     <nav aria-label="breadcrumb" class="breadcrumb-nav mb-2">
@@ -60,12 +62,14 @@
                         <div class="container">
                             <div class="toolbox">
                                 <div class="toolbox-left">
-                                    <a href="#" class="sidebar-toggler"><i class="icon-bars"></i>Filters</a>
                                 </div><!-- End .toolbox-left -->
 
                                 <div class="toolbox-center">
                                     <div class="toolbox-info">
-                                        Showing <span>12 of 56</span> Products
+                                        <% const count=Allproduct.length<12?Allproduct.length:12 %>
+                                            Showing <span>
+                                                <%=count %> of <%=le %>
+                                            </span> Products
                                     </div><!-- End .toolbox-info -->
                                 </div><!-- End .toolbox-center -->
 
@@ -86,88 +90,149 @@
                             <div class="products">
                                 <div class="row">
                                     <% if(Allproduct.length==0){ %>
-                                        <div class="d-flex w-100 text-center justify-content-center align-items-center ">
-                                        <h1 class="opacity-50 text-capitalize " style="opacity: .7;">no product</h1></div>
+                                        <div
+                                            class="d-flex w-100 text-center justify-content-center align-items-center ">
+                                            <h1 class="opacity-50 text-capitalize " style="opacity: .7;">no product</h1>
+                                        </div>
                                         <% } %>
-                                    <% Allproduct.forEach(e=>{ %>
+                                            <% Allproduct.forEach(e=>{ %>
 
-                                        <div class="col-6 col-md-4 col-lg-4 col-xl-3">
-                                            <div class="product product-7 text-center" style="box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05); border-radius: 15px; border: 0.5px solid #0000001a; ">
-                                                <figure class="product-media">
-                                                    <% if(e.offer){  %>
-                                                    <span class="product-label label-sale"><%=e.offer.offer  %>% off</span>
-                                                    <% } %>
-                                                    <a href="/productDets?proId=<%=e._id  %>">
-                                                        <img src="/productImage/<%=e.images[0]  %>" alt="Product image"
-                                                            class="product-image">
-                                                        <img src="/productImage/<%=e.images[1]?e.images[1]:e.images[0]  %>"
-                                                            alt="Product image" class="product-image-hover">
-                                                    </a>
+                                                <div class="col-6 col-md-4 col-lg-4 col-xl-3">
+                                                    <div class="product product-7 text-center"
+                                                        style="box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05); border-radius: 15px; border: 0.5px solid #0000001a; ">
+                                                        <figure class="product-media">
+                                                            <% if(e.offer){ %>
+                                                                <span class="product-label label-sale">
+                                                                    <%=e.offer.offer %>% off
+                                                                </span>
+                                                                <% } %>
+                                                                    <a href="/productDets?proId=<%=e._id  %>">
+                                                                        <img src="/productImage/<%=e.images[0]  %>"
+                                                                            alt="Product image" class="product-image">
+                                                                        <img src="/productImage/<%=e.images[1]?e.images[1]:e.images[0]  %>"
+                                                                            alt="Product image"
+                                                                            class="product-image-hover">
+                                                                    </a>
 
-                                                    <div class="product-action-vertical">
-                                                        <a href="#"
-                                                            class="btn-product-icon btn-wishlist btn-expandable"><span>add
-                                                                to
-                                                                wishlist</span></a>
-                                                        
-                                                        
-                                                    </div><!-- End .product-action-vertical -->
+                                                                    <div class="product-action-vertical">
+                                                                        <a href="#"
+                                                                            class="btn-product-icon btn-wishlist btn-expandable"><span>add
+                                                                                to
+                                                                                wishlist</span></a>
 
-                                                    <div class="product-action">
-                                                        <div onclick="addCart('<%=e._id  %>','<%=locals.login?locals.login:false  %>',1)"
-                                                            class="btn-product btn-cart " style="cursor: pointer;">
-                                                            <span>add to cart</span>
-                                                        </div>
-                                                    </div><!-- End .product-action -->
-                                                </figure><!-- End .product-media -->
 
-                                                <div class="product-body">
-                                                    <div class="product-cat">
-                                                        <a href="#">
-                                                            <%= e.category.gender %>
-                                                        </a>
-                                                    </div><!-- End .product-cat -->
-                                                    <h3 class="product-title"><a href="product.html">
-                                                            <%= e.name %>
-                                                                <br>
-                                                        </a></h3><!-- End .product-title -->
-                                                    <div class="product-price">
-                                                       <% if(e.offer){ %> 
-                                                        <span class="new-price">$<%=e.price %></span>
-                                                        <span class="old-price">$<%=e.actualPrice %></span>
-                                                        <% }else{ %>
-                                                            $<%=e.price %>
-                                                            <% } %>
-                                                    </div><!-- End .product-price -->
-                                                    <div class="ratings-container">
-                                                        <div class="ratings">
-                                                            <div class="ratings-val" style="width: 20%;"></div>
-                                                            <!-- End .ratings-val -->
-                                                        </div><!-- End .ratings -->
-                                                        <span class="ratings-text">( 2 Reviews )</span>
-                                                    </div><!-- End .rating-container -->
+                                                                    </div><!-- End .product-action-vertical -->
 
-                                                    <div class="product-nav product-nav-thumbs" style="    gap: 1rem;">
-                                                        <% e.images.forEach(e=>{ %>
-                                                            <div href="#" class="active  overflow-hidden "
-                                                                style="width: 40px; height: 40px; border: .5px solid #99999977; ">
-                                                                <img src="/productImage/<%=e  %>"
-                                                                    class="w-100 h-100 object-fit-cover " alt="">
-                                                            </div>
-                                                            <% }) %>
+                                                                    <div class="product-action">
+                                                                        <div onclick="addCart('<%=e._id  %>','<%=locals.login?locals.login:false  %>',1)"
+                                                                            class="btn-product btn-cart "
+                                                                            style="cursor: pointer;">
+                                                                            <span>add to cart</span>
+                                                                        </div>
+                                                                    </div><!-- End .product-action -->
+                                                        </figure><!-- End .product-media -->
 
-                                                    </div><!-- End .product-nav -->
-                                                </div><!-- End .product-body -->
-                                            </div>
+                                                        <div class="product-body">
+                                                            <div class="product-cat">
+                                                                <a href="#">
+                                                                    <%= e.category.gender %>
+                                                                </a>
+                                                            </div><!-- End .product-cat -->
+                                                            <h3 class="product-title"><a href="product.html">
+                                                                    <%= e.name %>
+                                                                        <br>
+                                                                </a></h3><!-- End .product-title -->
+                                                            <div class="product-price">
+                                                                <% if(e.offer){ %>
+                                                                    <span class="new-price">$<%=e.price %></span>
+                                                                    <span class="old-price">$<%=e.actualPrice %></span>
+                                                                    <% }else{ %>
+                                                                        $<%=e.price %>
+                                                                            <% } %>
+                                                            </div><!-- End .product-price -->
+                                                            <div class="ratings-container">
+                                                                <div class="ratings">
+                                                                    <div class="ratings-val" style="width: 20%;"></div>
+                                                                    <!-- End .ratings-val -->
+                                                                </div><!-- End .ratings -->
+                                                                <span class="ratings-text">( 2 Reviews )</span>
+                                                            </div><!-- End .rating-container -->
 
-                                        </div><!-- End .col-sm-6 col-lg-4 col-xl-3 -->
-                                        <% }) %>
+                                                            <div class="product-nav product-nav-thumbs"
+                                                                style="    gap: 1rem;">
+                                                                <% e.images.forEach(e=>{ %>
+                                                                    <div href="#" class="active  overflow-hidden "
+                                                                        style="width: 40px; height: 40px; border: .5px solid #99999977; ">
+                                                                        <img src="/productImage/<%=e  %>"
+                                                                            class="w-100 h-100 object-fit-cover "
+                                                                            alt="">
+                                                                    </div>
+                                                                    <% }) %>
+
+                                                            </div><!-- End .product-nav -->
+                                                        </div><!-- End .product-body -->
+                                                    </div>
+
+                                                </div><!-- End .col-sm-6 col-lg-4 col-xl-3 -->
+                                                <% }) %>
                                 </div><!-- End .row -->
+                                <br>
+                                <br>
+                                <nav aria-label="Page navigation">
+                                    <ul class="pagination justify-content-center">
+                                        <% if(gg<=1){ %>
+                                            <li class="page-item disabled">
+                                                <a class="page-link page-link-prev" href="#" aria-label="Previous"
+                                                    tabindex="-1" aria-disabled="true">
+                                                    <span aria-hidden="true"><i
+                                                            class="icon-long-arrow-left"></i></span>Prev
+                                                </a>
+                                            </li>
+                                            <li class="page-item active" aria-current="page"><a class="page-link"
+                                                    href="/shop?page=1">1</a></li>
+                                            <li class="page-item-total">1 of <%= gg==0?gg+1:gg %>
+                                            </li>
 
-                                <div class="load-more-container text-center">
-                                    <a href="#" class="btn btn-outline-darker btn-load-more">More Products <i
-                                            class="icon-refresh"></i></a>
-                                </div><!-- End .load-more-container -->
+                                            <li class="page-item disabled">
+                                                <a class="page-link page-link-next" href="#" aria-label="Next">
+                                                    Next <span aria-hidden="true"><i
+                                                            class="icon-long-arrow-right"></i></span>
+                                                </a>
+                                            </li>
+                                            <% }else{ %>
+                                                <li class="page-item <%=now==1?'disabled ':''  %> ">
+                                                    <a class="page-link page-link-prev" href="/shop?page=<%=now-1  %>"
+                                                        aria-label="Previous" tabindex="-1" aria-disabled="true">
+                                                        <span aria-hidden="true"><i
+                                                                class="icon-long-arrow-left"></i></span>Prev
+                                                    </a>
+                                                </li>
+                                                <%let flag=0; %>
+                                                    <% for(let i=now;i<=gg;i++){ %>
+                                                        <% if(flag==3){ %>
+                                                            <% break;} flag++; %>
+                                                                <li class="page-item active" aria-current="page"><a
+                                                                        class="page-link" href="/shop?page=<%=i  %>">
+                                                                        <%=i %>
+                                                                    </a></li>
+
+                                                                <% } %>
+
+                                                                    <li class="page-item-total">
+                                                                        <%=now%>of <%=gg %>
+                                                                    </li>
+
+                                                                    <li class="page-item <%=now==gg?'disabled ':''  %>">
+
+                                                                        <a class="page-link page-link-next "
+                                                                            href="/shop?page=<%=next+1  %>">
+                                                                            Next <span aria-hidden="true"><i
+                                                                                    class="icon-long-arrow-right"></i></span>
+                                                                        </a>
+                                                                    </li>
+                                                                    <% } %>
+                                    </ul>
+                                </nav>
                             </div><!-- End .products -->
 
                             <div class="sidebar-filter-overlay"></div><!-- End .sidebar-filter-overlay -->
@@ -492,16 +557,16 @@
                             body: JSON.stringify({ id, user, q })
                         }).then(res => res.json()).then(data => {
                             if (data.success) {
-                                toast("success","cart added")
+                                toast("success", "cart added")
                             }
-                            if(data.exist){
-                                toast('warning','product alredy there')
+                            if (data.exist) {
+                                toast('warning', 'product alredy there')
                             }
                         })
                     }
 
                 }
-                function toast(icon,title) {
+                function toast(icon, title) {
                     const Toast = Swal.mixin({
                         toast: true,
                         position: "top-end",

@@ -167,9 +167,14 @@ const peyment = async (req, res) => {
 //userList page rendering
 const users = async (req, res) => {
     try {
-        const users = await userSchema.find({ is_admin: 0 })
+        const perPage = 12;
+        const page = req.query.page || 1;
+        const le = await userSchema.find({ is_admin: 0 })
+        const users = await userSchema.find({ is_admin: 0 }).skip((perPage * page) - perPage)
+        .limit(perPage);
+        const gg=Math.ceil(le.length/perPage)
 
-        res.render('admin/userList', { admin: req.session.admin, users, user: 'user' })
+        res.render('admin/userList', { admin: req.session.admin, users, user: 'user',le:le.length,gg,now:page })
 
 
     } catch (err) {
@@ -357,11 +362,15 @@ const getproduct = async (req, res) => {
 //product dets page rendering
 const productDets = async (req, res) => {
     try {
-
-        const products = await productModal.find({}).populate('category')
+        const perPage = 8;
+        const page = req.query.page || 1;
+        const le = await productModal.find({}).populate('category')
+        const products = await productModal.find({}).populate('category').skip((perPage * page) - perPage)
+        .limit(perPage);
+        const gg=Math.ceil(le.length/perPage)
 
         const ca = await categoryModal.find({})
-        res.render('admin/products', { admin: req.session.admin, product: products, ca })
+        res.render('admin/products', { admin: req.session.admin, product: products, ca,le:le.length,gg,now:page })
     } catch (err) {
         console.log(err.message + '        product dets showing page err')
     }
@@ -554,11 +563,16 @@ const dltPro = async (req, res) => {
 //order 
 const order = async (req, res) => {
     try {
-        const orderList = await orderModal.find({}).populate('userId');
+        const perPage = 12;
+        const page = req.query.page || 1;
+        const orderList = await orderModal.find({}).populate('userId').skip((perPage * page) - perPage)
+        .limit(perPage);
+        const le = await orderModal.find({})
+        const gg=Math.ceil(le.length/perPage)
 
         if (orderList) {
             let order1 = orderList.reverse()
-            res.render('admin/orderDets', { admin: req.session.admin, order: true, orderList: order1 })
+            res.render('admin/orderDets', { admin: req.session.admin, order: true, orderList: order1, le:le.length,gg,now:page})
         }
     } catch (err) {
         console.log(err.message + '   admin order page rendering route ')
@@ -952,7 +966,6 @@ const offerProductAdd = async (req, res) => {
         console.log(err.message + '   offerProductAdd')
     }
 }
-
 
 //offerProduct
 const offerProduct = async (req, res) => {

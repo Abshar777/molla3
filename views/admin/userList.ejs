@@ -76,6 +76,23 @@
                         </tbody>
                       </table>
                     </div>
+                    
+                    <br>
+                    <div class=" w-100 d-flex align-items-center justify-content-center " style="gap: .3rem;" role="group" aria-label="Basic example">
+                      <% let flag=0;%>
+                      <a class="btn btn-outline-secondary <%=now==1?'disabled ':''  %>" href="/admin/orders?page=<%=now-1  %>"><i class="ri-arrow-left-line"></i></a>
+                      <% for(let i=now;i<=gg;i++){ %>
+                        <% if(flag==3){ %>
+                          <% break;} flag++; %>           
+                          <a class="btn btn-outline-secondary" href="/admin/orders?page=<%=i  %>"><%=i  %></a>
+                          <% } %>
+
+                          <a class="btn btn-outline-secondary disabled " ><%=now  %>of <%=gg  %></a>
+                          <% let next=Number(now) %>
+                          <a class="btn btn-outline-secondary <%=now==gg?'disabled ':''  %>" href="/admin/orders?page=<%=next+1  %>"><i class="ri-arrow-right-line"></i></a>
+    
+                 
+                    </div>
                   </div></div>
                 </div>
               </div>
