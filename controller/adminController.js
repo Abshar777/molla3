@@ -275,7 +275,7 @@ const categoryFetch = async (req, res) => {
 // category remove
 const categorydlt = async (req, res) => {
     try {
-        console.log(req.query.id)
+       
         const dltCat = await categoryModal.findOneAndDelete({ _id: req.query.id })
         if (dltCat) {
             res.redirect('/admin/catagory')

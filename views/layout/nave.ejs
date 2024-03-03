@@ -41,14 +41,14 @@
                 <div class="header-right">
                     <a href="/wishlist" class="wishlist-link">
                         <i class="icon-heart-o"></i>
-                        <span class="wishlist-count">3</span>
+                        <span class="wishlist-count"></span>
                         <span class="wishlist-txt">My Wishlist</span>
                     </a>
 
                     <div class=" cart-dropdown">
                         <a href="/cart" class="dropdown-toggle">
                             <i class="icon-shopping-cart"></i>
-                            <span class="cart-count">2</span>
+                            <span class="cart-count"></span>
                             <span class="cart-txt">Cart</span>
                         </a>
 
@@ -116,7 +116,23 @@
 </header>
 
 <script>
-  
+    cartAndWishlist()
+    function cartAndWishlist(){
+        const cart=document.querySelector('.cart-count');
+        const wishlist=document.querySelector('.wishlist-count');
+        console.log(cart.textContent);
+        if(cart){
+        console.log('hello');
+            fetch('/cartCount',{method:'put'}).then(res=>res.json()).then(data=>{
+                data.wishlist!=0?wishlist.style.opacity=1:null
+                data.cart!=0?cart.style.opacity=1:null
+                data.wishlist!=0?wishlist.textContent=data.wishlist:wishlist.style.opacity=0
+                data.cart!=0?cart.textContent=data.cart:cart.style.opacity=0
+            })
+        }else{
+            console.log('hello11111');
+        }
+    }
 
     const form = document.getElementById('myform');
     const result = document.getElementById('result');
@@ -151,6 +167,15 @@
                         clutter+=` <a href='/searchItem?q=${e.name}' class="py-3 sea" style="border-bottom : .5px solid rgba(128, 128, 128, 0.24);"><p>${e.name}</p></a><br>
     `
                     })
+                   
+                    let uniqueGenders = new Set(); // Initialize a set to store unique genders
+
+data.result.forEach(e => {
+    if (e.gender && !uniqueGenders.has(e.gender)) { // Check if the gender exists and is unique
+        uniqueGenders.add(e.gender); // Add the gender to the set
+        clutter += ` <a href='/searchItem?q=${e.gender}' class="py-3 sea" style="border-bottom : .5px solid rgba(128, 128, 128, 0.24);"><p>${e.gender}</p></a><br>`;
+    }
+});
                     show.innerHTML=clutter;
                     form.addEventListener('submit',(e)=>{
                         form.submit()

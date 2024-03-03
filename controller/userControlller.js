@@ -4,6 +4,7 @@ const categoryModal = require('../models/catagory')
 const addressModal = require('../models/adress')
 const cartModal = require('../models/cart')
 const productModal = require('../models/products');
+const wishListModal=require('../models/wishList')
 const Razorpay = require('razorpay');
 const nodemailer = require('nodemailer');
 const bycrypt = require('bcrypt');
@@ -454,10 +455,27 @@ const productDets = async (req, res) => {
             if (req.session.login) {
 
                 const productDet = await productModal.findOne({ _id: req.query.proId }).populate('category')
-                res.render('client/productDet', { login: req.session.login, productDet, cetgory })
+                const cat=await categoryModal.find({gender:productDet.category.gender})
+                const arr=[];
+                for(const el of cat){
+                    const product = await productModal.findOne({ category: el._id, _id: { $ne: productDet._id } }).populate('category').limit(5)
+                    arr.push(product)
+                }
+                const arr1=arr.filter(Boolean)
+                res.render('client/productDet', { login: req.session.login, productDet, cetgory,Allproduct:arr1 })
             } else {
-                const productDet = await productModal.findOne({ _id: req.query.proId }).populate('category')
-                res.render('client/productDet', { productDet, cetgory })
+                const productDet = await productModal.findOne({ _id: req.query.proId }).populate('category offer');
+                
+                const cat=await categoryModal.find({gender:productDet.category.gender})
+
+                const arr=[];
+                for(const el of cat){
+                    let product = await productModal.findOne({ category: el._id, _id: { $ne: productDet._id } }).populate('category offer').limit(5)
+
+                    arr.push(product)
+                }
+                const arr1=arr.filter(Boolean)
+                res.render('client/productDet', { productDet, cetgory ,Allproduct:arr1})
 
             }
         } else {
@@ -498,14 +516,63 @@ const cart = async (req, res) => {
 const wishlist = async (req, res) => {
     try {
         const cetgory = await categoryModal.find({})
-        const wishlist = await cartModal.find({})
-
-
-
-        res.render('client/wishlist', { wishlist, login: req.session.login, cetgory })
+        const wishlist = await wishListModal.findOne({userId: req.session.login }).populate('products.productId')
+        res.render('client/wishlist', { wishlist, login: req.session.login,cetgory })
 
     } catch (err) {
         console.log(err.message + '      wishList page route')
+    }
+}
+
+//wishListAdd
+const wishListAdd=async(req,res)=>{
+    try {
+        const result = await wishListModal.findOne({
+            userId: req.query.user,
+            products: {
+                $elemMatch: {
+                    productId: req.query.id
+                }
+            }
+        }).exec();
+        if(!result){
+            const filter = { userId: req.query.user };
+            const update = {
+                $set: {
+                    userId: req.query.user,
+
+                },
+                $addToSet: {
+                    products: { productId: req.query.id, },
+                },
+            };
+            const options = {
+                upsert: true,
+                new: true,
+            };
+
+            const cartSuccess = await wishListModal.findOneAndUpdate(filter, update, options).exec();
+            res.status(200).json({success:true})
+            
+        }else{
+        
+            res.status(200).json({exist:true})
+        }
+            
+
+
+    } catch(err){
+        res.status(500).send(err.message+'wishListAdd')
+    }
+}
+
+//wishlist remove 
+const wishListRemove=async(req,res)=>{
+    try{
+        const remove = await wishListModal.updateOne({ userId: req.query.user }, {  $pull: { products: { productId: req.query.proid } } })
+        res.status(200).json({set:true})
+    }catch(err){
+        res.status(400).send(err.message+' wishlist remve')
     }
 }
 
@@ -513,6 +580,7 @@ const wishlist = async (req, res) => {
 const addcart = async (req, res) => {
     try {
         const product = await productModal.findOne({ _id: req.body.id })
+        const remove = await wishListModal.updateOne({ userId: req.body.user }, {  $pull: { products: { productId: req.body.id } } })
         const result = await cartModal.findOne({
             userId: req.body.user,
             products: {
@@ -555,11 +623,25 @@ const addcart = async (req, res) => {
     }
 }
 
+//cartCount
+const cartCount=async(req,res)=>{
+    try{
+        const cart=await cartModal.findOne({userId:req.session.login})
+        const wishlist=await wishListModal.findOne({userId:req.session.login})
+        console.log(cart.products.length,wishlist.products.length)
+        res.status(200).send({cart:cart.products.length||0,wishlist:wishlist.products.length || 0})
+    }catch(err){
+        res.status(500).send(err.message+'   cartCount')
+    }
+}
+
 // add cart on post requiset
 const addcartPost = async (req, res) => {
     try {
         if (req.query.user) {
             const product = await productModal.findOne({ _id: req.query.id })
+        const remove = await wishListModal.updateOne({ userId: req.query.user }, {  $pull: { products: { productId: req.query.id } } })
+
             const result = await cartModal.findOne({
                 userId: req.query.user,
                 products: {
@@ -866,7 +948,8 @@ const postSucces = async (req, res) => {
         const offer = req.session.offer || 0;
         const user = await userSchema.findOne({ _id: req.session.login })
         const cart = await cartModal.findOne({ userId: req.session.login })
-        const orderAmount = cart.TotalPrice / 100 * (100 - offer)
+        const subtotal = cart.TotalPrice / 100 * (100 - offer)
+        const orderAmount = subtotal.toFixed(1)
         const orderSet = await orderModal.create({
             userId: req.session.login,
             orderAmount: orderAmount,
@@ -894,7 +977,7 @@ const postSucces = async (req, res) => {
 
         }
         if (req.body.peyment == 'wallet') {
-            const ne = 0 - cart.TotalPrice
+            const ne = 0 - subtotal.toFixed(1)
             await wallet.findOneAndUpdate({ userId: req.session.login }, { $inc: { amount: ne } })
         }
         if (orderSet) {
@@ -924,7 +1007,7 @@ const postSucces = async (req, res) => {
                             "coupens.ID": id
                         });
                         if (!data) {
-                            console.log(flag)
+                         
                             flag = 1
                         } else {
                             id = coupenId.generateRandomId()
@@ -972,9 +1055,13 @@ const orderDet = async (req, res) => {
         const order = await orderModal.find({ userId: req.session.login }).skip((perPage * page) - perPage)
             .limit(perPage);;
 
+        if (order.length !== 0) {
+
+        }
         const le = await orderModal.find({ userId: req.session.login });
         const gg = Math.ceil(le.length / 5)
-        if (gg < page) {
+        if (order.length != 0 && gg < page) {
+            console.log(order + 'sasghagfshja')
             res.redirect(`/order`)
         }
         if (order) {
@@ -1231,19 +1318,19 @@ const catgory = async (req, res) => {
 //serach suggetion
 const search = async (req, res) => {
     try {
-        const type =  typeof req.query.val === 'string'
+        const type = typeof req.query.val === 'string'
         if (type) {
-            const payload=req.query.val.trim()
+            const payload = req.query.val.trim()
             const content = new RegExp(`.*${payload}.*`, 'i');
             const data = await productModal.find({ $or: [{ name: { $regex: content } }, { description: { $regex: content } }, { createdAt: { $regex: content } }] }).populate('category offer').exec()
-           const cat=await categoryModal.find({$or:[{name:{$regex:content}},{gender:{$regex:content}}]})
-           const result=data.concat(cat)
+            const cat = await categoryModal.find({ $or: [{ name: { $regex: content } }, { gender: { $regex: content } }] })
+            console.log(cat)
+            const result = data.concat(cat)
             res.send({ result })
-         
-        }else{
-            const result= await productModal.find({ $or: [{price:req.body.val},{stock:req.body.val}] }).populate('category offer').exec()
+
+        } else {
+            const result = await productModal.find({ $or: [{ price: req.body.val }, { stock: req.body.val }] }).populate('category offer').exec()
             res.send({ result })
-            console.log(result)
         }
     } catch (err) {
         console.log(err.message + ' search')
@@ -1251,66 +1338,126 @@ const search = async (req, res) => {
 }
 
 //searchItem
-const searchItem=async(req,res)=>{
-    try{
+const searchItem = async (req, res) => {
+    try {
         const perPage = 12;
         const page = req.query.page || 1;
-        console.log(page)
-        const payload=req.query.q.trim()
+        const payload = req.query.q.trim()
         const content = new RegExp(`.*${payload}.*`, 'i');
-         const cetgory = await categoryModal.find({});
-        const cat=await categoryModal.find({$or:[{name:{$regex:content}},{gender:{$regex:content}}]})
-        if(cat.length==0){
+        const cetgory = await categoryModal.find({});
+        const cat = await categoryModal.find({ $or: [{ name: { $regex: content } }, { gender: { $regex: content } }] })
+        if (cat.length == 0) {
             const le = await productModal.find({ $or: [{ name: { $regex: content } }, { description: { $regex: content } }, { createdAt: { $regex: content } }] }).populate('category offer').exec()
             const product = await productModal.find({ $or: [{ name: { $regex: content } }, { description: { $regex: content } }, { createdAt: { $regex: content } }] }).populate('category offer').skip((perPage * page) - perPage)
-            .limit(perPage);
+                .limit(perPage);
             const gg = Math.ceil(le.length / 12);
-            if(le.length==0){
-            
-                res.render('client/shop', { Allproduct: product,cetgory, banner: req.query.q, le: le.length, gg, now: page })
-        
-              }  else if (gg < page) {
-                    console.log('jjjjjjhhg')
-                    res.redirect(`/shop`)
-                }
-            if (req.session.login) {
+            if (le.length == 0) {
 
-                res.render('client/shop', { login: req.session.login, Allproduct: product, cetgory, banner: req.params.id, le: le.length, gg, now: page })
-    
-            } else {
-                res.render('client/shop', { Allproduct: product, cetgory, banner: req.params.id, le: le.length, gg, now: page })
-    
-            }
-        }else{
-            let le = [];
-            for (const e of cat) {
-                const g = await productModal.find({ category: e._id });
-                le = le.concat(g);
-                
-            }
-            const f=(perPage * page) - perPage;
-         console.log(le)
-            const product=le.slice(f,f+perPage)
-            const gg = Math.ceil(le.length / 12)
-          if(le.length==0){
-            
-            res.render('client/shop', { Allproduct: product,cetgory, banner: req.query.q, le: le.length, gg, now: page })
-    
-          }  else if (gg < page) {
+                res.render('client/shop', { Allproduct: product, cetgory, banner: req.query.q, le: le.length, gg, now: page })
+
+            } else if (gg < page) {
                 console.log('jjjjjjhhg')
                 res.redirect(`/shop`)
             }
             if (req.session.login) {
 
-                res.render('client/shop', { login: req.session.login,cetgory, Allproduct: product,  banner: req.query.q, le: le.length, gg, now: page })
-    
+                res.render('client/shop', { login: req.session.login, Allproduct: product, cetgory, banner: req.params.id, le: le.length, gg, now: page })
+
             } else {
-                res.render('client/shop', { Allproduct: product,cetgory, banner: req.query.q, le: le.length, gg, now: page })
-    
+                res.render('client/shop', { Allproduct: product, cetgory, banner: req.params.id, le: le.length, gg, now: page })
+
+            }
+        } else {
+            let le = [];
+            for (const e of cat) {
+                const g = await productModal.find({ category: e._id });
+                le = le.concat(g);
+
+            }
+            const f = (perPage * page) - perPage;
+            const product = le.slice(f, f + perPage)
+            const gg = Math.ceil(le.length / 12)
+            if (le.length == 0) {
+
+                res.render('client/shop', { Allproduct: product, cetgory, banner: req.query.q, le: le.length, gg, now: page })
+
+            } else if (gg < page) {
+                console.log('jjjjjjhhg')
+                res.redirect(`/shop`)
+            }
+            if (req.session.login) {
+
+                res.render('client/shop', { login: req.session.login, cetgory, Allproduct: product, banner: req.query.q, le: le.length, gg, now: page })
+
+            } else {
+                res.render('client/shop', { Allproduct: product, cetgory, banner: req.query.q, le: le.length, gg, now: page })
+
             }
         }
-    }catch(err){
-        console.log(err.message+'  searchItem')
+    } catch (err) {
+        console.log(err.message + '  searchItem')
+    }
+}
+
+//shopFilter
+const shopFilter = async (req, res) => {
+    try {
+        const perPage = 12;
+        const page = req.query.now || 1;
+        if (req.query.val == 'defualt') {
+            const val = await productModal.find({}).populate('category offer')
+            const data = val.reverse()
+            const f = (perPage * page) - perPage;
+            const product = data.slice(f, f + perPage)
+            res.status(200).json({ data:product })
+        } else if (req.query.val == 'popularity') {
+            const data1 = await orderModal.aggregate([
+                {
+                    $unwind: '$OrderedItems'
+                },
+                {
+                    $group: {
+                        _id: '$OrderedItems.productId',
+                        totalCount: { $sum: '$OrderedItems.quantity' },
+                        orderDates: { $push: '$orderDate' }
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'products',
+                        localField: '_id',
+                        foreignField: '_id',
+                        as: 'productData'
+                    }
+                },
+                {
+                    $sort: { totalCount: -1 }
+                }
+
+            ])
+            const data = [];
+            for (let i = 0; i < data1[0].productData.length; i++) {
+                let val = await productModal.findOne({ _id: data1[0].productData[i]._id }).populate('category offer');
+                data.push(val)
+            }
+            const f = (perPage * page) - perPage;
+            const product = data.slice(f, f + perPage)
+            res.status(200).json({ data:product })
+        } else if (req.query.val == 'cheapest') {
+            const data = await productModal.find({}).sort({ price: 1 }).populate('category offer')
+            const f = (perPage * page) - perPage;
+            const product = data.slice(f, f + perPage)
+            res.status(200).json({ data:product })
+        } else if (req.query.val == 'premium') {
+            const data = await productModal.find({}).sort({ price: -1 }).populate('category offer')
+            const f = (perPage * page) - perPage;
+            const product = data.slice(f, f + perPage)
+            res.status(200).json({ data:product })
+        } else {
+            res.status(400).json({ err: 'errr' })
+        }
+    } catch (err) {
+        console.log(err.message + ' shopFilter')
     }
 }
 
@@ -1360,5 +1507,9 @@ module.exports = {
     coupenCode,
     catgory,
     search,
-    searchItem
+    searchItem,
+    shopFilter,
+    wishListAdd,
+    wishListRemove,
+    cartCount
 }

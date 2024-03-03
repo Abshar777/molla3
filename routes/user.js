@@ -61,6 +61,9 @@ router.get('/cart',userMidleware.userbloack,userMidleware.user,userController.ca
 //CART PAGE RENDERING route
 router.get('/wishlist',userMidleware.userbloack,userMidleware.user,userController.wishlist);
 
+//cart count
+router.put('/cartCount',userController.cartCount)
+
 // add cart fetching
 router.put('/addcart',userController.addcart)
 
@@ -72,6 +75,9 @@ router.put('/cartUpdate',userController.cartEdit)
 
 //deleate cart 
 router.delete('/cartremove',userController.cartree)
+
+//wishlist remove
+router.delete('/wishListRemove',userController.wishListRemove)
 
 //adress route
 router.get('/adress',userMidleware.userbloack,userMidleware.user,userController.adress);
@@ -138,6 +144,12 @@ router.get('/search',userController.search)
 
 //search result
 router.get('/searchItem',userMidleware.userbloack,userController.searchItem)
+
+//filter shop
+router.post('/shop/filter',userController.shopFilter)
+
+//wishList adding beckend
+router.post('/wishListAdd',userController.wishListAdd)
 
 //logout
 router.post('/logout',userController.logout)

@@ -21,7 +21,7 @@
             <div class="col-12 grid-margin">
          
                 <div class="card"  style="min-height: 80vh; border-radius: 15px; box-shadow: 0 0 0 0; border: 0;">
-                    <div class="card-body">
+                    <div class="card-body position-relative ">
                       <h4 class="card-title">Order Status</h4>
                       <div class="table-responsive">
                         <table class="table">
@@ -79,7 +79,7 @@
                           </tbody>
                         </table>
                       </div>
-                      <div class=" w-100 d-flex align-items-center justify-content-center " style="gap: .3rem;" role="group" aria-label="Basic example">
+                      <div class=" w-100 d-flex align-items-center justify-content-center position-absolute  " style="gap: .3rem; bottom: 1rem;" role="group" aria-label="Basic example">
                         <% let flag=0;%>
                         <a class="btn btn-outline-secondary <%=now==1?'disabled ':''  %>" href="/admin/orders?page=<%=now-1  %>"><i class="ri-arrow-left-line"></i></a>
                         <% for(let i=now;i<=gg;i++){ %>
