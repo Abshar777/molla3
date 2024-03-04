@@ -34,6 +34,68 @@
                         <div class="display-row" id="scroll-to-content">
                             <div class="container-fluid">
                                 <div class="row align-items-center">
+                                    <div class="col-lg-6">
+                                        <div class="heading text-center">
+                                            <h2 class="title">About jacket</h2><!-- End .title text-center -->
+                                            <p class="title-desc">Lorem ipsum dolor sit amet, consectetuer adipiscing
+                                                elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut
+                                                turpis.</p><!-- End .title-desc -->
+                                        </div><!-- End .heading -->
+
+                                        <div class="row">
+                                            <div class="col-lg-8 offset-lg-2">
+                                                <div class="row">
+                                                    <% for(let i=0;i<2;i++){  if(locals.product[i].category.name=='jacket'){ console.log(); %>
+                                                        
+                                                    <div class="col-6">
+                                                        <div class="product product-4" style="    border-radius: 10px;
+                                                border: 1px solid #0000000f;
+                                                text-align: center;">
+                                                            <figure class="product-media">
+                                                                <a  href="/productDets?proId=<%=product[i]._id  %>">
+                                                                    <img src="/productImage/<%= product[i].images[0] %>"
+                                                                        alt="Product image" class="product-image">
+                                                                    <img src="/productImage/<%= product[i].images[1] %>"
+                                                                        alt="Product image" class="product-image-hover">
+
+                                                                </a>
+
+                                                                <div class="product-action-vertical">
+                                                                    <a 
+                                                                        class="btn-product-icon btn-wishlist btn-expandable"><span>add
+                                                                            to wishlist</span></a>
+                                                                
+                                                                </div><!-- End .product-action -->
+
+                                                                <div class="product-action">
+                                                                    <a  onclick="addCart('<%=product[i]._id  %>','<%=locals.login?locals.login:false  %>',1)" class="btn-product btn-cart"><span>add
+                                                                            to cart</span></a>
+                                                                </div><!-- End .product-action -->
+                                                            </figure><!-- End .product-media -->
+
+                                                            <div class="product-body">
+                                                                <h3 class="product-title"><a  href="/productDets?proId=<%=product[i]._id  %>"><%=product[i].name  %></a></h3><!-- End .product-title -->
+
+                                                                <div
+                                                                    class="product-price  text-center w-100 d-flex align-items-center justify-content-center mt-1 ">
+                                                                    <p class="text-center active">Now $<%=product[i].price  %></p>
+
+                                                                </div><!-- End .product-price -->
+                                                                <div class="product-nav product-nav-dots">
+                                                                    <a href="#" class=""
+                                                                        style="background: transparent"><span
+                                                                            class="sr-only">Color name</span></a>
+
+                                                                </div><!-- End .product-nav -->
+                                                            </div><!-- End .product-body -->
+                                                        </div><!-- End .product -->
+                                                    </div><!-- End .col-sm-6 -->
+                                                        <% }} %>
+                                                   <!-- End .col-sm-6 -->
+                                                </div><!-- End .row -->
+                                            </div><!-- End .col-lg-8 offset-lg-2 -->
+                                        </div><!-- End .row -->
+                                    </div>
                                     <div class="col-lg-6 order-lg-last">
                                         <div class="banner banner-overlay" style="border-radius: 15px;">
                                             <a href="#" style="border-radius: 17px; overflow: hidden;">
@@ -61,117 +123,7 @@
                                         </div><!-- End .banner -->
                                     </div><!-- End .col-lg-6 -->
 
-                                    <div class="col-lg-6">
-                                        <div class="heading text-center">
-                                            <h2 class="title">About This Look</h2><!-- End .title text-center -->
-                                            <p class="title-desc">Lorem ipsum dolor sit amet, consectetuer adipiscing
-                                                elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut
-                                                turpis.</p><!-- End .title-desc -->
-                                        </div><!-- End .heading -->
-
-                                        <div class="row">
-                                            <div class="col-lg-8 offset-lg-2">
-                                                <div class="row">
-                                                    <div class="col-6">
-                                                        <div class="product product-4" style="    border-radius: 10px;
-                                                border: 1px solid #0000000f;
-                                                text-align: center;">
-                                                            <figure class="product-media">
-                                                                <a href="product.html">
-                                                                    <img src="https://wtflex.in/cdn/shop/files/Artboard1-3.png?v=1702455417&width=600"
-                                                                        alt="Product image" class="product-image">
-                                                                    <img src="https://wtflex.in/cdn/shop/files/Artboard2-2_3e50728f-4cb6-473e-a7b8-6203319589db.png?v=1702455418&width=600"
-                                                                        alt="Product image" class="product-image-hover">
-
-                                                                </a>
-
-                                                                <div class="product-action-vertical">
-                                                                    <a href="#"
-                                                                        class="btn-product-icon btn-wishlist btn-expandable"><span>add
-                                                                            to wishlist</span></a>
-                                                                    <a href="popup/quickView.html"
-                                                                        class="btn-product-icon btn-quickview"
-                                                                        title="Quick view"><span>Quick view</span></a>
-                                                                    <a href="#" class="btn-product-icon btn-compare"
-                                                                        title="Compare"><span>Compare</span></a>
-                                                                </div><!-- End .product-action -->
-
-                                                                <div class="product-action">
-                                                                    <a href="#" class="btn-product btn-cart"><span>add
-                                                                            to cart</span></a>
-                                                                </div><!-- End .product-action -->
-                                                            </figure><!-- End .product-media -->
-
-                                                            <div class="product-body">
-                                                                <h3 class="product-title"><a href="product.html">Suede
-                                                                        Moto Jacket</a></h3><!-- End .product-title -->
-
-                                                                <div
-                                                                    class="product-price  text-center w-100 d-flex align-items-center justify-content-center mt-1 ">
-                                                                    <p class="text-center active">Now $1,298.00</p>
-
-                                                                </div><!-- End .product-price -->
-                                                                <div class="product-nav product-nav-dots">
-                                                                    <a href="#" class=""
-                                                                        style="background: transparent"><span
-                                                                            class="sr-only">Color name</span></a>
-
-                                                                </div><!-- End .product-nav -->
-                                                            </div><!-- End .product-body -->
-                                                        </div><!-- End .product -->
-                                                    </div><!-- End .col-sm-6 -->
-
-                                                    <div class="col-6">
-                                                        <div class="product product-4" style="    border-radius: 10px;
-                                                border: 1px solid #0000000f;
-                                                text-align: center;">
-                                                            <figure class="product-media">
-                                                                <a href="product.html">
-                                                                    <img src="https://wtflex.in/cdn/shop/files/DII2.png?v=1685026287&width=600"
-                                                                        alt="Product image" class="product-image">
-                                                                    <img src="https://wtflex.in/cdn/shop/files/DII8.png?v=1685026287&width=162"
-                                                                        alt="Product image" class="product-image-hover">
-                                                                </a>
-
-                                                                <div class="product-action-vertical">
-                                                                    <a href="#"
-                                                                        class="btn-product-icon btn-wishlist btn-expandable"><span>add
-                                                                            to wishlist</span></a>
-                                                                    <a href="popup/quickView.html"
-                                                                        class="btn-product-icon btn-quickview"
-                                                                        title="Quick view"><span>Quick view</span></a>
-                                                                    <a href="#" class="btn-product-icon btn-compare"
-                                                                        title="Compare"><span>Compare</span></a>
-                                                                </div><!-- End .product-action -->
-
-                                                                <div class="product-action">
-                                                                    <a href="#" class="btn-product btn-cart"><span>add
-                                                                            to cart</span></a>
-                                                                </div><!-- End .product-action -->
-                                                            </figure><!-- End .product-media -->
-
-                                                            <div class="product-body">
-                                                                <h3 class="product-title"><a href="product.html">Suede
-                                                                        Moto Jacket</a></h3><!-- End .product-title -->
-
-                                                                <div
-                                                                    class="product-price  text-center w-100 d-flex align-items-center justify-content-center mt-1 ">
-                                                                    <p class="text-center active">Now $1,298.00</p>
-
-                                                                </div><!-- End .product-price -->
-                                                                <div class="product-nav product-nav-dots">
-                                                                    <a href="#" class=""
-                                                                        style="background: transparent"><span
-                                                                            class="sr-only">Color name</span></a>
-
-                                                                </div><!-- End .product-nav -->
-                                                            </div><!-- End .product-body -->
-                                                        </div><!-- End .product -->
-                                                    </div><!-- End .col-sm-6 -->
-                                                </div><!-- End .row -->
-                                            </div><!-- End .col-lg-8 offset-lg-2 -->
-                                        </div><!-- End .row -->
-                                    </div><!-- End .col-lg-6 -->
+                                  <!-- End .col-lg-6 -->
                                 </div><!-- End .row -->
                             </div><!-- End .container-fluid -->
                         </div><!-- End .display-row -->
@@ -200,143 +152,54 @@
                                         </div><!-- End .heading -->
 
                                         <div class="row">
-                                            <div class="col-6 col-md-4">
-                                                <div class="product product-4">
-                                                    <figure class="product-media">
-                                                        <a href="product.html">
-                                                            <img src="https://wtflex.in/cdn/shop/files/Artboard2-3.png?v=1696162455&width=600"
-                                                                alt="Product image" class="product-image">
-                                                            <img src="https://wtflex.in/cdn/shop/files/Artboard2-2.png?v=1696162454&width=600"
-                                                                alt="Product image" class="product-image-hover">
-                                                        </a>
+                                       
+                                            <%let flag=3; for(let i=0;i<flag;i++){  if(locals.product[i].category.name=='cargo-pants'){ %>
+                                                        
+                                                <div class="col-6 col-md-4">
+                                                    <div class="product product-4" style="    border-radius: 10px;
+                                            border: 1px solid #0000000f;
+                                            text-align: center;">
+                                                        <figure class="product-media">
+                                                            <a  href="/productDets?proId=<%=product[i]._id  %>">
+                                                                <img src="/productImage/<%= product[i].images[0] %>"
+                                                                    alt="Product image" class="product-image">
+                                                                <img src="/productImage/<%= product[i].images[1] %>"
+                                                                    alt="Product image" class="product-image-hover">
 
-                                                        <div class="product-action-vertical">
-                                                            <a href="#"
-                                                                class="btn-product-icon btn-wishlist btn-expandable"><span>add
-                                                                    to wishlist</span></a>
-                                                            <a href="popup/quickView.html"
-                                                                class="btn-product-icon btn-quickview"
-                                                                title="Quick view"><span>Quick view</span></a>
-                                                            <a href="#" class="btn-product-icon btn-compare"
-                                                                title="Compare"><span>Compare</span></a>
-                                                        </div><!-- End .product-action -->
+                                                            </a>
 
-                                                        <div class="product-action">
-                                                            <a href="#" class="btn-product btn-cart"><span>add to
-                                                                    cart</span></a>
-                                                        </div><!-- End .product-action -->
-                                                    </figure><!-- End .product-media -->
+                                                            <div class="product-action-vertical">
+                                                                <a 
+                                                                    class="btn-product-icon btn-wishlist btn-expandable"><span>add
+                                                                        to wishlist</span></a>
+                                                            
+                                                            </div><!-- End .product-action -->
 
-                                                    <div class="product-body">
-                                                        <h3 class="product-title"><a href="product.html">Suede
-                                                                Moto Jacket</a></h3><!-- End .product-title -->
+                                                            <div class="product-action">
+                                                                <a  onclick="addCart('<%=product[i]._id  %>','<%=locals.login?locals.login:false  %>',1)" class="btn-product btn-cart"><span>add
+                                                                        to cart</span></a>
+                                                            </div><!-- End .product-action -->
+                                                        </figure><!-- End .product-media -->
 
-                                                        <div
-                                                            class="product-price  text-center w-100 d-flex align-items-center justify-content-center mt-1 ">
-                                                            <p class="text-center active">Now $1,298.00</p>
+                                                        <div class="product-body">
+                                                            <h3 class="product-title"><a  href="/productDets?proId=<%=product[i]._id  %>"><%=product[i].name  %></a></h3><!-- End .product-title -->
 
-                                                        </div><!-- End .product-price -->
-                                                        <div class="product-nav product-nav-dots">
-                                                            <a href="#" class=""
-                                                                style="background: transparent"><span
-                                                                    class="sr-only">Color name</span></a>
+                                                            <div
+                                                                class="product-price  text-center w-100 d-flex align-items-center justify-content-center mt-1 ">
+                                                                <p class="text-center active">Now $<%=product[i].price  %></p>
 
-                                                        </div><!-- End .product-nav -->
-                                                    </div><!-- End .product-body --><!-- End .product-body -->
-                                                </div><!-- End .product -->
-                                            </div><!-- End .col-sm-6 -->
+                                                            </div><!-- End .product-price -->
+                                                            <div class="product-nav product-nav-dots">
+                                                                <a href="#" class=""
+                                                                    style="background: transparent"><span
+                                                                        class="sr-only">Color name</span></a>
 
-                                            <div class="col-6 col-md-4">
-                                                <div class="product product-4">
-                                                    <figure class="product-media">
-                                                        <a href="product.html">
-                                                            <img src="https://wtflex.in/cdn/shop/files/skullcargoweb3.png?v=1691403974&width=600"
-                                                                alt="Product image" class="product-image">
-                                                            <img src="https://wtflex.in/cdn/shop/files/skullcargoweb1.png?v=1691403975&width=600"
-                                                                alt="Product image" class="product-image-hover">
-                                                        </a>
+                                                            </div><!-- End .product-nav -->
+                                                        </div><!-- End .product-body -->
+                                                    </div><!-- End .product -->
+                                                </div><!-- End .col-sm-6 -->
+                                                    <% }else{flag++}} %><!-- End .col-sm-6 -->
 
-                                                        <div class="product-action-vertical">
-                                                            <a href="#"
-                                                                class="btn-product-icon btn-wishlist btn-expandable"><span>add
-                                                                    to wishlist</span></a>
-                                                            <a href="popup/quickView.html"
-                                                                class="btn-product-icon btn-quickview"
-                                                                title="Quick view"><span>Quick view</span></a>
-                                                            <a href="#" class="btn-product-icon btn-compare"
-                                                                title="Compare"><span>Compare</span></a>
-                                                        </div><!-- End .product-action -->
-
-                                                        <div class="product-action">
-                                                            <a href="#" class="btn-product btn-cart"><span>add to
-                                                                    cart</span></a>
-                                                        </div><!-- End .product-action -->
-                                                    </figure><!-- End .product-media -->
-
-                                                    <div class="product-body">
-                                                        <h3 class="product-title"><a href="product.html">Suede
-                                                                Moto Jacket</a></h3><!-- End .product-title -->
-
-                                                        <div
-                                                            class="product-price  text-center w-100 d-flex align-items-center justify-content-center mt-1 ">
-                                                            <p class="text-center active">Now $1,298.00</p>
-
-                                                        </div><!-- End .product-price -->
-                                                        <div class="product-nav product-nav-dots">
-                                                            <a href="#" class=""
-                                                                style="background: transparent"><span
-                                                                    class="sr-only">Color name</span></a>
-
-                                                        </div><!-- End .product-nav -->
-                                                    </div><!-- End .product-body -->
-                                                </div><!-- End .product -->
-                                            </div><!-- End .col-sm-6 -->
-
-                                            <div class="col-6 col-md-4">
-                                                <div class="product product-4">
-                                                    <figure class="product-media">
-                                                        <a href="product.html">
-                                                            <img src="https://wtflex.in/cdn/shop/files/Artboard1-12.png?v=1705146952&width=600"
-                                                                alt="Product image" class="product-image">
-                                                            <img src="https://wtflex.in/cdn/shop/files/Artboard2-12.png?v=1705146952&width=600"
-                                                                alt="Product image" class="product-image-hover">
-                                                        </a>
-
-                                                        <div class="product-action-vertical">
-                                                            <a href="#"
-                                                                class="btn-product-icon btn-wishlist btn-expandable"><span>add
-                                                                    to wishlist</span></a>
-                                                            <a href="popup/quickView.html"
-                                                                class="btn-product-icon btn-quickview"
-                                                                title="Quick view"><span>Quick view</span></a>
-                                                            <a href="#" class="btn-product-icon btn-compare"
-                                                                title="Compare"><span>Compare</span></a>
-                                                        </div><!-- End .product-action -->
-
-                                                        <div class="product-action">
-                                                            <a href="#" class="btn-product btn-cart"><span>add to
-                                                                    cart</span></a>
-                                                        </div><!-- End .product-action -->
-                                                    </figure><!-- End .product-media -->
-
-                                                    <div class="product-body text-center ">
-                                                        <h3 class="product-title text-center "><a href="product.html">Suede
-                                                                Moto Jacket</a></h3><!-- End .product-title -->
-
-                                                        <div
-                                                            class="product-price  text-center w-100 d-flex align-items-center justify-content-center mt-1 ">
-                                                            <p class="text-center active">Now $1,298.00</p>
-
-                                                        </div><!-- End .product-price -->
-                                                        <div class="product-nav product-nav-dots">
-                                                            <a href="#" class=""
-                                                                style="background: transparent"><span
-                                                                    class="sr-only">Color name</span></a>
-
-                                                        </div><!-- End .product-nav -->
-                                                    </div><!-- End .product-body -->
-                                                </div><!-- End .product -->
-                                            </div><!-- End .col-sm-6 -->
                                         </div><!-- End .row -->
                                     </div><!-- End .col-lg-6 -->
                                 </div><!-- End .row -->
@@ -763,7 +626,7 @@
         <!-- Mobile Menu -->
         <%- include('../layout/mobMenu.ejs') -%>
 
-
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
             <style>
                 .product-nav-dots a:last-child, .product-nav-dots span:last-child {
@@ -794,7 +657,7 @@
                     text-align: center;
                 }
             </style>
-            <!-- <script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@3.5.4/dist/locomotive-scroll.js"></script> -->
+            <script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@3.5.4/dist/locomotive-scroll.js"></script>
             <script src="js/demos/demo-6.js"></script>
 
             <script>
@@ -802,5 +665,62 @@
                     el: document.querySelector('.nn'),
                     smooth: true
                 });
+                function wishList(id,user){
+        if (user == "false") {
+          console.log("hello");
+          window.location.href = "/login";
+        } else {
+      fetch(`/wishListAdd?user=${user}&&id=${id}`,{method:'post'}).then(res=>res.json()).then(data=>{
+        if (data.success) {
+          cartAndWishlist()
+                toast("success", "wishlist added");
+              }
+              if (data.exist) {
+                toast("warning", "product alredy there");
+              }
+      })
+        }
+      }
+      function addCart(id, user, q) {
+        if (user == "false") {
+          console.log("hello");
+          window.location.href = "/login";
+        } else {
+          fetch("/addcart", {
+            method: "put",
+            headers: { "Content-type": "application/json" },
+            body: JSON.stringify({ id, user, q }),
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              if (data.success) {
+                toast("success", "cart added");
+                cartAndWishlist()
+              }
+              if (data.exist) {
+                toast("warning", "product alredy there");
+              }
+            });
+        }
+      }
+    
+ function toast(icon, title) {
+      const Toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.onmouseenter = Swal.stopTimer;
+          toast.onmouseleave = Swal.resumeTimer;
+        },
+      });
+      Toast.fire({
+        icon: icon,
+        title: title,
+      });
+    }
+  
             </script>
             <%- include('../layout/footer.ejs') -%>

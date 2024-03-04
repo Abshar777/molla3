@@ -5,75 +5,22 @@ const addressModal = require('../models/adress')
 const cartModal = require('../models/cart')
 const productModal = require('../models/products');
 const wishListModal=require('../models/wishList')
-const Razorpay = require('razorpay');
-const nodemailer = require('nodemailer');
 const bycrypt = require('bcrypt');
 const invoiceConfig = require('../config/invoice')
 require('dotenv').config();
+const verifyemail=require('../config/verifyemail')
 const fs = require('fs');
 const path = require('path')
 const { v4: uuid } = require('uuid')
 const wallet = require('../models/wallet');
 const coupenSchema = require("../models/coupen");
 const coupenId = require('../config/coupenId')
-const { RAZORPAY_IDKEY, RAZORPAY_SECRET_KEY } = process.env;
+const instance=require('../config/razorpay')
+const securePassword=require('../util/scurePassword')
+const generateOTP=require('../util/generateOtp')
+const randomArray=require('../util/getRandomElementsFromArray')
 
 
-
-// fungctions
-const generateOTP = () => {
-    return Math.floor(1000 + Math.random() * 9000);
-};
-
-
-
-
-var instance = new Razorpay({
-    key_id: RAZORPAY_IDKEY,
-    key_secret: RAZORPAY_SECRET_KEY,
-});
-
-const verifyemail = async (name, email, otp) => {
-    try {
-
-        const transport = nodemailer.createTransport({
-            service: "gmail",
-
-            auth: {
-                user: "absharameen625@gmail.com",
-                pass: "vlfg cejw abfd zkvn",
-            }
-        });
-        const mailoption = {
-            from: "absharameen625@gmail.com",
-            to: email,
-            subject: 'for verification mail',
-            html: `<h1>hi ${name} this is for ka e-comares store verification otp <br><br> <a  style='color='blue'; href=''>${otp}</a></h1>`
-        }
-        transport.sendMail(mailoption, (err, info) => {
-            if (err) {
-                console.log(err.message);
-            }
-            else {
-                console.log(`Email has been sent: ${info.messageId}`);
-                console.log(`Preview URL: ${nodemailer.getTestMessageUrl(info)}`);
-            }
-        })
-    } catch (error) {
-        console.log(error.message);
-    }
-}
-
-
-const securePassword = async (pass) => {
-    try {
-        const passwordHash = await bycrypt.hash(pass, 10);
-        return passwordHash;
-    }
-    catch (err) {
-        console.log(err.message);
-    }
-}
 // date setup
 const options = { day: '2-digit', month: 'short', year: 'numeric' };
 //end 
@@ -82,12 +29,14 @@ const options = { day: '2-digit', month: 'short', year: 'numeric' };
 //home
 const home = async (req, res) => {
     const cetgory = await categoryModal.find({})
+    const product=await productModal.find({ stock: { $gt: 0 },status:true }).populate('category offer')
+    console.log(product+'KKK')
     if (req.session.login) {
-        res.render('client/home', { login: req.session.login, cetgory })
+        res.render('client/home', { login: req.session.login, cetgory,product })
     }
     else {
 
-        res.render('client/home', { cetgory })
+        res.render('client/home', { cetgory,product })
     }
 }
 
@@ -123,7 +72,7 @@ const signUp = async (req, res) => {
 //email exist checking
 const emailExist = async (req, res) => {
     try {
-        console.log(req.body.payload)
+        
         let emailcheck = await userSchema.findOne({ email: req.body.payload })
 
         if (emailcheck) {
@@ -135,6 +84,7 @@ const emailExist = async (req, res) => {
         }
     } catch (err) {
         console.log(err.message + '          email checking route')
+        res.status(500)
     }
 }
 
@@ -150,7 +100,7 @@ const getSignUp = async (req, res) => {
         const noUser = await userSchema.findOne({ email: req.body.registerEmail });
 
         if (noUser) {
-            console.log('helloooo you fucked usp');
+           res.status(500)
         }
         else {
             req.session.userData = userData
@@ -397,13 +347,16 @@ const shop = async (req, res) => {
         const page = req.query.page || 1;
         const cetgory = await categoryModal.find({});
 
-        const le = await productModal.find({ stock: { $gt: 0 } })
+        const le = await productModal.find({ stock: { $gt: 0 },status:true })
+       
         const gg = Math.ceil(le.length / 12)
-        if (gg < page) {
+    
+        
+        if (gg < page && gg!==0) {
             res.redirect(`/shop/`)
         }
 
-        const Allproduct = await productModal.find({ stock: { $gt: 0 } }).populate('category offer').skip((perPage * page) - perPage)
+        const Allproduct = await productModal.find({ stock: { $gt: 0 },status:true }).populate('category offer').skip((perPage * page) - perPage)
             .limit(perPage);
         let product = [];
         Allproduct.forEach((e, i) => {
@@ -426,7 +379,7 @@ const shop = async (req, res) => {
 }
 
 //profile
-const profile = async (req, res) => {
+const   profile = async (req, res) => {
     try {
         const cetgory = await categoryModal.find({})
         const user = await userSchema.findOne({ _id: req.session.login });
@@ -469,13 +422,19 @@ const productDets = async (req, res) => {
                 const cat=await categoryModal.find({gender:productDet.category.gender})
 
                 const arr=[];
+                const le=0;
                 for(const el of cat){
-                    let product = await productModal.findOne({ category: el._id, _id: { $ne: productDet._id } }).populate('category offer').limit(5)
-
-                    arr.push(product)
+                    let product = await productModal.find({ category: el._id, _id: { $ne: productDet._id } }).populate('category offer').limit(5)
+                    for(const al of product){
+                        arr.push(al)
+                    }
+                    
                 }
-                const arr1=arr.filter(Boolean)
-                res.render('client/productDet', { productDet, cetgory ,Allproduct:arr1})
+                
+                
+                const ogArray=randomArray(arr,5)
+                
+                res.render('client/productDet', { productDet, cetgory ,Allproduct:ogArray})
 
             }
         } else {
@@ -493,7 +452,18 @@ const cart = async (req, res) => {
         const cart = await cartModal.findOne({ userId: req.session.login }).populate('products.productId');
 
         if (cart) {
-            const total = cart.products.reduce((acc, product) => acc + product.price, 0);
+           const nonBlockedProduct= cart.products.filter((e)=>e.productId.status)
+           const BlockedProduct= cart.products.filter((e)=>!e.productId.status)
+           console.log(BlockedProduct)
+           for(const el of BlockedProduct){
+            if (!el.productId.status) {
+                console.log(el)
+                const doc=await cartModal.findOneAndUpdate({ userId: req.session.login }, { $pull: { products: { productId: el.productId._id } } },{new:true});
+                console.log(doc)
+            }
+           }
+            const total1 = nonBlockedProduct.reduce((acc, product) => acc + product.price, 0);
+            const total=Number(total1.toFixed(1))
             const options = {
                 upsert: true,
                 new: true,
@@ -707,8 +677,8 @@ const addcartPost = async (req, res) => {
 const cartEdit = async (req, res) => {
     try {
         const product = await productModal.findOne({ _id: req.body.i });
-        const newval = product.price * req.body.quantity;
-
+        const newval1 = product.price * req.body.quantity;
+        const newval=Number(newval1.toFixed(1))
         const updatedCart = await cartModal.findOneAndUpdate(
             { _id: req.body.id, 'products.productId': req.body.i },
             {
@@ -720,8 +690,8 @@ const cartEdit = async (req, res) => {
             { new: true }
         );
 
-        const total = updatedCart.products.reduce((acc, product) => acc + product.price, 0);
-
+        const total1 = updatedCart.products.reduce((acc, product) => acc + product.price, 0);
+        const total=Number(total1.toFixed(1))
         await cartModal.findOneAndUpdate(
             { _id: req.body.id },
             { $set: { TotalPrice: total } }
@@ -928,7 +898,7 @@ const razor = async (req, res) => {
                     msg: 'ORDER created',
                     order_id: order.id,
                     amount: amount,
-                    key_id: RAZORPAY_IDKEY,
+                    key_id: process.env.RAZORPAY_IDKEY,
                     name: user.name,
                     email: user.email
                 })
@@ -1297,7 +1267,9 @@ const catgory = async (req, res) => {
         const le = await productModal.find({ category: data._id })
 
         const gg = Math.ceil(le.length / 12)
-        if (gg < page) {
+        console.log(gg)
+        if (gg < page && gg!==0) {
+            console.log('note')
             res.redirect(`/cetgory/${req.params.id}`)
         }
         const product = await productModal.find({ category: data._id }).populate('category offer').skip((perPage * page) - perPage)
@@ -1322,14 +1294,13 @@ const search = async (req, res) => {
         if (type) {
             const payload = req.query.val.trim()
             const content = new RegExp(`.*${payload}.*`, 'i');
-            const data = await productModal.find({ $or: [{ name: { $regex: content } }, { description: { $regex: content } }, { createdAt: { $regex: content } }] }).populate('category offer').exec()
+            const data = await productModal.find({$and:[{$or: [{ name: { $regex: content } }, { description: { $regex: content } }, { createdAt: { $regex: content } }]},{status:true}] }).populate('category offer').exec()
             const cat = await categoryModal.find({ $or: [{ name: { $regex: content } }, { gender: { $regex: content } }] })
-            console.log(cat)
             const result = data.concat(cat)
             res.send({ result })
 
         } else {
-            const result = await productModal.find({ $or: [{ price: req.body.val }, { stock: req.body.val }] }).populate('category offer').exec()
+            const result = await productModal.find({status:true, $or: [{ price: req.body.val }, { stock: req.body.val }] }).populate('category offer').exec()
             res.send({ result })
         }
     } catch (err) {
@@ -1347,8 +1318,8 @@ const searchItem = async (req, res) => {
         const cetgory = await categoryModal.find({});
         const cat = await categoryModal.find({ $or: [{ name: { $regex: content } }, { gender: { $regex: content } }] })
         if (cat.length == 0) {
-            const le = await productModal.find({ $or: [{ name: { $regex: content } }, { description: { $regex: content } }, { createdAt: { $regex: content } }] }).populate('category offer').exec()
-            const product = await productModal.find({ $or: [{ name: { $regex: content } }, { description: { $regex: content } }, { createdAt: { $regex: content } }] }).populate('category offer').skip((perPage * page) - perPage)
+            const le = await productModal.find({$and:[{$or: [{ name: { $regex: content } }, { description: { $regex: content } }, { createdAt: { $regex: content } }]},{status:true}] }).populate('category offer').exec()
+            const product = await productModal.find({$and:[{$or: [{ name: { $regex: content } }, { description: { $regex: content } }, { createdAt: { $regex: content } }]},{status:true}] }).populate('category offer').skip((perPage * page) - perPage)
                 .limit(perPage);
             const gg = Math.ceil(le.length / 12);
             if (le.length == 0) {
@@ -1370,7 +1341,7 @@ const searchItem = async (req, res) => {
         } else {
             let le = [];
             for (const e of cat) {
-                const g = await productModal.find({ category: e._id });
+                const g = await productModal.find({status:true, category: e._id });
                 le = le.concat(g);
 
             }
@@ -1436,8 +1407,9 @@ const shopFilter = async (req, res) => {
 
             ])
             const data = [];
-            for (let i = 0; i < data1[0].productData.length; i++) {
-                let val = await productModal.findOne({ _id: data1[0].productData[i]._id }).populate('category offer');
+            console.log(data1)
+            for (let i = 0; i < data1[0]?.productData.length; i++) {
+                let val = await productModal.findOne({ _id: data1[0]?.productData[i]._id }).populate('category offer');
                 data.push(val)
             }
             const f = (perPage * page) - perPage;

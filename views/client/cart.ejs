@@ -41,6 +41,7 @@
                                             <tbody>
                                                 <% if(locals.cart) {%>
                                                 <% cart.products.forEach((product, index)=> { %>
+                                                    <%  if(product.productId.status){  %>
                                                     <tr id="c<%= locals.cart._id%>">
                                                         <td class="product-col">
                                                             <div class="product">
@@ -76,7 +77,7 @@
                                                                     class="icon-close"></i></button>
                                                         </td>
                                                     </tr>
-                                                    <% }) %>
+                                                    <%} }) %>
                                                     <% } %>
                                             </tbody>
 
@@ -191,9 +192,9 @@
 						body: JSON.stringify({ quantity: e.value,id,i })
                    }).then(res=>res.json()).then(data=>{
                     if(data.su){
-                        Tprice.textContent=`$${e.value*price}`;
-                        Total.textContent=`$${data.su}`;
-                        sub.textContent=`$${data.su}`;
+                        Tprice.textContent=`$${(e.value*price).toFixed(1)}`;
+                        Total.textContent=`$${(data.su).toFixed(1)}`;
+                        sub.textContent=`$${(data.su).toFixed(1)}`;
                         
                     }
                    })

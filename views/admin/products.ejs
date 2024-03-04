@@ -121,7 +121,7 @@
             border-radius: 50%;
          "></div>
             <div class="col-12 grid-margin">
-              <div class="card " style="position: relative; height: 80vh; border-radius: 15px; box-shadow: 0 0 0 0; border: 0;">
+              <div class="card " style="position: relative; min-height: 80vh; border-radius: 15px; box-shadow: 0 0 0 0; border: 0;">
                 <div class="card" style="position: relative; border-radius: 15px; box-shadow: 0 0 0 0; border: 0;">
                   <div class="card-body">
                     <div class="d-flex align-items-center justify-content-between ">
@@ -184,7 +184,7 @@
                                 <%=e.category.name %>
                               </td>
                               <td>
-                                <div onclick="active('')" style="cursor: pointer;" class="badge  badge-outline-success">
+                                <div id="active<%=e._id  %>" onclick="active('<%=e._id  %>','  <%=e.status %>')" style="cursor: pointer;" class="badge  <%= e.status ? 'badge-outline-success' : 'badge-outline-danger' %>">
                                   <%=e.status %>
                                 </div>
                               </td>
@@ -225,16 +225,16 @@
                 <br>
                     <div class="position-absolute  w-100 d-flex align-items-center justify-content-center " style="bottom: 1rem; gap: .3rem;" role="group" aria-label="Basic example">
                       <% let flag=0;%>
-                      <a class="btn btn-outline-secondary <%=now==1?'disabled ':''  %>" href="/admin/orders?page=<%=now-1  %>"><i class="ri-arrow-left-line"></i></a>
+                      <a class="btn btn-outline-secondary <%=now==1?'disabled ':''  %>" href="/admin/product?page=<%=now-1  %>"><i class="ri-arrow-left-line"></i></a>
                       <% for(let i=now;i<=gg;i++){ %>
                         <% if(flag==3){ %>
                           <% break;} flag++; %>           
-                          <a class="btn btn-outline-secondary" href="/admin/orders?page=<%=i  %>"><%=i  %></a>
+                          <a class="btn btn-outline-secondary" href="/admin/product?page=<%=i  %>"><%=i  %></a>
                           <% } %>
 
                           <a class="btn btn-outline-secondary disabled " ><%=now  %>of <%=gg  %></a>
                           <% let next=Number(now) %>
-                          <a class="btn btn-outline-secondary <%=now==gg?'disabled ':''  %>" href="/admin/orders?page=<%=next+1  %>"><i class="ri-arrow-right-line"></i></a>
+                          <a class="btn btn-outline-secondary <%=now==gg?'disabled ':''  %>" href="/admin/product?page=<%=next+1  %>"><i class="ri-arrow-right-line"></i></a>
     
                  
                     </div>
@@ -273,7 +273,7 @@
                 transition: all ease 0.3s; cursor: pointer;">
                 Edit
             </label>
-            <input type="file" class='file' data-index='${i}' id="image${i}" accept="image/jpeg, image/png, image/jpg"
+            <input type="file" class='file' data-index='${i}' id="image${i}" accept="image/*"
                 name="images${i}" style="display: none;" value='${im}'>
             <img class="w-100 h-100 " id='im${i}' style="object-fit: cover;"
                 src="/productImage/${im}" alt="">
@@ -307,6 +307,21 @@
 
     }
 
+    function active(id,status){
+     const btn= document.getElementById(`active${id}`)
+      fetch(`/admin/proStatus?id=${id}`,{method:'put'}).then(res=>res.json()).then(data=>{
+        console.log()
+        if(btn.textContent.trim()=='true'){
+          btn.textContent=false
+          btn.classList.remove('badge-outline-success')
+          btn.classList.add('badge-outline-danger')
+        }else{
+          btn.textContent=true
+          btn.classList.remove('badge-outline-danger')
+          btn.classList.add('badge-outline-success')
+        }
+      })
+    }
   </script>
   <script src="/vendors/js/vendor.bundle.base.js"></script>
 

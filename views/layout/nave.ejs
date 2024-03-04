@@ -120,7 +120,7 @@
     function cartAndWishlist(){
         const cart=document.querySelector('.cart-count');
         const wishlist=document.querySelector('.wishlist-count');
-        console.log(cart.textContent);
+        
         if(cart){
         console.log('hello');
             fetch('/cartCount',{method:'put'}).then(res=>res.json()).then(data=>{
@@ -136,7 +136,7 @@
 
     const form = document.getElementById('myform');
     const result = document.getElementById('result');
-    const show = document.getElementById('ll');
+    const show1 = document.getElementById('ll');
     function search(e) {
    
         let clutter = '';
@@ -176,7 +176,7 @@ data.result.forEach(e => {
         clutter += ` <a href='/searchItem?q=${e.gender}' class="py-3 sea" style="border-bottom : .5px solid rgba(128, 128, 128, 0.24);"><p>${e.gender}</p></a><br>`;
     }
 });
-                    show.innerHTML=clutter;
+                    show1.innerHTML=clutter;
                     form.addEventListener('submit',(e)=>{
                         form.submit()
                       })
@@ -196,6 +196,8 @@ data.result.forEach(e => {
         }
         
         }
+
+        
 </script>
 <style>
     .sea:hover{

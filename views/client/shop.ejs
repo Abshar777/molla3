@@ -145,11 +145,15 @@
                   "
                 >
                   <figure class="product-media">
-                    <% if(e.offer){ %>
-                    <span class="product-label label-sale">
-                      <%=e.offer.offer %>% off
-                    </span>
-                    <% } %>
+                    <% if(e?.offer){ %>
+                      <span class="product-label label-sale bg-danger">
+                        <%=e.offer.offer %>% off
+                      </span>
+                      <% }else{ %>
+                          <span class="product-label label-new">
+                             new
+                            </span>
+                          <% } %>
                     <a href="/productDets?proId=<%=e._id  %>">
                       <img
                         src="/productImage/<%=e.images[0]  %>"
@@ -831,45 +835,45 @@
   <%- include('../layout/mobMenu.ejs') -%>
   <script>
     const modal = document.getElementById("exampleModal");
-    function wishList(id,user){
-      if (user == "false") {
-        console.log("hello");
-        window.location.href = "/login";
-      } else {
-     fetch(`/wishListAdd?user=${user}&&id=${id}`,{method:'post'}).then(res=>res.json()).then(data=>{
-      if (data.success) {
-        cartAndWishlist()
-              toast("success", "wishlist added");
-            }
-            if (data.exist) {
-              toast("warning", "product alredy there");
-            }
-     })
+      function wishList(id,user){
+        if (user == "false") {
+          console.log("hello");
+          window.location.href = "/login";
+        } else {
+      fetch(`/wishListAdd?user=${user}&&id=${id}`,{method:'post'}).then(res=>res.json()).then(data=>{
+        if (data.success) {
+          cartAndWishlist()
+                toast("success", "wishlist added");
+              }
+              if (data.exist) {
+                toast("warning", "product alredy there");
+              }
+      })
+        }
       }
-    }
-    function addCart(id, user, q) {
-      if (user == "false") {
-        console.log("hello");
-        window.location.href = "/login";
-      } else {
-        fetch("/addcart", {
-          method: "put",
-          headers: { "Content-type": "application/json" },
-          body: JSON.stringify({ id, user, q }),
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            if (data.success) {
-              toast("success", "cart added");
-              cartAndWishlist()
-            }
-            if (data.exist) {
-              toast("warning", "product alredy there");
-            }
-          });
+      function addCart(id, user, q) {
+        if (user == "false") {
+          console.log("hello");
+          window.location.href = "/login";
+        } else {
+          fetch("/addcart", {
+            method: "put",
+            headers: { "Content-type": "application/json" },
+            body: JSON.stringify({ id, user, q }),
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              if (data.success) {
+                toast("success", "cart added");
+                cartAndWishlist()
+              }
+              if (data.exist) {
+                toast("warning", "product alredy there");
+              }
+            });
+        }
       }
-    }
-    function cartAndWishlist(){
+      function cartAndWishlist(){
         const cart=document.querySelector('.cart-count');
         const wishlist=document.querySelector('.wishlist-count');
         console.log(cart.textContent);
@@ -926,7 +930,7 @@
                                                                ? '  <span class="product-label label-sale">' +
                                                                  e.offer.offer +
                                                                  "% off </span>"
-                                                               : ""
+                                                               : "<span class='product-label label-new'>new</span>"
                                                            }
                                                                     <a href="/productDets?proId=${
                                                                       e._id

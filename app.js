@@ -6,11 +6,13 @@ const bycrypt = require('bcrypt');
 const userRouter = require('./routes/user');
 const adminRouter = require('./routes/admin');
 const nocach=require('nocache')
+require('dotenv').config();
 const app = express();
 const fs=require('fs')
+const mongodbConnect=require('./config/mongodbConnect')
 
-const mongoose = require('mongoose');
-mongoose.connect('mongodb://127.0.0.1:27017/firstProject');
+mongodbConnect();
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');

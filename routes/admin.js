@@ -3,25 +3,7 @@ const router = express.Router();
 const userModal=require('../models/userSchema')
 const adminController=require('../controller/adminController')
 const adminMidleware=require('../middleware/admin');
-const path = require('path');
-const multer=require('multer');
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, '../public/productImage'));
-  },
-  filename: (req, file, cb) => {
-    const name = Date.now() + ' - ' + file.originalname;
-    cb(null, name);
-  },
-});
-
-const upload = multer({
-  storage: storage,
-  fileFilter: (req, file, cb) => {
-  
-    cb(null, true);
-  },
-});
+const upload=require('../util/multer')
 
 
 
@@ -136,5 +118,8 @@ router.delete('/coupenRemove/:id',adminController.coupenRemove)
 
 //coupen page rendering
 router.post('/coupenEdit/:id',upload.array('images'),adminController.coupenEdit);
+
+//product status changing
+router.put('/proStatus',adminController.proStatus)
 
 module.exports=router;

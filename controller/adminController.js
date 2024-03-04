@@ -167,14 +167,14 @@ const peyment = async (req, res) => {
 //userList page rendering
 const users = async (req, res) => {
     try {
-        const perPage = 12;
+        const perPage = 8;
         const page = req.query.page || 1;
         const le = await userSchema.find({ is_admin: 0 })
         const users = await userSchema.find({ is_admin: 0 }).skip((perPage * page) - perPage)
-        .limit(perPage);
-        const gg=Math.ceil(le.length/perPage)
+            .limit(perPage);
+        const gg = Math.ceil(le.length / perPage)
 
-        res.render('admin/userList', { admin: req.session.admin, users, user: 'user',le:le.length,gg,now:page })
+        res.render('admin/userList', { admin: req.session.admin, users, user: 'user', le: le.length, gg, now: page })
 
 
     } catch (err) {
@@ -275,7 +275,7 @@ const categoryFetch = async (req, res) => {
 // category remove
 const categorydlt = async (req, res) => {
     try {
-       
+
         const dltCat = await categoryModal.findOneAndDelete({ _id: req.query.id })
         if (dltCat) {
             res.redirect('/admin/catagory')
@@ -351,7 +351,7 @@ const getproduct = async (req, res) => {
             status: req.body.active,
             stock: req.body.stock,
             images: imgeArray,
-            actualPrice:req.body.price
+            actualPrice: req.body.price
         })
         res.redirect('/admin/product')
     } catch (err) {
@@ -366,11 +366,11 @@ const productDets = async (req, res) => {
         const page = req.query.page || 1;
         const le = await productModal.find({}).populate('category')
         const products = await productModal.find({}).populate('category').skip((perPage * page) - perPage)
-        .limit(perPage);
-        const gg=Math.ceil(le.length/perPage)
+            .limit(perPage);
+        const gg = Math.ceil(le.length / perPage)
 
         const ca = await categoryModal.find({})
-        res.render('admin/products', { admin: req.session.admin, product: products, ca,le:le.length,gg,now:page })
+        res.render('admin/products', { admin: req.session.admin, product: products, ca, le: le.length, gg, now: page })
     } catch (err) {
         console.log(err.message + '        product dets showing page err')
     }
@@ -566,13 +566,13 @@ const order = async (req, res) => {
         const perPage = 12;
         const page = req.query.page || 1;
         const orderList = await orderModal.find({}).populate('userId').skip((perPage * page) - perPage)
-        .limit(perPage);
+            .limit(perPage);
         const le = await orderModal.find({})
-        const gg=Math.ceil(le.length/perPage)
+        const gg = Math.ceil(le.length / perPage)
 
         if (orderList) {
             let order1 = orderList.reverse()
-            res.render('admin/orderDets', { admin: req.session.admin, order: true, orderList: order1, le:le.length,gg,now:page})
+            res.render('admin/orderDets', { admin: req.session.admin, order: true, orderList: order1, le: le.length, gg, now: page })
         }
     } catch (err) {
         console.log(err.message + '   admin order page rendering route ')
@@ -960,7 +960,7 @@ const offerProductAdd = async (req, res) => {
             await productModal.findOneAndUpdate({ _id: req.body.id }, { $set: { offer: req.params.id, price: offerPrice } })
         } else {
             const data = await productModal.findOne({ _id: req.body.id });
-            await productModal.findOneAndUpdate({ _id: req.body.id }, { $unset: { offer: 1}, $set: { price: data.actualPrice } })
+            await productModal.findOneAndUpdate({ _id: req.body.id }, { $unset: { offer: 1 }, $set: { price: data.actualPrice } })
         }
     } catch (err) {
         console.log(err.message + '   offerProductAdd')
@@ -981,85 +981,99 @@ const offerProduct = async (req, res) => {
 //addOfferPage
 const addOfferPage = async (req, res) => {
     try {
-        
-        res.render('admin/addOffer', { admin: req.session.admin,creat:'offer' })
+
+        res.render('admin/addOffer', { admin: req.session.admin, creat: 'offer' })
     } catch (err) {
         console.log(err.message + '  addOfferPage')
     }
 }
 
 //offerEdit
-const offerEdit=async(req,res)=>{
-    try{
-        const data=await offerSchema.findOne({ _id: req.params.id })
-        res.render('admin/addOffer', { admin: req.session.admin,edit:'offeredit' ,data,id:data._id})
-    }catch(err){
-        console.log(err.message+'   offerEdit')
+const offerEdit = async (req, res) => {
+    try {
+        const data = await offerSchema.findOne({ _id: req.params.id })
+        res.render('admin/addOffer', { admin: req.session.admin, edit: 'offeredit', data, id: data._id })
+    } catch (err) {
+        console.log(err.message + '   offerEdit')
     }
 }
 
 // getofferEdit
-const getofferEdit=async(req,res)=>{
-    try{
-        const {name,offer}=req.body;
-        console.log(name,offer);
-        const data=await offerSchema.findOneAndUpdate({ _id: req.params.id },{$set:{name,offer}})
+const getofferEdit = async (req, res) => {
+    try {
+        const { name, offer } = req.body;
+        console.log(name, offer);
+        const data = await offerSchema.findOneAndUpdate({ _id: req.params.id }, { $set: { name, offer } })
         res.redirect('/admin/offer')
 
-    }catch(err){
-        console.log(err.message+'    getofferEdit')
+    } catch (err) {
+        console.log(err.message + '    getofferEdit')
     }
 }
 
 //offerdeleat
-const offerdeleat=async(req,res)=>{
-    try{
-       const gg= await productModal.find({offer:req.params.id})
-        gg.forEach(async(e)=>{
-            await productModal.findOneAndUpdate({_id:e._id},{$unset:{offer:''},$set:{price:e.actualPrice}})
+const offerdeleat = async (req, res) => {
+    try {
+        const gg = await productModal.find({ offer: req.params.id })
+        gg.forEach(async (e) => {
+            await productModal.findOneAndUpdate({ _id: e._id }, { $unset: { offer: '' }, $set: { price: e.actualPrice } })
         })
-        await offerSchema.findOneAndDelete({_id:req.params.id})
+        await offerSchema.findOneAndDelete({ _id: req.params.id })
         res.redirect('/admin/offer')
-    }catch(err){
-        console.log(err.message+' offerdeleat')
+    } catch (err) {
+        console.log(err.message + ' offerdeleat')
     }
 }
 
-module.exports = {
-    adminPage,
-    productAdd,
-    users,
-    blockFetch,
-    catgoryAdd,
-    productDets,
-    category,
-    categoryFetch,
-    getcatgoryAdd,
-    categorydlt,
-    catgoryActive,
-    getproduct,
-    editProduct,
-    dltPro,
-    order,
-    removeorder,
-    orderView,
-    removeordeFull,
-    orderProstatus,
-    peyment,
-    year,
-    report,
-    reportdownload,
-    customreport,
-    coupenPage,
-    coupenCreating,
-    coupenRemove,
-    coupenEdit,
-    offerPage,
-    offerCreating,
-    offerProductAdd,
-    offerProduct,
-    addOfferPage,
-    offerEdit,
-    getofferEdit,
-    offerdeleat
+// product soft deleat
+const proStatus = async (req, res) => {
+    try {
+        const product=await productModal.findOne({_id:req.query.id});
+        product.status=!product.status
+        product.save();
+        res.status(200).send({su:'succes'})
+    } catch (err) {
+        console.log(err.message + ' prostatus')
+        res.status(500).send(err.message)
+    }
 }
+
+    module.exports = {
+        adminPage,
+        productAdd,
+        users,
+        blockFetch,
+        catgoryAdd,
+        productDets,
+        category,
+        categoryFetch,
+        getcatgoryAdd,
+        categorydlt,
+        catgoryActive,
+        getproduct,
+        editProduct,
+        dltPro,
+        order,
+        removeorder,
+        orderView,
+        removeordeFull,
+        orderProstatus,
+        peyment,
+        year,
+        report,
+        reportdownload,
+        customreport,
+        coupenPage,
+        coupenCreating,
+        coupenRemove,
+        coupenEdit,
+        offerPage,
+        offerCreating,
+        offerProductAdd,
+        offerProduct,
+        addOfferPage,
+        offerEdit,
+        getofferEdit,
+        offerdeleat,
+        proStatus
+    }

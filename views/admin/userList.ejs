@@ -23,7 +23,7 @@
                 <div class="card" style="border-radius: 15px; box-shadow: 0 0 0 0; border: 0;">
                   <div class="card-body">
                     <div class="d-flex align-items-center justify-content-between ">
-                      <h4 class="card-title">Order Status</h4>
+                      <h4 class="card-title">user List</h4>
                     </div>
                     <div class="table-responsive">
                       <table class="table">
@@ -80,16 +80,16 @@
                     <br>
                     <div class=" w-100 d-flex align-items-center justify-content-center " style="gap: .3rem;" role="group" aria-label="Basic example">
                       <% let flag=0;%>
-                      <a class="btn btn-outline-secondary <%=now==1?'disabled ':''  %>" href="/admin/orders?page=<%=now-1  %>"><i class="ri-arrow-left-line"></i></a>
+                      <a class="btn btn-outline-secondary <%=now==1?'disabled ':''  %>" href="/admin/users?page=<%=now-1  %>"><i class="ri-arrow-left-line"></i></a>
                       <% for(let i=now;i<=gg;i++){ %>
                         <% if(flag==3){ %>
                           <% break;} flag++; %>           
-                          <a class="btn btn-outline-secondary" href="/admin/orders?page=<%=i  %>"><%=i  %></a>
+                          <a class="btn btn-outline-secondary" href="/admin/users?page=<%=i  %>"><%=i  %></a>
                           <% } %>
 
                           <a class="btn btn-outline-secondary disabled " ><%=now  %>of <%=gg  %></a>
                           <% let next=Number(now) %>
-                          <a class="btn btn-outline-secondary <%=now==gg?'disabled ':''  %>" href="/admin/orders?page=<%=next+1  %>"><i class="ri-arrow-right-line"></i></a>
+                          <a class="btn btn-outline-secondary <%=now==gg?'disabled ':''  %>" href="/admin/users?page=<%=next+1  %>"><i class="ri-arrow-right-line"></i></a>
     
                  
                     </div>

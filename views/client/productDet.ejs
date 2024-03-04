@@ -69,7 +69,11 @@
                                                 </div> -->
 
                                                 <div class="product-price" style="gap: .4rem;">
-                                                    <span class="old-price">$<%=productDet.actualPrice %></span>
+                                                    <% if(productDet?.offer){ %>
+                                                       
+                                                        <span class="old-price">$<%=productDet.actualPrice %></span>
+                                                        <% } %>
+                                                            
                                                     <br>
                                                     <span class="">$<%=productDet.price %></span>
                                                 </div><!-- End .product-price -->
@@ -632,6 +636,7 @@
    
             const galIm0=document.getElementById('ii0')
             const mainIm=document.querySelector('.mainIM')
+            console.log(galIm0);
             //image galarry
             window.onload=()=>{galIm0.classList.add('active')}
             function show(e,i){
