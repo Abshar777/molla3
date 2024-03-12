@@ -1,5 +1,5 @@
 <%- include('../layout/header.ejs') -%>
-    <link rel="stylesheet" href="css/demos/skin-demo-6.css">
+    <link rel="stylesheet" href="/css/demos/skin-demo-6.css">
     <link rel="stylesheet" href="/css/demo-16.css">
     </head>
 
@@ -12,12 +12,14 @@
                         <div class="intro-slider-container">
                             <div class="intro-slider owl-carousel owl-simple owl-nav-inside owl-light" data-toggle="owl"
                                 data-owl-options='{"nav":false, "dots": false, "loop": false}'>
-                                <div class="intro-slide"
-                                    style="background-image: url(https://www.prada.com/content/dam/pradanux/e-commerce/2024/Re_nylon_2024/Collection/Review/Man_2/Landscape_rev/Mosaic_landscape_DT.jpg);">
+                                <div class="intro-slide position-relative overflow-hidden"
+                                <% console.log(Homebanner.image);  %>
+                                    style="background-image: url();">
+                                    <img src="/productImage/<%=Homebanner.image%>" style="position: absolute; width: 100%; height: 100%; object-fit: cover ; z-index: 0 ;" alt="">
                                     <div class="container intro-content text-center">
                                         <h3 class="intro-subtitle">Want to know what's hot?</h3>
                                         <!-- End .h3 intro-subtitle -->
-                                        <h1 class="intro-title text-white">Spring Lookbook 2019</h1>
+                                        <h1 class="intro-title text-white">Spring Lookbook 2024</h1>
                                         <!-- End .intro-title -->
 
                                         <a href="#scroll-to-content" class="btn btn-outline-primary-2 scroll-to">
@@ -45,7 +47,7 @@
                                         <div class="row">
                                             <div class="col-lg-8 offset-lg-2">
                                                 <div class="row">
-                                                    <% for(let i=0;i<2;i++){  if(locals.product[i].category.name=='jacket'){ console.log(); %>
+                                                    <% for(let i=0;i<2;i++){  if(locals.product[i].category.name=='jacket'){ %>
                                                         
                                                     <div class="col-6">
                                                         <div class="product product-4" style="    border-radius: 10px;
@@ -62,7 +64,7 @@
 
                                                                 <div class="product-action-vertical">
                                                                     <a 
-                                                                        class="btn-product-icon btn-wishlist btn-expandable"><span>add
+                                                                        class="btn-product-icon btn-wishlist btn-expandable"  onclick="wishList('<%=product[i]._id%>','<%=locals.login ?locals.login:false%>')"><span>add
                                                                             to wishlist</span></a>
                                                                 
                                                                 </div><!-- End .product-action -->
@@ -117,7 +119,7 @@
 
                                                 <div class="banner-text text-brightblack">$98.00 - $1,298.00</div>
                                                 <!-- End .banner-text -->
-                                                <a href="#" class="btn btn-outline-primary-2"><span>Buy All</span><i
+                                                <a href="/shop" class="btn btn-outline-primary-2"><span>Buy All</span><i
                                                         class="icon-long-arrow-right"></i></a>
                                             </div><!-- End .banner-content -->
                                         </div><!-- End .banner -->
@@ -145,7 +147,7 @@
 
                                     <div class="col-lg-6">
                                         <div class="heading text-center">
-                                            <h2 class="title">About This Look</h2><!-- End .title text-center -->
+                                            <h2 class="title">About cargo-pants</h2><!-- End .title text-center -->
                                             <p class="title-desc">Lorem ipsum dolor sit amet, consectetuer adipiscing
                                                 elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut
                                                 turpis.</p><!-- End .title-desc -->
@@ -170,7 +172,7 @@
 
                                                             <div class="product-action-vertical">
                                                                 <a 
-                                                                    class="btn-product-icon btn-wishlist btn-expandable"><span>add
+                                                                    class="btn-product-icon btn-wishlist btn-expandable" onclick="wishList('<%=product[i]._id%>','<%=locals.login ?locals.login:false%>')"><span>add
                                                                         to wishlist</span></a>
                                                             
                                                             </div><!-- End .product-action -->
@@ -235,7 +237,7 @@
 
                                                 <div class="banner-text text-brightblack">$130.00 - $358.00</div>
                                                 <!-- End .banner-text -->
-                                                <a href="#" class="btn btn-outline-primary-2"><span>Buy All</span><i
+                                                <a href="/shop" class="btn btn-outline-primary-2"><span>Buy All</span><i
                                                         class="icon-long-arrow-right"></i></a>
                                             </div><!-- End .banner-content -->
                                         </div><!-- End .banner -->
@@ -243,153 +245,63 @@
 
                                     <div class="col-lg-6">
                                         <div class="heading text-center">
-                                            <h2 class="title">About This Look</h2><!-- End .title text-center -->
+                                            <h2 class="title">About Heavyweight-T-shirt</h2><!-- End .title text-center -->
                                             <p class="title-desc">Lorem ipsum dolor sit amet, consectetuer adipiscing
                                                 elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut
                                                 turpis.</p><!-- End .title-desc -->
                                         </div><!-- End .heading -->
 
                                         <div class="row">
-                                            <div class="col-6 col-md-4">
-                                                <div class="product product-4">
-                                                    <figure class="product-media">
-                                                        <a href="product.html">
-                                                            <img src="https://wtflex.in/cdn/shop/files/LIQUID1.png?v=1685028332&width=600"
-                                                                alt="Product image" class="product-image">
-                                                            <img src="https://wtflex.in/cdn/shop/files/LIQUID1.png?v=1685028332&width=600"
-                                                                alt="Product image" class="product-image-hover" style=" transform: scaleX(-1);">
-                                                        </a>
-
-                                                        <div class="product-action-vertical">
-                                                            <a href="#"
-                                                                class="btn-product-icon btn-wishlist btn-expandable"><span>add
-                                                                    to wishlist</span></a>
-                                                            <a href="popup/quickView.html"
-                                                                class="btn-product-icon btn-quickview"
-                                                                title="Quick view"><span>Quick view</span></a>
-                                                            <a href="#" class="btn-product-icon btn-compare"
-                                                                title="Compare"><span>Compare</span></a>
-                                                        </div><!-- End .product-action -->
-
-                                                        <div class="product-action">
-                                                            <a href="#" class="btn-product btn-cart"><span>add to
-                                                                    cart</span></a>
-                                                        </div><!-- End .product-action -->
-                                                    </figure><!-- End .product-media -->
-
-                                                
-                                                    <div class="product-body">
-                                                        <h3 class="product-title"><a href="product.html">Suede
-                                                                Moto Jacket</a></h3><!-- End .product-title -->
-
-                                                        <div
-                                                            class="product-price  text-center w-100 d-flex align-items-center justify-content-center mt-1 ">
-                                                            <p class="text-center active">Now $1,298.00</p>
-
-                                                        </div><!-- End .product-price -->
-                                                        <div class="product-nav product-nav-dots">
-                                                            <a href="#" class=""
-                                                                style="background: transparent"><span
-                                                                    class="sr-only">Color name</span></a>
-
-                                                        </div><!-- End .product-nav -->
-                                                    </div><!-- End .product-body -->
-                                                </div><!-- End .product -->
-                                            </div><!-- End .col-sm-6 -->
-
-                                            <div class="col-6 col-md-4">
-                                                <div class="product product-4">
-                                                    <figure class="product-media">
-                                                        <a href="product.html">
-                                                            <img src="https://wtflex.in/cdn/shop/files/salty3.png?v=1689679099&width=600"
-                                                                alt="Product image" class="product-image">
-                                                            <img src="https://wtflex.in/cdn/shop/files/salty64_ebe677fd-9233-4036-9274-16503d82e761.png?v=1689679099&width=600"
-                                                                alt="Product image" class="product-image-hover">
-                                                        </a>
-
-                                                        <div class="product-action-vertical">
-                                                            <a href="#"
-                                                                class="btn-product-icon btn-wishlist btn-expandable"><span>add
-                                                                    to wishlist</span></a>
-                                                            <a href="popup/quickView.html"
-                                                                class="btn-product-icon btn-quickview"
-                                                                title="Quick view"><span>Quick view</span></a>
-                                                            <a href="#" class="btn-product-icon btn-compare"
-                                                                title="Compare"><span>Compare</span></a>
-                                                        </div><!-- End .product-action -->
-
-                                                        <div class="product-action">
-                                                            <a href="#" class="btn-product btn-cart"><span>add to
-                                                                    cart</span></a>
-                                                        </div><!-- End .product-action -->
-                                                    </figure><!-- End .product-media -->
-
-                                                   
-                                                    <div class="product-body">
-                                                        <h3 class="product-title"><a href="product.html">Suede
-                                                                Moto Jacket</a></h3><!-- End .product-title -->
-
-                                                        <div
-                                                            class="product-price  text-center w-100 d-flex align-items-center justify-content-center mt-1 ">
-                                                            <p class="text-center active">Now $1,298.00</p>
-
-                                                        </div><!-- End .product-price -->
-                                                        <div class="product-nav product-nav-dots">
-                                                            <a href="#" class=""
-                                                                style="background: transparent"><span
-                                                                    class="sr-only">Color name</span></a>
-
-                                                        </div><!-- End .product-nav -->
-                                                    </div><!-- End .product-body -->
-                                                </div><!-- End .product -->
-                                            </div><!-- End .col-sm-6 -->
-
-                                            <div class="col-6 col-md-4">
-                                                <div class="product product-4">
-                                                    <figure class="product-media">
-                                                        <a href="product.html">
-                                                            <img src="https://wtflex.in/cdn/shop/files/reflectivereal_052fb5d5-d3f1-4aba-a537-3e4478d5b06c.png?v=1685017582&width=600"
-                                                                alt="Product image" class="product-image">
-                                                            <img src="https://wtflex.in/cdn/shop/files/reflectivereal_052fb5d5-d3f1-4aba-a537-3e4478d5b06c.png?v=1685017582&width=600"
-                                                                alt="Product image" class="product-image-hover" style="transform: scaleX(-1);">
-                                                        </a>
-
-                                                        <div class="product-action-vertical">
-                                                            <a href="#"
-                                                                class="btn-product-icon btn-wishlist btn-expandable"><span>add
-                                                                    to wishlist</span></a>
-                                                            <a href="popup/quickView.html"
-                                                                class="btn-product-icon btn-quickview"
-                                                                title="Quick view"><span>Quick view</span></a>
-                                                            <a href="#" class="btn-product-icon btn-compare"
-                                                                title="Compare"><span>Compare</span></a>
-                                                        </div><!-- End .product-action -->
-
-                                                        <div class="product-action">
-                                                            <a href="#" class="btn-product btn-cart"><span>add to
-                                                                    cart</span></a>
-                                                        </div><!-- End .product-action -->
-                                                    </figure><!-- End .product-media -->
-
-                                                    <div class="product-body">
-                                                        <h3 class="product-title"><a href="product.html">Suede
-                                                                Moto Jacket</a></h3><!-- End .product-title -->
-
-                                                        <div
-                                                            class="product-price  text-center w-100 d-flex align-items-center justify-content-center mt-1 ">
-                                                            <p class="text-center active">Now $1,298.00</p>
-
-                                                        </div><!-- End .product-price -->
-                                                        <div class="product-nav product-nav-dots">
-                                                            <a href="#" class=""
-                                                                style="background: transparent"><span
-                                                                    class="sr-only">Color name</span></a>
-
-                                                        </div><!-- End .product-nav -->
-                                                    </div><!-- End .product-body -->
-                                                </div><!-- End .product -->
-                                            </div><!-- End .col-sm-6 -->
-                                        </div><!-- End .row -->
+                                            <div class="row">
+                                       
+                                                <%let flagL=3; for(let i=0;i<flagL;i++){  if(locals.product[i].category.name=='Heavyweight-T-shirt'){ %>
+                                                            
+                                                    <div class="col-6 col-md-4">
+                                                        <div class="product product-4" style="    border-radius: 10px;
+                                                border: 1px solid #0000000f;
+                                                text-align: center;">
+                                                            <figure class="product-media">
+                                                                <a  href="/productDets?proId=<%=product[i]._id  %>">
+                                                                    <img src="/productImage/<%= product[i].images[0] %>"
+                                                                        alt="Product image" class="product-image">
+                                                                    <img src="/productImage/<%= product[i].images[1] %>"
+                                                                        alt="Product image" class="product-image-hover">
+    
+                                                                </a>
+    
+                                                                <div class="product-action-vertical">
+                                                                    <a 
+                                                                        class="btn-product-icon btn-wishlist btn-expandable" onclick="wishList('<%=product[i]._id%>','<%=locals.login ?locals.login:false%>')"><span>add
+                                                                            to wishlist</span></a>
+                                                                
+                                                                </div><!-- End .product-action -->
+    
+                                                                <div class="product-action">
+                                                                    <a  onclick="addCart('<%=product[i]._id  %>','<%=locals.login?locals.login:false  %>',1)" class="btn-product btn-cart"><span>add
+                                                                            to cart</span></a>
+                                                                </div><!-- End .product-action -->
+                                                            </figure><!-- End .product-media -->
+    
+                                                            <div class="product-body">
+                                                                <h3 class="product-title"><a  href="/productDets?proId=<%=product[i]._id  %>"><%=product[i].name  %></a></h3><!-- End .product-title -->
+    
+                                                                <div
+                                                                    class="product-price  text-center w-100 d-flex align-items-center justify-content-center mt-1 ">
+                                                                    <p class="text-center active">Now $<%=product[i].price  %></p>
+    
+                                                                </div><!-- End .product-price -->
+                                                                <div class="product-nav product-nav-dots">
+                                                                    <a href="#" class=""
+                                                                        style="background: transparent"><span
+                                                                            class="sr-only">Color name</span></a>
+    
+                                                                </div><!-- End .product-nav -->
+                                                            </div><!-- End .product-body -->
+                                                        </div><!-- End .product -->
+                                                    </div><!-- End .col-sm-6 -->
+                                                        <% }else{flagL++}} %><!-- End .col-sm-6 -->
+    
+                                            </div><!-- End .row -->
                                     </div><!-- End .col-lg-6 -->
                                 </div><!-- End .row -->
                             </div><!-- End .container-fluid -->
@@ -419,7 +331,7 @@
 
                                                 <div class="banner-text text-brightblack">$130.00 - $358.00</div>
                                                 <!-- End .banner-text -->
-                                                <a href="#" class="btn btn-outline-primary-2"><span>Buy All</span><i
+                                                <a href="/shop" class="btn btn-outline-primary-2"><span>Buy All</span><i
                                                         class="icon-long-arrow-right"></i></a>
                                             </div><!-- End .banner-content -->
                                         </div><!-- End .banner -->
@@ -427,108 +339,61 @@
 
                                     <div class="col-lg-6">
                                         <div class="heading text-center">
-                                            <h2 class="title">About This Look</h2><!-- End .title text-center -->
+                                            <h2 class="title">About BOWLING-SHIRTS</h2><!-- End .title text-center -->
                                             <p class="title-desc">Lorem ipsum dolor sit amet, consectetuer adipiscing
                                                 elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut
                                                 turpis.</p><!-- End .title-desc -->
                                         </div><!-- End .heading -->
 
                                         <div class="row">
-                                            <div class="col-lg-8 offset-lg-2">
-                                                <div class="row">
-                                                    <div class="col-6">
-                                                        <div class="product product-4">
-                                                            <figure class="product-media">
-                                                                <a href="product.html">
-                                                                    <img src="https://wtflex.in/cdn/shop/files/wtf_wht.png?v=1687756362&width=600"
-                                                                        alt="Product image" class="product-image">
-                                                                    <img src="https://wtflex.in/cdn/shop/files/wtfback.png?v=1687756361&width=600"
-                                                                        alt="Product image" class="product-image-hover">
-                                                                </a>
+                                       
+                                            <%let flago=3; for(let i=0;i<flago;i++){  if(locals.product[i].category.name=='BOWLING-SHIRTS'){ %>
+                                                        
+                                                <div class="col-6 col-md-4">
+                                                    <div class="product product-4" style="    border-radius: 10px;
+                                            border: 1px solid #0000000f;
+                                            text-align: center;">
+                                                        <figure class="product-media">
+                                                            <a  href="/productDets?proId=<%=product[i]._id  %>">
+                                                                <img src="/productImage/<%= product[i].images[0] %>"
+                                                                    alt="Product image" class="product-image">
+                                                                <img src="/productImage/<%= product[i].images[1] %>"
+                                                                    alt="Product image" class="product-image-hover">
 
-                                                                <div class="product-action-vertical">
-                                                                    <a href="#"
-                                                                        class="btn-product-icon btn-wishlist btn-expandable"><span>add
-                                                                            to wishlist</span></a>
-                                                                    <a href="popup/quickView.html"
-                                                                        class="btn-product-icon btn-quickview"
-                                                                        title="Quick view"><span>Quick view</span></a>
-                                                                    <a href="#" class="btn-product-icon btn-compare"
-                                                                        title="Compare"><span>Compare</span></a>
-                                                                </div><!-- End .product-action -->
+                                                            </a>
 
-                                                                <div class="product-action">
-                                                                    <a href="#" class="btn-product btn-cart"><span>add
-                                                                            to cart</span></a>
-                                                                </div><!-- End .product-action -->
-                                                            </figure><!-- End .product-media -->
+                                                            <div class="product-action-vertical">
+                                                                <a 
+                                                                    class="btn-product-icon btn-wishlist btn-expandable" onclick="wishList('<%=product[i]._id%>','<%=locals.login ?locals.login:false%>')"><span>add
+                                                                        to wishlist</span></a>
+                                                            
+                                                            </div><!-- End .product-action -->
 
-                                                            <div class="product-body">
-                                                                <h3 class="product-title"><a href="product.html">Suede
-                                                                        Moto Jacket</a></h3><!-- End .product-title -->
-        
-                                                                <div
-                                                                    class="product-price  text-center w-100 d-flex align-items-center justify-content-center mt-1 ">
-                                                                    <p class="text-center active">Now $1,298.00</p>
-        
-                                                                </div><!-- End .product-price -->
-                                                                <div class="product-nav product-nav-dots">
-                                                                    <a href="#" class=""
-                                                                        style="background: transparent"><span
-                                                                            class="sr-only">Color name</span></a>
-        
-                                                                </div><!-- End .product-nav -->
-                                                            </div><!-- End .product-body -->
-                                                        </div><!-- End .product -->
-                                                    </div><!-- End .col-sm-6 -->
+                                                            <div class="product-action">
+                                                                <a  onclick="addCart('<%=product[i]._id  %>','<%=locals.login?locals.login:false  %>',1)" class="btn-product btn-cart"><span>add
+                                                                        to cart</span></a>
+                                                            </div><!-- End .product-action -->
+                                                        </figure><!-- End .product-media -->
 
-                                                    <div class="col-6">
-                                                        <div class="product product-4">
-                                                            <figure class="product-media">
-                                                                <a href="product.html">
-                                                                    <img src="https://wtflex.in/cdn/shop/files/dreamerbck2.png?v=1693570431&width=600"
-                                                                        alt="Product image" class="product-image">
-                                                                    <img src="https://wtflex.in/cdn/shop/files/dreamerfront.png?v=1693570431&width=600"
-                                                                        alt="Product image" class="product-image-hover">
-                                                                </a>
+                                                        <div class="product-body">
+                                                            <h3 class="product-title"><a  href="/productDets?proId=<%=product[i]._id  %>"><%=product[i].name  %></a></h3><!-- End .product-title -->
 
-                                                                <div class="product-action-vertical">
-                                                                    <a href="#"
-                                                                        class="btn-product-icon btn-wishlist btn-expandable"><span>add
-                                                                            to wishlist</span></a>
-                                                                    <a href="popup/quickView.html"
-                                                                        class="btn-product-icon btn-quickview"
-                                                                        title="Quick view"><span>Quick view</span></a>
-                                                                    <a href="#" class="btn-product-icon btn-compare"
-                                                                        title="Compare"><span>Compare</span></a>
-                                                                </div><!-- End .product-action -->
+                                                            <div
+                                                                class="product-price  text-center w-100 d-flex align-items-center justify-content-center mt-1 ">
+                                                                <p class="text-center active">Now $<%=product[i].price  %></p>
 
-                                                                <div class="product-action">
-                                                                    <a href="#" class="btn-product btn-cart"><span>add
-                                                                            to cart</span></a>
-                                                                </div><!-- End .product-action -->
-                                                            </figure><!-- End .product-media -->
+                                                            </div><!-- End .product-price -->
+                                                            <div class="product-nav product-nav-dots">
+                                                                <a href="#" class=""
+                                                                    style="background: transparent"><span
+                                                                        class="sr-only">Color name</span></a>
 
-                                                            <div class="product-body">
-                                                                <h3 class="product-title"><a href="product.html">Suede
-                                                                        Moto Jacket</a></h3><!-- End .product-title -->
-        
-                                                                <div
-                                                                    class="product-price  text-center w-100 d-flex align-items-center justify-content-center mt-1 ">
-                                                                    <p class="text-center active">Now $1,298.00</p>
-        
-                                                                </div><!-- End .product-price -->
-                                                                <div class="product-nav product-nav-dots">
-                                                                    <a href="#" class=""
-                                                                        style="background: transparent"><span
-                                                                            class="sr-only">Color name</span></a>
-        
-                                                                </div><!-- End .product-nav -->
-                                                            </div><!-- End .product-body -->
-                                                        </div><!-- End .product -->
-                                                    </div><!-- End .col-sm-6 -->
-                                                </div><!-- End .row -->
-                                            </div><!-- End .col-lg-8 offset-lg-2 -->
+                                                            </div><!-- End .product-nav -->
+                                                        </div><!-- End .product-body -->
+                                                    </div><!-- End .product -->
+                                                </div><!-- End .col-sm-6 -->
+                                                    <% }else{flago++}} %><!-- End .col-sm-6 -->
+
                                         </div><!-- End .row -->
                                     </div><!-- End .col-lg-6 -->
                                 </div><!-- End .row -->
@@ -547,16 +412,14 @@
                                                 porttitor mauris sit amet orci. </p><!-- End .cta-desc -->
 
                                             <div class="social-icons social-icons-colored justify-content-center">
-                                                <a href="#" class="social-icon social-facebook" title="Facebook"
-                                                    target="_blank"><i class="icon-facebook-f"></i></a>
-                                                <a href="#" class="social-icon social-twitter" title="Twitter"
+                                              
+                                                <a href="https://twitter.com/Abshar777777" class="social-icon social-twitter" title="Twitter"
                                                     target="_blank"><i class="icon-twitter"></i></a>
-                                                <a href="#" class="social-icon social-instagram" title="Instagram"
+                                                <a href="https://www.instagram.com/ka_efx/" class="social-icon social-instagram" title="Instagram"
                                                     target="_blank"><i class="icon-instagram"></i></a>
-                                                <a href="#" class="social-icon social-youtube" title="Youtube"
+                                                <a href="https://youtube.com/@ka_efx?si=wNYCliHwowqFotyf" class="social-icon social-youtube" title="Youtube"
                                                     target="_blank"><i class="icon-youtube"></i></a>
-                                                <a href="#" class="social-icon social-pinterest" title="Pinterest"
-                                                    target="_blank"><i class="icon-pinterest"></i></a>
+                                            
                                             </div><!-- End .soial-icons -->
                                         </div><!-- End .cta-wrapper -->
                                     </div><!-- End .col-lg-6 -->
@@ -658,16 +521,16 @@
                 }
             </style>
             <script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@3.5.4/dist/locomotive-scroll.js"></script>
-            <script src="js/demos/demo-6.js"></script>
+            <script src="/js/demos/demo-6.js"></script>
 
             <script>
-                const scroll = new LocomotiveScroll({
-                    el: document.querySelector('.nn'),
-                    smooth: true
-                });
+                // const scroll = new LocomotiveScroll({
+                //     el: document.querySelector('.nn'),
+                //     smooth: true
+                // });
                 function wishList(id,user){
         if (user == "false") {
-          console.log("hello");
+          
           window.location.href = "/login";
         } else {
       fetch(`/wishListAdd?user=${user}&&id=${id}`,{method:'post'}).then(res=>res.json()).then(data=>{
@@ -683,7 +546,7 @@
       }
       function addCart(id, user, q) {
         if (user == "false") {
-          console.log("hello");
+          
           window.location.href = "/login";
         } else {
           fetch("/addcart", {

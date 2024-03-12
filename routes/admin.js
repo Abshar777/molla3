@@ -2,8 +2,15 @@ const express = require('express');
 const router = express.Router();
 const userModal=require('../models/userSchema')
 const adminController=require('../controller/adminController')
+const productController=require('../controller/product')
+const categoryController=require('../controller/category')
+const orderController=require('../controller/order')
+const coupenController=require('../controller/coupen')
+const offerController=require('../controller/offer')
+const reportController=require('../controller/report')
 const adminMidleware=require('../middleware/admin');
 const upload=require('../util/multer')
+const bannerController=require('../controller/banner')
 
 
 
@@ -13,10 +20,10 @@ const upload=require('../util/multer')
 router.get('/',adminMidleware.adminRoute,adminController.adminPage)
 
 //product dets page rendering
-router.get('/product',adminMidleware.adminRoute,adminController.productDets)
+router.get('/product',adminMidleware.adminRoute,productController.productDets)
 
 //product add route
-router.get('/productAdd',adminMidleware.adminRoute,adminController.productAdd);
+router.get('/productAdd',adminMidleware.adminRoute,productController.productAdd);
 
 
 // user list showing 
@@ -26,46 +33,46 @@ router.get('/users',adminMidleware.adminRoute,adminController.users)
 router.post('/user',adminController.blockFetch)
 
 // catagory page rendering
-router.get('/catagory',adminMidleware.adminRoute,adminController.category)
+router.get('/catagory',adminMidleware.adminRoute,categoryController.category)
 
 // /categoryFetch 
-router.post('/categoryFetch',adminMidleware.adminRoute,adminController.categoryFetch)
+router.post('/categoryFetch',adminMidleware.adminRoute,categoryController.categoryFetch)
 
 // catgory add page rendering
-router.get('/catagoryAdd',adminMidleware.adminRoute,adminController.catgoryAdd)
+router.get('/catagoryAdd',adminMidleware.adminRoute,categoryController.catgoryAdd)
 
 // getting category dets
-router.post('/catgoryAdd',adminMidleware.adminRoute,adminController.getcatgoryAdd);
+router.post('/catgoryAdd',adminMidleware.adminRoute,categoryController.getcatgoryAdd);
 
 // remove category
-router.get('/Catremove',adminMidleware.adminRoute,adminController.categorydlt);
+router.get('/Catremove',adminMidleware.adminRoute,categoryController.categorydlt);
 
 //  category active or not fecting
-router.post('/activeOrnot',adminController.catgoryActive);
+router.post('/activeOrnot',categoryController.catgoryActive);
 
 //getting product
-router.post('/productAdd',upload.array('images', 3),adminController.getproduct)
+router.post('/productAdd',upload.array('images', 3),productController.getproduct)
 
 // edi route
-router.post('/edit',upload.fields([{ name: 'images0', maxCount: 1 },{ name: 'images1', maxCount: 1 },{ name: 'images2', maxCount: 1 }]),adminController.editProduct)
+router.post('/edit',upload.fields([{ name: 'images0', maxCount: 1 },{ name: 'images1', maxCount: 1 },{ name: 'images2', maxCount: 1 }]),productController.editProduct)
 
 //dlt product
-router.get('/dltProduct',adminController.dltPro)
+router.get('/dltProduct',productController.dltPro)
 
 //order status changing
-router.put('/orderStatus',adminController.orderProstatus);
+router.put('/orderStatus',orderController.orderProstatus);
 
 //remove order product
-router.put('/removeorder',adminController.removeorder)
+router.put('/removeorder',orderController.removeorder)
 
 //remove order full
-router.patch('/removeorder',adminController.removeordeFull)
+router.patch('/removeorder',orderController.removeordeFull)
 
 //order list 
-router.get('/orders',adminMidleware.adminRoute,adminController.order)
+router.get('/orders',adminMidleware.adminRoute,orderController.order)
 
 //order view
-router.get('/ordersView/:id',adminMidleware.adminRoute,adminController.orderView)
+router.get('/ordersView/:id',adminMidleware.adminRoute,orderController.orderView)
 
 //peyment chart fetching
 router.put('/peyment',adminController.peyment)
@@ -74,52 +81,58 @@ router.put('/peyment',adminController.peyment)
 router.put('/year',adminController.year)
 
 //sales report in yearly and monthly and weekly
-router.get('/report/:id',adminMidleware.adminRoute,adminController.report)
+router.get('/report/:id',adminMidleware.adminRoute,reportController.report)
 
 //sales report in yearly and monthly and weekly
-router.post('/report/download/:id',adminController.reportdownload)
+router.post('/report/download/:id',reportController.reportdownload)
 
 //report custom
-router.put('/report',adminController.customreport)
+router.put('/report',reportController.customreport)
 
 //coupen page rendering
-router.get('/coupen',adminMidleware.adminRoute,adminController.coupenPage)
+router.get('/coupen',adminMidleware.adminRoute,coupenController.coupenPage)
 
 //offer page rendering
-router.get('/offer',adminMidleware.adminRoute,adminController.offerPage)
+router.get('/offer',adminMidleware.adminRoute,offerController.offerPage)
 
 //coupen page rendering
-router.post('/offer',adminController.offerCreating)
+router.post('/offer',offerController.offerCreating)
 
 //offer product adding and removing
-router.put('/offer/:id',adminController.offerProductAdd)
+router.put('/offer/:id',offerController.offerProductAdd)
 
 //offer product showing page rendering
-router.get('/offerProduct/:id',adminMidleware.adminRoute,adminController.offerProduct)
+router.get('/offerProduct/:id',adminMidleware.adminRoute,offerController.offerProduct)
 
 
 //coupen page rendering
-router.get('/addOffer',adminMidleware.adminRoute,adminController.addOfferPage);
+router.get('/addOffer',adminMidleware.adminRoute,offerController.addOfferPage);
 
 //offer edit 
-router.get('/offeredit/:id',adminMidleware.adminRoute,adminController.offerEdit);
+router.get('/offeredit/:id',adminMidleware.adminRoute,offerController.offerEdit);
 
 //offer edit 
-router.post('/offeredit/:id',adminMidleware.adminRoute,adminController.getofferEdit);
+router.post('/offeredit/:id',adminMidleware.adminRoute,offerController.getofferEdit);
 
 //offer edit 
-router.get('/offerDeleat/:id',adminMidleware.adminRoute,adminController.offerdeleat);
+router.get('/offerDeleat/:id',adminMidleware.adminRoute,offerController.offerdeleat);
 
 //coupen page rendering
-router.post('/coupen',upload.array('images'),adminController.coupenCreating)
+router.post('/coupen',upload.array('images'),coupenController.coupenCreating)
 
 //coupen page rendering
-router.delete('/coupenRemove/:id',adminController.coupenRemove)
+router.delete('/coupenRemove/:id',coupenController.coupenRemove)
 
 //coupen page rendering
-router.post('/coupenEdit/:id',upload.array('images'),adminController.coupenEdit);
+router.post('/coupenEdit/:id',upload.array('images'),coupenController.coupenEdit);
 
 //product status changing
-router.put('/proStatus',adminController.proStatus)
+router.put('/proStatus',productController.proStatus)
+
+//banner showing route 
+router.get('/banner',adminMidleware.adminRoute,bannerController.bannerPage)
+
+//banner showing route 
+router.post('/banner',upload.array('images'),bannerController.bannerDetGet)
 
 module.exports=router;

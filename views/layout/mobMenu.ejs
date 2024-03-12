@@ -6,25 +6,27 @@
     <div class="mobile-menu-wrapper">
         <span class="mobile-menu-close"><i class="icon-close"></i></span>
 
-        <form action="#" method="get" class="mobile-search">
-            <label for="mobile-search" class="sr-only">Search</label>
-            <input type="search" class="form-control" name="mobile-search" id="mobile-search" placeholder="Search in..." required>
-            <button class="btn btn-primary" type="submit"><i class="icon-search"></i></button>
-        </form>
+      
         
         <nav class="mobile-nav">
             <ul class="mobile-menu">
                 <li class="active">
-                    <a href="index.html">Home</a>
+                    <a href="/">Home</a>
 
                   
                 </li>
                 <li>
-                    <a href="category.html">Shop</a>
+                    <a href="/shop">Shop</a>
                    
                 </li>
                 <li>
-                    <a href="product.html" class="sf-with-ul">Product</a>
+                    <a href="<%= locals.login ? '/profile' : '/login' %>" class="">
+                        <%= locals.login ? 'Profile' : 'Login' %>
+                    </a>
+                   
+                </li>
+                <li>
+                    <a href="/about" >About</a>
               
                 </li>
                
@@ -34,10 +36,12 @@
         </nav><!-- End .mobile-nav -->
 
         <div class="social-icons">
-            <a href="#" class="social-icon" target="_blank" title="Facebook"><i class="icon-facebook-f"></i></a>
-            <a href="#" class="social-icon" target="_blank" title="Twitter"><i class="icon-twitter"></i></a>
-            <a href="#" class="social-icon" target="_blank" title="Instagram"><i class="icon-instagram"></i></a>
-            <a href="#" class="social-icon" target="_blank" title="Youtube"><i class="icon-youtube"></i></a>
+            <a href="https://twitter.com/Abshar777777" class="social-icon social-twitter"
+            title="Twitter" target="_blank"><i class="icon-twitter"></i></a>
+        <a href="https://www.instagram.com/ka_efx/" class="social-icon social-instagram"
+            title="Instagram" target="_blank"><i class="icon-instagram"></i></a>
+        <a href="https://youtube.com/@ka_efx?si=wNYCliHwowqFotyf" class="social-icon social-youtube"
+            title="Youtube" target="_blank"><i class="icon-youtube"></i></a>
         </div><!-- End .social-icons -->
     </div><!-- End .mobile-menu-wrapper -->
 </div><!-- End .mobile-menu-container -->

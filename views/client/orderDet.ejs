@@ -63,7 +63,8 @@
 
 						<tbody>
                             <% if(locals.order) {%>
-                                <% order.forEach((e, index)=>{ %>
+                              <% const reversed=order.reverse() %>
+                                <% reversed.forEach((e, index)=>{ %>
 							<tr>
 							<td>
                                 <%= index+1  %>

@@ -9,7 +9,6 @@
         <div class="container">
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-            <li class="breadcrumb-item"><a href="#">Shop</a></li>
             <li class="breadcrumb-item active" aria-current="page">My Account</li>
           </ol>
         </div><!-- End .container -->
@@ -57,8 +56,10 @@
                     <h5>
                       <%= user.name %>
                     </h5>
+                    <div class="d-flex gap-5">
                     <p>Wallet :$<%= locals.walletAmount  %></p>
-                    <i class="far fa-edit mb-5"></i>
+                    <a class="text-white" style="margin-left: 1rem;" href="/walletHistory"><i class=" ri-history-line"></i></a>
+                  </div>
                   </div>
                   <div class="col-md-8">
                     <div class="card-body p-4">

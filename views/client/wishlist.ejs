@@ -36,14 +36,14 @@
     
                             <tbody>
                               
-                                <% if(locals.wishlist.products.length==0){ %>
+                                <% if( locals.wishlist &&  locals.wishlist.products.length==0){ %>
                                 <tr>
                                     <td>
                                  <h1 class="opacity-75">ther is nothing</h1>
                                 </td>
                                 </tr>
                                     <% }else{ %>
-                          <% locals.wishlist.products.forEach(e=>{ %>
+                          <% locals.wishlist?.products?.forEach(e=>{ %>
                                 <tr id="p<%=e.productId._id  %>">
                                     <td class="product-col">
                                         <div class="product">

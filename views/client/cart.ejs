@@ -42,7 +42,7 @@
                                                 <% if(locals.cart) {%>
                                                 <% cart.products.forEach((product, index)=> { %>
                                                     <%  if(product.productId.status){  %>
-                                                    <tr id="c<%= locals.cart._id%>">
+                                                    <tr id="c<%= product.productId._id%>">
                                                         <td class="product-col">
                                                             <div class="product">
                                                                 <figure class="product-media">
@@ -201,21 +201,23 @@
                 }
 
                 function remove(proid,id,prize,tp){
-                    const tot=tp-prize
+                    const tot=tp-prize;
+                    
                     const Total= document.getElementById(`total`)
                     const sub= document.getElementById(`sub-total`)
                   
-                    const cartDet= document.getElementById(`c${id}`)
+                    const cartDet= document.getElementById(`c${proid}`)
+                  
                     fetch('/cartremove',{
                     method: 'delete',
 						headers: { "Content-Type": "application/json" },
-						body: JSON.stringify({proid,id,tot})
+						body: JSON.stringify({proid,id,prize})
                    }).then(res=>res.json()).then(data=>{
-                    if(data.rdata){
-                        console.log(data.rdata)
+                    if(data.NewCart){
+                        console.log(data.NewCart)
                         cartDet.remove();
-                        Total.textContent=tot
-                        sub.textContent=tot
+                        Total.textContent=data.NewCart.TotalPrice
+                        sub.textContent=data.NewCart.TotalPrice
                         
 
                     }

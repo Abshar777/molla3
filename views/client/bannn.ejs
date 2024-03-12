@@ -1,0 +1,70 @@
+<div class="col-md-6 col-xl-4 grid-margin stretch-card">
+    <div class="card" style="border-radius: 15px;">
+      <form id="myform" action="/admin/banner" method="post" enctype="multipart/form-data">
+        <div class="card-body">
+          <h4 class="card-title">Add Banner+</h4>
+
+          <% for(let i=0;i<1;i++) {%>
+            <label for="images<%=i  %>"
+              class="img-co   l position-relative   d-flex align-items-center justify-content-center "
+              style=" height: 8rem; overflow: hidden;  cursor:pointer;  border: 2px dashed #ffffff40; border-radius: 15px;">
+              <input required type="file" class="inp" accept="image/*"
+                onchange='hello(this,"<%=i %>")' name='images' id="images<%=i  %>" hidden required>
+              <p class="opacity-50 text-center text-capitalize w-100  " id="p<%=i  %>"
+                style="opacity: .7;"><i class="ri-upload-cloud-2-line text-center   "></i><br>uplaod
+                images</p>
+              <img src="" alt="" id="i<%=i  %>"
+                style="display: none;     border-radius: 15px;  width: 100% ; height: 100%; object-fit: cover; ">
+
+              <div for="images<%=i  %>" id="imageL<%= i %>"
+                class="   position-absolute fs-3 mt-1  align-items-center justify-content-center      pointer-event "
+                style="
+                   width:100%;
+                    background-color: rgba(24, 23, 23, 0.11);
+                    backdrop-filter: blur(1px);
+                    height: 100%;
+                    border-radius: 10px;
+                    transition: all 0.3s ease 0s;
+                    cursor: pointer;
+                    letter-spacing: 0.1rem;
+
+                    object-fit: cover;
+             ">Replace</div>
+            </label>
+            <% } %>
+              <br>
+              <div class="d-flex ">
+                <div class="preview-list w-100">
+                  <div class="preview-item p-0">
+
+                    <div class="preview-item-content d-flex flex-grow">
+                      <div class="form-group w-100 w-100">
+                        <label for="exampleInputName1">Name</label>
+                        <div class="dname">
+                          <input required type="text" oninput="validation(this)"
+                            class="text w-100 name form-control text-white "
+                            style="letter-spacing: 1px;" name="name" style="color:white;"
+                            id="exampleInputName1" value=""  placeholder="Name" required>
+                          <p id="err1" class="text-danger "></p>
+                        </div>
+                      </div>
+
+                    </div>
+                 
+
+                  </div>
+                  <div class="form-group ">
+                    <button type="submit" id="submit" class="btn bg-primary text-white m-0"
+                      style="margin-top: 1rem !important;">submit</button>
+                  </div>
+                </div>
+              </div>
+            
+       
+
+        </div>
+      </form>
+    </div>
+    
+    </div>
+   

@@ -33,7 +33,7 @@
             </div>
             <div class="header-center">
                 <a href="/" class="logo">
-                    <img src="/images/demos/demo-6/logo.png" alt="Molla Logo" width="82" height="20">
+                    <img src="/images/New Project 114 [5619AEB] (1).png" alt="Molla Logo" width="150" height="40">
                 </a>
             </div><!-- End .header-left -->
             <!-- // wishlist and cart -->
@@ -121,6 +121,7 @@
         const cart=document.querySelector('.cart-count');
         const wishlist=document.querySelector('.wishlist-count');
         
+        console.log(cart,wishlist);
         if(cart){
         console.log('hello');
             fetch('/cartCount',{method:'put'}).then(res=>res.json()).then(data=>{
