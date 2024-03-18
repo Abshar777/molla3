@@ -104,6 +104,7 @@
                                     <% })} %>
                             </tbody>
                         </table>
+                        <div id="grand" class="w-100 d-flex align-items-center justify-content-end text-end">grantTotal: <%=locals.report?locals.grantTotal[0].totalAmount:0  %></div>
                     </div>
                 </div>
 
@@ -123,7 +124,7 @@ const tb=document.getElementById('tb')
 const start=document.getElementById('start')
 const end=document.getElementById('end');
 const form=document.getElementById('myForm');
-
+const grand=document.getElementById('grand')
 function change(e){
     if(start.value!=='' &&end.value!=='' ){
         
@@ -156,6 +157,7 @@ function change(e){
                                         </td>
                                     </tr>
             `).join('');
+           grand.textContent=`grand Total : ${data.grantTotal[0].totalAmount}` 
             form.action=`/admin/report/download/custom?start=${start.value}&&end=${end.value}`;
          } else{
             tb.innerHTML='no data here'

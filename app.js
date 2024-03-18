@@ -26,12 +26,11 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', userRouter);
 app.use('/admin',adminRouter)
-app.listen(3000, () => { console.log('in 3000') })
+const port=process.env.PORT || 3000
+app.listen(port, () => { console.log('in '+port) })
 
 app.use((err, req, res, next) => {
-    console.error(err.stack); // Log the error for debugging purposes
-
-    // Redirect to a specific route
+    console.error(err.stack); 
     res.redirect('/404');
 });
 

@@ -1,22 +1,4 @@
-const userSchema = require("../models/userSchema");
-const offerSchema = require("../models/offer");
 const categoryModal = require('../models/catagory')
-const productModal = require('../models/products');
-const coupenId = require('../config/coupenId')
-const path = require('path');
-const fs = require('fs');
-const pdf = require('html-pdf');
-const { v4: uuid } = require('uuid')
-const ejs = require('ejs');
-const orderModal = require('../models/orders')
-const addressModal = require('../models/adress')
-const bycrypt = require('bcrypt');
-const dotEnv = require('dotenv');
-const puppeteer = require('puppeteer');
-const ExcelJS = require('exceljs');
-const coupenSchema = require("../models/coupen");
-const options = { day: '2-digit', month: 'short', year: 'numeric' };
-
 
 
 //catgory Add page rendering
@@ -25,27 +7,22 @@ const catgoryAdd = async (req, res) => {
         res.render('admin/catagory', { admin: req.session.admin, categoryAdd: true })
     } catch (err) {
         console.log(err.message + '       catgory route ')
+        res.status(400)
     }
 }
 
 //get catagory add 
 const getcatgoryAdd = async (req, res) => {
     try {
-
         const category = await categoryModal.create({
             name: req.body.name,
             gender: req.body.gender,
-            active: req.body.active,
-
-        })
-        if (category) {
-            res.redirect('/admin/catagory')
-        }
-        else {
-            res.send('somthing isuue there')
-        }
+            active: req.body.active
+        });
+        res.redirect('/admin/category');
     } catch (err) {
         console.log(err.message + '          getting castgory  ')
+        res.status(400)
     }
 }
 
@@ -58,6 +35,7 @@ const category = async (req, res) => {
         }
     } catch (er) {
         console.log(er.message + '    category dets ')
+        res.status(400)
     }
 }
 
@@ -65,31 +43,23 @@ const category = async (req, res) => {
 const categoryFetch = async (req, res) => {
     try {
         const pattern = new RegExp(`^${req.body.name}$`, 'i');
-        const name = await categoryModal.findOne({ name: pattern })
-        if (name) {
-            res.send({ exist: true })
-        } else {
-            res.send({ exist: false })
-        }
-
+        const category = await categoryModal.findOne({ name: pattern });
+        const exist = !!category;
+        res.send({ exist });
     } catch (err) {
         console.log(err.message + '     category fetch route ')
+        res.status(400)
     }
 }
 
 // category remove
 const categorydlt = async (req, res) => {
     try {
-
         const dltCat = await categoryModal.findOneAndDelete({ _id: req.query.id })
-        if (dltCat) {
-            res.redirect('/admin/catagory')
-        }
-        else {
-            res.send('you fucked up')
-        }
+        res.redirect('/admin/catagory')
     } catch (err) {
         console.log(err.message + '        categorydlt')
+        res.status(400)
     }
 }
 
@@ -98,7 +68,7 @@ const catgoryActive = async (req, res) => {
     try {
 
         const activeornot = await categoryModal.findOne({ _id: req.body.payload })
-        console.log(activeornot.active)
+      
         if (activeornot.active) {
             const activetrue = await categoryModal.findOneAndUpdate({ _id: req.body.payload }, { $set: { active: false } })
 
@@ -122,10 +92,11 @@ const catgoryActive = async (req, res) => {
 
     } catch (err) {
         console.log(err.message + '       bloack fetching data')
+        res.status(400)
     }
 }
 
-module.exports={
+module.exports = {
     catgoryAdd,
     categoryFetch,
     category,

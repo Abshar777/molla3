@@ -25,6 +25,7 @@ router.get('/product',adminMidleware.adminRoute,productController.productDets)
 //product add route
 router.get('/productAdd',adminMidleware.adminRoute,productController.productAdd);
 
+router.get('/prodectDect',productController.productDet)
 
 // user list showing 
 router.get('/users',adminMidleware.adminRoute,adminController.users)

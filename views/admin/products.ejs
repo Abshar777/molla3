@@ -37,6 +37,7 @@
                         </label>
                         <input type="file" id="image" accept="image/*" name="images"
                           style="display: none;" value="">
+              
                         <img class="w-100 h-100  " style="object-fit: cover;"
                           src="/productImage/1705419439038 - ec70ef4be1a9d2ddf1ba1cfaabdb3e2f.jpg" alt="">
 
@@ -94,6 +95,10 @@
                           </select>
                         </div>
                       </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="exampleTextarea1">Textarea</label>
+                      <textarea class="form-control" name='description' id="des" rows="3"></textarea>
                     </div>
                     <div class="row w-100 d-flex align-items-center justify-content-center gap-3 " style="gap:1rem">
                       <button type="submit" class="btn bg-primary text-white border-0 "
@@ -196,7 +201,7 @@
                                   <div
                                     class="edit d-flex flex-column gap-2  h-100 w-100 justify-content-center align-items-center ">
                                     <% let b=[]; locals.ca.forEach(e=>{ b.push(e.name) }) %>
-                                      <p onclick="edit('<%=JSON.stringify(e.images)%>','<%= e._id%>','<%= e.name %>','<%=e.stock  %>','<%=e.actualPrice  %>','<%=e.category.name  %>')"
+                                      <p onclick="edit('<%=JSON.stringify(e.images)%>','<%= e._id%>','<%= e.name %>','<%=e.stock  %>','<%=e.actualPrice  %>','<%=e.category.name  %>',)"
                                         class="fs-5 "
                                         style="cursor: pointer; line-height: 0; margin-bottom: 0; color:#6c7293;">
                                         edit&nbsp;<i class="ri-edit-line  "></i></p>
@@ -254,8 +259,12 @@
     const catName1 = document.querySelector('.category');
     const gg = document.querySelector('.gg');
     const dname = document.querySelector('.dname');
+    const description=document.getElementById('des')
    
     function edit(image, id, name, stock, price, catName) {
+      fetch(`/admin/prodectDect?id=${id}`).then(res=>res.json()).then(({product})=>{
+        description.value=product.description
+      })
       let myForm = document.getElementById('myForm1');
       myForm.action = `/admin/edit?id=${id}`;
       const ima = JSON.parse(image)
@@ -263,6 +272,7 @@
       price1.value = price
       stock1.value = stock
       catName1.value = catName
+      
       imageRow.innerHTML = `${ima.map((im, i) => `
     <div class="d-flex flex-column " id='p${i}'>
         <div class="imcircle d-flex align-items-center justify-content-center overflow-hidden position-relative"
@@ -275,6 +285,7 @@
             </label>
             <input type="file" class='file' data-index='${i}' id="image${i}" accept="image/*"
                 name="images${i}" style="display: none;" value='${im}'>
+                <input type='number' value='${i}' name='k${i}' id='k${i}' hidden >
             <img class="w-100 h-100 " id='im${i}' style="object-fit: cover;"
                 src="/productImage/${im}" alt="">
         </div>
@@ -287,6 +298,8 @@
       gg.style.zIndex = 9;
       for (let i = 0; i < 3; i++) {
         document.getElementById(`image${i}`).addEventListener('click', () => {
+          const key=document.getElementById(`k${i}`);
+          key.remove()
           filee(i)
         })
       }

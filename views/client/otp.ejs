@@ -16,7 +16,7 @@
 							</button>
 
 							<a href="/" class="logo">
-								<img src="images/logo.png" alt="Molla Logo" width="105" height="25">
+								<img src="/images/New Project 114 [5619AEB] (1).png" alt="Molla Logo" width="105" height="25">
 							</a>
 
 							<nav class="main-nav">
@@ -91,10 +91,10 @@
 											<label for="otp">Check Your Email OTP is There </label>
 											
 											<div class="otp d-flex gap-5   align-items-center  justify-content-center ">
-												<input class=" inp form-control " type="text" name="otp" maxlength="1" required>
-												<input class=" inp form-control " type="text" name="otp" maxlength="1" required>
-												<input class=" inp form-control " type="text" name="otp" maxlength="1" required>
-												<input class=" inp form-control " type="text" name="otp" maxlength="1" required>
+												<input class=" inp form-control " type="text" name="otp" maxlength="1" oninput="moveToNext(this)" onkeydown="moveToPrev(this)" required>
+												<input class=" inp form-control " type="text" name="otp" maxlength="1" oninput="moveToNext(this)" onkeydown="moveToPrev(this)" required>
+												<input class=" inp form-control " type="text" name="otp" maxlength="1" oninput="moveToNext(this)" onkeydown="moveToPrev(this)" required>
+												<input class=" inp form-control " type="text" name="otp" maxlength="1" oninput="moveToNext(this)" onkeydown="moveToPrev(this)" required>
 											</div>
 										
                                           <% if(locals.message || locals.resend) {%>
@@ -135,7 +135,25 @@
 
 		</div><!-- End .page-wrapper -->
 		<button id="scroll-top" title="Back to Top"><i class="icon-arrow-up"></i></button>
+<script>
+	 function moveToNext(input) {
+            if (input.value.length >= 1) {
+                var nextInput = input.nextElementSibling;
+                if (nextInput !== null) {
+                    nextInput.focus();
+                }
+            }
+        }
 
+        function moveToPrev(input) {
+            if (input.value.length === 0 && event.keyCode === 8) {
+                var prevInput = input.previousElementSibling;
+                if (prevInput !== null) {
+                    prevInput.focus();
+                }
+            }
+        }
+</script>
 		<%- include('../layout/mobMenu.ejs') -%>
 
 

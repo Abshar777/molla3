@@ -21,10 +21,9 @@
         <div class="container-fluid  py-5 h-100 position-relative ">
           <div class="row d-flex    align-items-start  h-100" style="gap: 10rem;">
             <aside class="col-md-4 col-lg-3  ">
-              <ul class="nav nav-dashboard flex-column mb-3 mb-md-0" >
+              <ul class="nav nav-dashboard flex-column mb-3 mb-md-0">
                 <li class="nav-item">
-                  <a class="nav-link active" id="tab-dashboard-link"  href="/profile"
-                    >Profile</a>
+                  <a class="nav-link active" id="tab-dashboard-link" href="/profile">Profile</a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" id="tab-orders-link" href="/order">Orders</a>
@@ -34,8 +33,7 @@
                   <a class="nav-link" id="tab-address-link" href="/adress" aria-selected="true">Adresses</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" id="tab-account-link"  href="/coupen" 
-                    >Coupens</a>
+                  <a class="nav-link" id="tab-account-link" href="/coupen">Coupens</a>
                 </li>
                 <li class="nav-item">
                   <form action="/logout" method="post">
@@ -57,9 +55,11 @@
                       <%= user.name %>
                     </h5>
                     <div class="d-flex gap-5">
-                    <p>Wallet :$<%= locals.walletAmount  %></p>
-                    <a class="text-white" style="margin-left: 1rem;" href="/walletHistory"><i class=" ri-history-line"></i></a>
-                  </div>
+                      <p>Wallet :$<%= locals.walletAmount %>
+                      </p>
+                      <a class="text-white" style="margin-left: 1rem;" href="/walletHistory"><i
+                          class=" ri-history-line"></i></a>
+                    </div>
                   </div>
                   <div class="col-md-8">
                     <div class="card-body p-4">
@@ -90,7 +90,14 @@
                           </div>
                         </div>
 
-                        <h6>Projects</h6>
+                        <div class="col-6 mb-3">
+                          <h6>rafral Link</h6>
+                          <a onclick="copy11(this,'localhost:3000/login?refrelId=<%=user.Referral %>')" style="cursor: pointer;"
+                            class="text-muted" id="emailE">
+                            click here to copy
+                          </a>
+                          <p class="text-danger " id="msg"></p>
+                        </div>
                         <hr class="mt-0 mb-4">
                         <div class="row pt-1">
                           <div class="col-6 mb-3">
@@ -127,7 +134,7 @@
         </div>
       </section>
 
-
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
       <%- include('../layout/mobMenu.ejs') -%>
         <%- include('../layout/lyfooter') -%>
@@ -173,44 +180,62 @@
                   submit.style.opacity = 1
               }
             }
-            
-          	function emchack(e) {
-					fetch('login', {
-						method: 'POST',
-						headers: { "Content-Type": "application/json" },
-						body: JSON.stringify({ payload: e.value })
-					}).then(res => res.json()).then(data => {
-						if (data.emailExist) {
-						
-							msg.innerHTML = `email already exist`;
-							e.style.borderColor = "red";
-							submit.style.pointerEvents = 'none',
-								submit.style.opacity = 0.5;
-							e.addEventListener("focus", () => {
-								e.style.borderColor = "red"; 
-							});
-							e.addEventListener("blur", () => {
-								e.style.borderColor = "red"; 
-							});
-						}
-						else if (data.note) {
-							
-							msg.innerHTML = ' ';
-							e.style.borderColor = "gray";
-							submit.style.pointerEvents = 'all',
-								submit.style.opacity = 1
-							e.addEventListener("focus", () => {
-								e.style.borderColor = "gray"; 
-							});
 
-							e.addEventListener("blur", () => {
-								e.style.borderColor = "gray"; 
-							});
-						}
-					}
-					)
-				}
-     </script>
+            function emchack(e) {
+              fetch('login', {
+                method: 'POST',
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ payload: e.value })
+              }).then(res => res.json()).then(data => {
+                if (data.emailExist) {
+
+                  msg.innerHTML = `email already exist`;
+                  e.style.borderColor = "red";
+                  submit.style.pointerEvents = 'none',
+                    submit.style.opacity = 0.5;
+                  e.addEventListener("focus", () => {
+                    e.style.borderColor = "red";
+                  });
+                  e.addEventListener("blur", () => {
+                    e.style.borderColor = "red";
+                  });
+                }
+                else if (data.note) {
+
+                  msg.innerHTML = ' ';
+                  e.style.borderColor = "gray";
+                  submit.style.pointerEvents = 'all',
+                    submit.style.opacity = 1
+                  e.addEventListener("focus", () => {
+                    e.style.borderColor = "gray";
+                  });
+
+                  e.addEventListener("blur", () => {
+                    e.style.borderColor = "gray";
+                  });
+                }
+              }
+              )
+            }
+
+            function copy11(e, value) {
+              navigator.clipboard.writeText(value)
+                .then(() => {
+                  Swal.fire({
+
+                    title: "succes",
+                    text: "link is copied ",
+                    icon: "success"
+                  });
+
+                })
+
+
+
+
+            }
+
+          </script>
           <style>
             *::-webkit-scrollbar {
               width: 0;

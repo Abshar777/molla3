@@ -87,7 +87,7 @@
 								<div class="tab-content">
 									<div class="tab-pane  show active" id="signin-2" role="tabpanel"
 										aria-labelledby="signin-tab-2">
-										<form action="/sign-in" method="post">
+										<form  action="/sign-in" method="post">
 											<div class="form-group">
 												<label for="singin-email-2">Username or email address *</label>
 												<input type="text" oninput="check(this)" class="form-control"
@@ -184,6 +184,26 @@
 						e.preventDefault();
 					}
 				});
+				const form=document.getElementById('myForm');
+				form.addEventListener('submit',(e)=>{
+					const inputs=form.querySelectorAll('input');
+					let flag=false
+					inputs.forEach(field=>{
+						if(field.value.trim()==''){
+							flag=true
+						}
+					})
+					if(flag){
+						e.preventDefault()
+					}else{
+						
+						form.submit()
+					}
+				
+				})
+				// form.onsubmit=(e)=>{
+				// 	e.preventDefault()
+				// }
 				const err = document.querySelector('.err');
 				const input = document.querySelector('#register-email');
 				const submit = document.querySelector('.submit')

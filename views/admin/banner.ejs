@@ -78,9 +78,7 @@
   <script src="/vendors/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
   <!-- <script src="/vendors/owl-carousel-2/owl.carousel.min.js"></script> -->
   <script>
-    const submit1 = document.getElementById("submit")
-    submit1.style.opacity = .7;
-    submit1.style.pointerEvents = 'none';
+
 
     function edit(id,name,image) {
 
@@ -165,7 +163,9 @@
 
    
 
-
+                      const submit1 = document.getElementById("submit")
+    submit1.style.opacity = .7;
+    submit1.style.pointerEvents = 'none';
 document.getElementById(`can${id}`).addEventListener('click',()=>{
   card.innerHTML=old
 })
@@ -177,6 +177,7 @@ document.getElementById(`can${id}`).addEventListener('click',()=>{
 
 
     function hello(e, i) {
+      const submit1 = document.getElementById("submit")
       submit1.style.opacity = 1;
       submit1.style.pointerEvents = 'all';
       const text = document.getElementById(`p${i}`);

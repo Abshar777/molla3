@@ -1,21 +1,10 @@
-const userSchema = require("../models/userSchema");
-const offerSchema = require("../models/offer");
-const categoryModal = require('../models/catagory')
-const productModal = require('../models/products');
-const coupenId = require('../config/coupenId')
 const path = require('path');
 const fs = require('fs');
-const pdf = require('html-pdf');
 const { v4: uuid } = require('uuid')
 const ejs = require('ejs');
 const orderModal = require('../models/orders')
-const addressModal = require('../models/adress')
-const bycrypt = require('bcrypt');
-const dotEnv = require('dotenv');
 const puppeteer = require('puppeteer');
 const ExcelJS = require('exceljs');
-const coupenSchema = require("../models/coupen");
-const options = { day: '2-digit', month: 'short', year: 'numeric' };
 
 
 
@@ -29,7 +18,22 @@ const report = async (req, res) => {
             const currentWeekEnd = new Date(currentWeekStart);
             currentWeekEnd.setDate(currentWeekEnd.getDate() + 6);
             const report = await orderModal.find({ orderDate: { $gte: currentWeekStart, $lte: currentWeekEnd } });
-            res.render('admin/report', { report, data: 'weekly', gg: req.params.id });
+            const grantTotal = await orderModal.aggregate([
+                {
+                    $match: {
+                        orderDate: { $gte:  currentWeekStart, $lte:currentWeekEnd } 
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        totalAmount: { $sum: "$orderAmount" } 
+                    }
+                }
+            ]);
+        
+            res.render('admin/report', { grantTotal,report, data: 'weekly', gg: req.params.id });
+            
         }
         else if (req.params.id == 'monthly') {
             const currentDate = new Date();
@@ -37,7 +41,21 @@ const report = async (req, res) => {
             const startDate = new Date(currentDate.getFullYear(), currentMonth);
             const endDate = new Date(currentDate.getFullYear(), currentMonth + 1, 0);
             const report = await orderModal.find({ orderDate: { $gte: startDate, $lte: endDate } })
-            res.render('admin/report', { report, data: 'monthly', gg: req.params.id })
+            const grantTotal = await orderModal.aggregate([
+                {
+                    $match: {
+                        orderDate: { $gte: startDate, $lte:endDate } 
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        totalAmount: { $sum: "$orderAmount" } 
+                    }
+                }
+            ]);
+        
+            res.render('admin/report', { grantTotal,report, data: 'monthly', gg: req.params.id })
 
         }
         else if (req.params.id == 'yearly') {
@@ -45,7 +63,20 @@ const report = async (req, res) => {
             const currentYearStart = new Date(currentDate.getFullYear(), 0, 1);
             const currentYearEnd = new Date(currentDate.getFullYear() + 1, 0, 0);
             const report = await orderModal.find({ orderDate: { $gte: currentYearStart, $lte: currentYearEnd } });
-            res.render('admin/report', { report, data: 'yearly', gg: req.params.id });
+            const grantTotal = await orderModal.aggregate([
+                {
+                    $match: {
+                        orderDate: { $gte: currentYearStart, $lte:currentYearEnd } 
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        totalAmount: { $sum: "$orderAmount" } 
+                    }
+                }
+            ]);
+            res.render('admin/report', { grantTotal,report, data: 'yearly', gg: req.params.id });
 
         } else if (req.params.id = 'costum') {
             res.render('admin/report', { custom: true, gg: req.params.id, data: 'costum' });
@@ -62,10 +93,22 @@ const customreport = async (req, res) => {
     try {
         const start = new Date(req.body.start);
         const end = new Date(req.body.end)
-        console.log(start, end);
-
         const data = await orderModal.find({ orderDate: { $gte: start, $lte: end } })
-        res.send({ data })
+        const grantTotal = await orderModal.aggregate([
+            {
+                $match: {
+                    orderDate: { $gte: start, $lte: end } 
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    totalAmount: { $sum: "$orderAmount" } 
+                }
+            }
+        ]);
+    
+        res.send({ data,grantTotal })
 
     } catch (err) {
         console.log(err.message + '     customreport')

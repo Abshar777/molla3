@@ -5,7 +5,8 @@ require('dotenv').config();
 const verifyemail = require('../config/verifyemail')
 const securePassword = require('../util/scurePassword')
 const generateOTP = require('../util/generateOtp')
-
+const { v4: uuid } = require('uuid')
+const wallet=require('../models/wallet')
 
 
 // date setup
@@ -14,6 +15,7 @@ const options = { day: '2-digit', month: 'short', year: 'numeric' };
 //sign-up page rendering 
 const signUp = async (req, res) => {
     const cetgory = await categoryModal.find({})
+    req.session.refral=req.query.refrelId || null
     if (req.session.login) {
         res.redirect('/')
     }
@@ -55,6 +57,7 @@ const emailExist = async (req, res) => {
         }
     } catch (err) {
         console.log(err.message + '          email checking route')
+        res.status(400).send({err:err.message})
         res.status(500)
     }
 }
@@ -69,9 +72,9 @@ const getSignUp = async (req, res) => {
             password: sp
         });
         const noUser = await userSchema.findOne({ email: req.body.registerEmail });
-
         if (noUser) {
-            res.status(500)
+            res.redirect('/login')
+            
         }
         else {
             req.session.userData = userData
@@ -82,6 +85,7 @@ const getSignUp = async (req, res) => {
         }
     } catch (error) {
         console.log(error.message);
+        res.status(400).send({err:err.message})
     }
 
 }
@@ -108,6 +112,7 @@ const otp = async (req, res) => {
     }
     catch (err) {
         console.log(err.message + '    otp');
+        res.status(400).send({err:err.message})
     }
 
 }
@@ -135,25 +140,29 @@ const gettingOtp = async (req, res) => {
             if (Number(otp.join('')) === req.session.otp) {
                 const currentDate = new Date();
                 const formattedDate = currentDate.toLocaleDateString('en-US', options);
-
+                const refralId =uuid()
                 const userData = new userSchema({
                     name: req.session.userData.name,
                     email: req.session.userData.email,
                     password: req.session.userData.password,
-                    date: formattedDate
+                    date: formattedDate,
+                    Referral:refralId
                 });
-                console.log('its are');
                 const userSave = await userData.save();
-                console.log('its heare')
+                
+                const data=await userSchema.findOne({Referral:req.session.refral})
+                if(data){
+                    await wallet.findOneAndUpdate({userId:data._id}, { $inc: { amount: 30 }, $push: { transaction: { amount: 30, creditOrDebit: 'credit' } } },{new:true,upsert:true})
+                }
                 if (userSave) {
-                    req.session.login = userSave._id;
+                    req.session.login = userSave._id
                     req.session.otp = undefined
                     req.session.wrong = undefined
                     res.redirect('/profile')
 
                 }
                 else {
-                    res.send('somthing is issue');
+                    res.redirect('/login')
                 }
 
             }
@@ -164,6 +173,7 @@ const gettingOtp = async (req, res) => {
         }
     } catch (err) {
         console.log(err + '       otp routing');
+        res.status(400).send({err:err.message})
     }
 
 
@@ -178,6 +188,7 @@ const resubmit = async (req, res) => {
         res.redirect('/login')
     } catch (err) {
         console.log(err.message + '    resbmit Route')
+        res.status(400).send({err:err.message})
     }
 }
 
@@ -231,6 +242,7 @@ const forgetemailExist = async (req, res) => {
 
     } catch (err) {
         console.log(err.message + '       forgetemailExist route')
+        res.status(400).send({err:err.message})
     }
 }
 
@@ -246,6 +258,7 @@ const forget = async (req, res) => {
         res.redirect('/otp')
     } catch (err) {
         console.log(err.message + "       forget gatting route")
+        res.status(400).send({err:err.message})
     }
 }
 
@@ -265,6 +278,7 @@ const getNewPass = async (req, res) => {
         }
     } catch (err) {
         console.log(err.message + '         get new pass route')
+        res.status(400).send({err:err.message})
     }
 }
 
@@ -279,6 +293,7 @@ const newPass = async (req, res) => {
         }
     } catch (err) {
         console.log(err.message + '          newpass route')
+        res.status(400).send({err:err.message})
     }
 }
 
@@ -286,27 +301,31 @@ const newPass = async (req, res) => {
 const getLogin = async (req, res) => {
     try {
         const user = await userSchema.findOne({ email: req.body.email, is_block: false });
+        const refralId=uuid()
+        user.Referral= user.Referral?user.Referral:refralId
+   
         if (user) {
             const passMatch = await bycrypt.compare(req.body.password, user.password);
             if (passMatch) {
-                // console.log('password matched');
-
+               
+                user.save()
                 req.session.login = user._id;
                 res.redirect('/profile')
             }
             else {
-                console.log('email is not exist');
+            
                 req.session.err2 = 'password is wrong';
                 res.redirect('/login')
             }
         }
         else {
-            // console.log('password not match');
+           
             req.session.err1 = ' email is note exist';
             res.redirect('/login')
         }
     } catch (err) {
         console.log(err.message + '       get login route errr');
+        res.status(400).send({err:err.message})
     }
 }
 

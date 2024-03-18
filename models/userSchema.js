@@ -13,7 +13,8 @@ const userSchema = new mongoose.Schema({
   coupens:[{
     ID:{type:String},
     coupenId: { type: mongoose.SchemaTypes.ObjectId,  ref:'coupen' },
-  }]
+  }],
+  Referral:{type:String}
 
 });
 

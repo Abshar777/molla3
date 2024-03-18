@@ -24,7 +24,7 @@ const checkoutPage = async (req, res) => {
         const nonBlockedProduct = cart.products.filter((e) => e.productId.status)
         const BlockedProduct = cart.products.filter((e) => !e.productId.status)
         for (const el of BlockedProduct) {
-            if (!el.productId.status) {
+            if (!el.productId.status) { 
 
                 const doc = await cartModal.findOneAndUpdate({ userId: req.session.login }, { $pull: { products: { productId: el.productId._id } } }, { new: true });
             }
