@@ -27,6 +27,10 @@ const home = async (req, res) => {
     }
 }
 
+//rouier.get('/',async(req,res)=>{
+// res.render('h)
+// })
+
 //shop
 const shop = async (req, res) => {
     try {
@@ -158,7 +162,7 @@ const changePassword = async (req, res) => {
     try {
         const cetgory = await categoryModal.find({})
         const msg = req.flash('msg')
-        res.render('client/changepass', { msg, cetgory })
+        res.render('client/changePass', { msg, cetgory })
     } catch (err) {
         console.log(err.message + '   changePassword render')
     }
