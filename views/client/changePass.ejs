@@ -34,9 +34,11 @@
                                     <li>
                                         <a class="sf-with-ul">Category</a>
                                         <ul>
-                                            <li><a href="login.html">Men</a></li>
-                                            <li><a href="faq.html">Woman</a></li>
-                                        </ul>
+											<%locals.cetgory.forEach(e=>{%>
+												<li><a href="/cetgory/<%=e.name  %>"><%=e.name  %></a></li>
+												
+												<% }) %>
+										</ul>
 
                                     </li>
 
@@ -82,7 +84,7 @@
                                     <li class="nav-item">
                                         <a class="nav-link active" id="register-tab-2" data-toggle="tab"
                                             href="#register-2" role="tab" aria-controls="register-2"
-                                            aria-selected="true">cahnge password</a>
+                                            aria-selected="true">change password</a>
                                     </li>
                                 </ul>
                                 <div class="tab-content">
